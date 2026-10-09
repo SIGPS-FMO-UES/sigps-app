@@ -26,32 +26,42 @@ El proyecto incluye dos configuraciones de Docker:
 
 ### 🛠️ Puesta en marcha rápida
 
-1. **Configurar el archivo `.env`**:
-   Puedes copiar la plantilla preparada para Docker:
-   ```bash
-   cp .env.dev.example .env
-   ```
-   *(Si usas PostgreSQL, asegúrate de mantener `DB_CONNECTION=pgsql`, `DB_HOST=postgres`).*
+Ejecuta los comandos desde la carpeta raíz del proyecto, donde está `docker-compose.dev.yml`.
 
-2. **Iniciar los contenedores en segundo plano**:
-   ```bash
-   docker compose -f docker-compose.dev.yml up -d
+1. **Preparar `.env` la primera vez**. En PowerShell:
+   ```powershell
+   Copy-Item .env.dev.example .env
    ```
-   *El entrypoint se encarga automáticamente de: verificar `.env`, generar `APP_KEY`, instalar dependencias, ejecutar migraciones y limpiar cachés.*
+   Si ya tienes un `.env`, consérvalo y no lo sobrescribas. La plantilla configura PostgreSQL con `DB_CONNECTION=pgsql` y `DB_HOST=postgres`.
 
-3. **Abrir en el navegador**:
+2. **Construir e iniciar los servicios**:
+   ```powershell
+   docker compose -f docker-compose.dev.yml up -d --build
+   ```
+   La primera ejecución construye la imagen y puede tardar unos minutos. El contenedor `app` instala las dependencias de PHP y genera `APP_KEY` si hace falta. `vite` instala las dependencias de JavaScript e inicia la recarga en vivo.
+
+3. **Comprobar el arranque**:
+   ```powershell
+   docker compose -f docker-compose.dev.yml ps
+   docker compose -f docker-compose.dev.yml logs -f
+   ```
+   Presiona `Ctrl+C` para salir de los logs; esto no detiene los servicios. Si la aplicación reporta que faltan tablas, ejecuta:
+   ```powershell
+   docker compose -f docker-compose.dev.yml exec app php artisan migrate
+   ```
+
+4. **Abrir en el navegador**:
    - Aplicación: [http://localhost:8000](http://localhost:8000)
-   - Correos (Mailpit): [http://localhost:8025](http://localhost:8025)
+   - Correos de prueba (Mailpit): [http://localhost:8025](http://localhost:8025)
 
 ---
-
 ### 💻 Comandos frecuentes en desarrollo
 
 Ejecuta estos comandos desde la raíz del proyecto:
 
 - **Ver logs en tiempo real**:
   ```bash
-  docker compose -f docker-compose.dev.yml logs -f app
+  docker compose -f docker-compose.dev.yml logs -f
   ```
 
 - **Ejecutar comandos de Artisan**:
@@ -81,7 +91,6 @@ Ejecuta estos comandos desde la raíz del proyecto:
   docker compose -f docker-compose.dev.yml down
   ```
 
-- **Detener y eliminar volúmenes (reset de base de datos)**:
-  ```bash
-  docker compose -f docker-compose.dev.yml down -v
-  ```
+  Esto conserva los datos de PostgreSQL y los volúmenes de dependencias. Para volver a iniciar, ejecuta el comando `up -d` de arriba.
+
+> **Nota:** `docker compose down -v` también elimina los volúmenes de PostgreSQL, Redis y Composer; úsalo solo si quieres borrar esos datos y reconstruir el entorno desde cero.

@@ -19,6 +19,7 @@ services:
       - PHP_OPCACHE_VALIDATE_TIMESTAMPS=1
     volumes:
       - .:/var/www
+      - sigps-vendor:/var/www/vendor
     networks:
       - sigps-dev-network
     depends_on:
@@ -43,6 +44,7 @@ services:
       - VITE_HMR_HOST=localhost
     volumes:
       - .:/var/www
+      - sigps-vendor:/var/www/vendor
     networks:
       - sigps-dev-network
     depends_on:
@@ -88,6 +90,8 @@ volumes:
   sigps-postgres-data:
     driver: local
   sigps-redis-data:
+    driver: local
+  sigps-vendor:
     driver: local
 
 networks:

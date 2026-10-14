@@ -1,11 +1,11 @@
 # Graph Report - sigps-app  (2026-10-14)
 
 ## Corpus Check
-- 58 files · ~12,004 words
+- 57 files · ~13,161 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 273 nodes · 410 edges · 26 communities (19 shown, 7 thin omitted)
+- 270 nodes · 388 edges · 27 communities (20 shown, 7 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
@@ -17,14 +17,15 @@
 ## Community Hubs (Navigation)
 - composer.json
 - scripts
-- Illuminate\Database\Eloquent\Factories\HasFactory
-- User
+- Usuario
+- UserFactory.php
 - Illuminate\Database\Migrations\Migration
 - package.json
-- require-dev
+- ModelRelationshipsTest.php
+- config
 - AppServiceProvider
 - bootstrap/app.php
-- ModelRelationshipsTest.php
+- Illuminate\Database\Eloquent\Factories\HasFactory
 - logging.php
 - ExampleTest
 - console.php
@@ -43,7 +44,7 @@
 7. `ModelRelationshipsTest` - 9 edges
 8. `Estudiante` - 8 edges
 9. `LogAccion` - 8 edges
-10. `Permiso` - 8 edges
+10. `Plantilla` - 8 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `User` --inherits--> `Usuario`  [EXTRACTED]
@@ -56,23 +57,23 @@
 ## Import Cycles
 - None detected.
 
-## Communities (26 total, 7 thin omitted)
+## Communities (27 total, 7 thin omitted)
 
 ### Community 0 - "composer.json"
 Cohesion: 0.06
-Nodes (32): pestphp/pest-plugin, php-http/discovery, autoload, autoload-dev, psr-4, psr-4, config, allow-plugins (+24 more)
+Nodes (35): autoload, autoload-dev, psr-4, psr-4, description, extra, laravel, keywords (+27 more)
 
 ### Community 1 - "scripts"
 Cohesion: 0.08
 Nodes (26): scripts, dev, post-autoload-dump, post-create-project-cmd, post-root-package-install, post-update-cmd, pre-package-uninstall, setup (+18 more)
 
-### Community 2 - "Illuminate\Database\Eloquent\Factories\HasFactory"
-Cohesion: 0.10
-Nodes (17): AreaConocimiento, Carrera, Departamento, Estudiante, Permiso, Plantilla, Rol, Usuario (+9 more)
-
-### Community 3 - "User"
+### Community 2 - "Usuario"
 Cohesion: 0.13
-Nodes (10): User, UserFactory, DatabaseSeeder, Illuminate\Database\Console\Seeds\WithoutModelEvents, Illuminate\Database\Eloquent\Factories\Factory, Illuminate\Database\Seeder, Illuminate\Support\Facades\Hash, Illuminate\Support\Str (+2 more)
+Nodes (10): User, Usuario, DatabaseSeeder, Illuminate\Database\Console\Seeds\WithoutModelEvents, Illuminate\Database\Eloquent\Attributes\Hidden, Illuminate\Database\Eloquent\Relations\HasMany, Illuminate\Database\Seeder, Illuminate\Foundation\Auth\User (+2 more)
+
+### Community 3 - "UserFactory.php"
+Cohesion: 0.20
+Nodes (6): UserFactory, Illuminate\Database\Eloquent\Factories\Factory, Illuminate\Support\Facades\Hash, Illuminate\Support\Str, Pdo\Mysql, static
 
 ### Community 4 - "Illuminate\Database\Migrations\Migration"
 Cohesion: 0.09
@@ -82,41 +83,45 @@ Nodes (3): Illuminate\Database\Migrations\Migration, Illuminate\Database\Schema\
 Cohesion: 0.10
 Nodes (20): concurrently, @laravel/multiplex, laravel-vite-plugin, devDependencies, concurrently, laravel-vite-plugin, tailwindcss, @tailwindcss/vite (+12 more)
 
-### Community 7 - "require-dev"
-Cohesion: 0.22
-Nodes (9): require-dev, fakerphp/faker, laravel/boost, laravel/pail, laravel/pao, laravel/pint, mockery/mockery, nunomaduro/collision (+1 more)
+### Community 6 - "ModelRelationshipsTest.php"
+Cohesion: 0.10
+Nodes (10): Plantilla, VersionPlantilla, Illuminate\Foundation\Testing\RefreshDatabase, Illuminate\Foundation\Testing\TestCase, Spatie\Permission\DefaultTeamResolver, Spatie\Permission\Models\Permission, Spatie\Permission\Models\Role, ExampleTest (+2 more)
+
+### Community 7 - "config"
+Cohesion: 0.29
+Nodes (7): pestphp/pest-plugin, php-http/discovery, config, allow-plugins, optimize-autoloader, preferred-install, sort-packages
 
 ### Community 10 - "bootstrap/app.php"
 Cohesion: 0.40
 Nodes (4): Illuminate\Foundation\Application, Illuminate\Foundation\Configuration\Exceptions, Illuminate\Foundation\Configuration\Middleware, Illuminate\Http\Request
 
-### Community 11 - "ModelRelationshipsTest.php"
-Cohesion: 0.08
-Nodes (11): LogAccion, Memoria, Proyecto, VersionPlantilla, Illuminate\Database\Eloquent\Relations\BelongsTo, Illuminate\Database\Eloquent\SoftDeletes, Illuminate\Foundation\Testing\RefreshDatabase, Illuminate\Foundation\Testing\TestCase (+3 more)
+### Community 11 - "Illuminate\Database\Eloquent\Factories\HasFactory"
+Cohesion: 0.11
+Nodes (14): AreaConocimiento, Carrera, Departamento, Estudiante, LogAccion, Memoria, Proyecto, Illuminate\Database\Eloquent\Attributes\Fillable (+6 more)
 
 ### Community 12 - "logging.php"
 Cohesion: 0.40
 Nodes (4): Monolog\Handler\NullHandler, Monolog\Handler\StreamHandler, Monolog\Handler\SyslogUdpHandler, Monolog\Processor\PsrLogMessageProcessor
 
 ## Knowledge Gaps
-- **60 isolated node(s):** `Controller`, `$schema`, `name`, `type`, `description` (+55 more)
+- **61 isolated node(s):** `Controller`, `$schema`, `name`, `type`, `description` (+56 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Usuario` connect `Illuminate\Database\Eloquent\Factories\HasFactory` to `ModelRelationshipsTest.php`, `User`?**
-  _High betweenness centrality (0.041) - this node is a cross-community bridge._
+- **Why does `Usuario` connect `Usuario` to `Illuminate\Database\Eloquent\Factories\HasFactory`, `ModelRelationshipsTest.php`?**
+  _High betweenness centrality (0.044) - this node is a cross-community bridge._
 - **Why does `scripts` connect `scripts` to `composer.json`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
-- **Why does `User` connect `User` to `Illuminate\Database\Eloquent\Factories\HasFactory`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+  _High betweenness centrality (0.037) - this node is a cross-community bridge._
+- **Why does `User` connect `Usuario` to `UserFactory.php`?**
+  _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **What connects `Controller`, `$schema`, `name` to the rest of the system?**
-  _60 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _61 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `composer.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.06060606060606061 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05555555555555555 - nodes in this community are weakly interconnected._
 - **Should `scripts` be split into smaller, more focused modules?**
   _Cohesion score 0.08 - nodes in this community are weakly interconnected._
-- **Should `Illuminate\Database\Eloquent\Factories\HasFactory` be split into smaller, more focused modules?**
-  _Cohesion score 0.10202020202020202 - nodes in this community are weakly interconnected._
+- **Should `Usuario` be split into smaller, more focused modules?**
+  _Cohesion score 0.12987012987012986 - nodes in this community are weakly interconnected._

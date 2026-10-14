@@ -42,10 +42,10 @@
     "semantic_hash": "888c810b5a4720916f07aa05dd2c2dd3"
   },
   "composer.json": {
-    "mtime": 1790351310.695177,
-    "seen": 1791988031.6328676,
-    "ast_hash": "c63ba8c5992d1ef40a26c21e14e6221c",
-    "semantic_hash": "c63ba8c5992d1ef40a26c21e14e6221c"
+    "mtime": 1791990449.7230027,
+    "seen": 1791990642.217314,
+    "ast_hash": "c9e33fbdc162773bbe75e32685e81b67",
+    "semantic_hash": ""
   },
   "config/app.php": {
     "mtime": 1787675219.0,
@@ -246,21 +246,15 @@
     "semantic_hash": ""
   },
   "app/Models/LogAccion.php": {
-    "mtime": 1791989880.2913585,
-    "seen": 1791990292.821575,
-    "ast_hash": "8e92a5dfd10c0b5dc6ae3f9ffc2d88de",
+    "mtime": 1791990562.3605947,
+    "seen": 1791990642.2173007,
+    "ast_hash": "63a67fdf3799853b67a9b539f3d3dfc8",
     "semantic_hash": ""
   },
   "app/Models/Memoria.php": {
     "mtime": 1791989873.5059457,
     "seen": 1791990292.8215756,
     "ast_hash": "c5f004cda037fd6dc07afb6b576101ba",
-    "semantic_hash": ""
-  },
-  "app/Models/Permiso.php": {
-    "mtime": 1791989809.3496308,
-    "seen": 1791990292.821577,
-    "ast_hash": "8a49194b3b2ed8ba05e6887e6d23bc5f",
     "semantic_hash": ""
   },
   "app/Models/Plantilla.php": {
@@ -275,28 +269,16 @@
     "ast_hash": "4b702a09f54903091bd944a77dd424bd",
     "semantic_hash": ""
   },
-  "app/Models/Rol.php": {
-    "mtime": 1791989802.5417042,
-    "seen": 1791990292.8215787,
-    "ast_hash": "3e843342e458bd1660a904334e2d89e5",
-    "semantic_hash": ""
-  },
   "app/Models/Usuario.php": {
-    "mtime": 1791989788.6088538,
-    "seen": 1791990292.8215811,
-    "ast_hash": "c4b80e42d4aad935890985354b8f6d17",
+    "mtime": 1791990534.497892,
+    "seen": 1791990642.217307,
+    "ast_hash": "31157e50711901948854b5927fa3dec8",
     "semantic_hash": ""
   },
   "app/Models/VersionPlantilla.php": {
     "mtime": 1791989900.8606539,
     "seen": 1791990292.821582,
     "ast_hash": "ab645a7b152f601b22b77089bf7deada",
-    "semantic_hash": ""
-  },
-  "database/migrations/2026_10_14_000001_create_roles_and_permisos_tables.php": {
-    "mtime": 1791989930.646336,
-    "seen": 1791990292.8216026,
-    "ast_hash": "3506016a088c219db7edbc85bf79d3cb",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000002_create_departamentos_and_carreras_tables.php": {
@@ -330,9 +312,9 @@
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000007_create_logs_acciones_table.php": {
-    "mtime": 1791989996.431634,
-    "seen": 1791990292.821607,
-    "ast_hash": "dfdb576187758f4e6bcbc9c0b88e4039",
+    "mtime": 1791990518.7890596,
+    "seen": 1791990642.2173367,
+    "ast_hash": "a3d1602fa0df87097523cfd955fc8b96",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000008_create_plantillas_tables.php": {
@@ -342,9 +324,21 @@
     "semantic_hash": ""
   },
   "tests/Feature/ModelRelationshipsTest.php": {
-    "mtime": 1791990266.0217571,
-    "seen": 1791990292.8216178,
-    "ast_hash": "1effff08e89e833c894959306a90d5e1",
+    "mtime": 1791990595.5482404,
+    "seen": 1791990642.2173474,
+    "ast_hash": "7231b911a16e83113257b27137d5c476",
+    "semantic_hash": ""
+  },
+  "config/permission.php": {
+    "mtime": 1791990454.2730236,
+    "seen": 1791990642.2173219,
+    "ast_hash": "4e1b4f3cf77c21e8b979bc511af1d4b8",
+    "semantic_hash": ""
+  },
+  "database/migrations/2026_10_14_000001_create_permission_tables.php": {
+    "mtime": 1791990454.2737622,
+    "seen": 1791990642.2173307,
+    "ast_hash": "d0ce4624021f5b3121a91c406a5f79f2",
     "semantic_hash": ""
   }
 }

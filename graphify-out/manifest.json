@@ -323,12 +323,6 @@
     "ast_hash": "231765dcd28a1cd703e5bfb3a81ba1b0",
     "semantic_hash": ""
   },
-  "tests/Feature/ModelRelationshipsTest.php": {
-    "mtime": 1791990595.5482404,
-    "seen": 1791990642.2173474,
-    "ast_hash": "7231b911a16e83113257b27137d5c476",
-    "semantic_hash": ""
-  },
   "config/permission.php": {
     "mtime": 1791990454.2730236,
     "seen": 1791990642.2173219,

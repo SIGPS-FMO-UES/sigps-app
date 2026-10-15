@@ -1,0 +1,361 @@
+{
+  "communities": {
+    "0": [
+      "composer",
+      "composer_autoload",
+      "composer_autoload_dev",
+      "composer_autoload_dev_psr_4",
+      "composer_autoload_psr_4",
+      "composer_description",
+      "composer_extra",
+      "composer_extra_laravel",
+      "composer_keywords",
+      "composer_laravel_dont_discover",
+      "composer_license",
+      "composer_minimum_stability",
+      "composer_name",
+      "composer_prefer_stable",
+      "composer_psr_4_app",
+      "composer_psr_4_database_factories",
+      "composer_psr_4_database_seeders",
+      "composer_psr_4_tests",
+      "composer_require",
+      "composer_require_laravel_framework",
+      "composer_require_laravel_tinker",
+      "composer_require_php",
+      "composer_schema",
+      "composer_type",
+      "ref_framework",
+      "ref_laravel"
+    ],
+    "1": [
+      "composer_scripts",
+      "composer_scripts_dev",
+      "composer_scripts_post_autoload_dump",
+      "composer_scripts_post_create_project_cmd",
+      "composer_scripts_post_root_package_install",
+      "composer_scripts_post_update_cmd",
+      "composer_scripts_pre_package_uninstall",
+      "composer_scripts_setup",
+      "composer_scripts_test",
+      "ref_composer_config_disableprocesstimeout",
+      "ref_composer_install",
+      "ref_illuminate_foundation_composerscripts_postautoloaddump",
+      "ref_illuminate_foundation_composerscripts_prepackageuninstall",
+      "ref_npm_install_ignore_scripts",
+      "ref_npm_run_build",
+      "ref_php_artisan_config_clear_ansi_no_additional_args",
+      "ref_php_artisan_dev",
+      "ref_php_artisan_key_generate",
+      "ref_php_artisan_key_generate_ansi",
+      "ref_php_artisan_migrate_force",
+      "ref_php_artisan_migrate_graceful_ansi",
+      "ref_php_artisan_package_discover_ansi",
+      "ref_php_artisan_test",
+      "ref_php_artisan_vendor_publish_tag_laravel_assets_ansi_force",
+      "ref_php_r_file_exists_database_database_sqlite_touch_database_database_sqlite",
+      "ref_php_r_file_exists_env_copy_env_example_env"
+    ],
+    "2": [
+      "app_models_user_php",
+      "app_models_user_user",
+      "app_models_user_user_casts",
+      "config_auth",
+      "database_seeders_databaseseeder",
+      "database_seeders_databaseseeder_databaseseeder",
+      "database_seeders_databaseseeder_databaseseeder_run",
+      "illuminate_database_console_seeds_withoutmodelevents",
+      "illuminate_database_eloquent_attributes_fillable",
+      "illuminate_database_eloquent_attributes_hidden",
+      "illuminate_database_eloquent_factories_hasfactory",
+      "illuminate_database_seeder",
+      "illuminate_foundation_auth_user",
+      "illuminate_notifications_notifiable"
+    ],
+    "3": [
+      "config_cache",
+      "config_database",
+      "config_session",
+      "database_factories_userfactory",
+      "database_factories_userfactory_userfactory",
+      "database_factories_userfactory_userfactory_definition",
+      "database_factories_userfactory_userfactory_unverified",
+      "illuminate_database_eloquent_factories_factory",
+      "illuminate_support_facades_hash",
+      "illuminate_support_str",
+      "pdo_mysql",
+      "static"
+    ],
+    "4": [
+      "database_migrations_0001_01_01_000000_create_users_table",
+      "database_migrations_0001_01_01_000000_create_users_table_down",
+      "database_migrations_0001_01_01_000000_create_users_table_up",
+      "database_migrations_0001_01_01_000001_create_cache_table",
+      "database_migrations_0001_01_01_000001_create_cache_table_down",
+      "database_migrations_0001_01_01_000001_create_cache_table_up",
+      "database_migrations_0001_01_01_000002_create_jobs_table",
+      "database_migrations_0001_01_01_000002_create_jobs_table_down",
+      "database_migrations_0001_01_01_000002_create_jobs_table_up",
+      "illuminate_database_migrations_migration",
+      "illuminate_database_schema_blueprint",
+      "illuminate_support_facades_schema"
+    ],
+    "5": [
+      "concurrently",
+      "laravel_vite_plugin",
+      "package_devdependencies",
+      "package_devdependencies_concurrently",
+      "package_devdependencies_laravel_vite_plugin",
+      "package_devdependencies_tailwindcss",
+      "package_devdependencies_tailwindcss_vite",
+      "package_devdependencies_vite",
+      "tailwindcss",
+      "tailwindcss_vite",
+      "vite"
+    ],
+    "6": [
+      "laravel_multiplex",
+      "package",
+      "package_optionaldependencies",
+      "package_optionaldependencies_laravel_multiplex",
+      "package_private",
+      "package_schema",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_type"
+    ],
+    "7": [
+      "composer_require_dev",
+      "composer_require_dev_fakerphp_faker",
+      "composer_require_dev_laravel_boost",
+      "composer_require_dev_laravel_pail",
+      "composer_require_dev_laravel_pao",
+      "composer_require_dev_laravel_pint",
+      "composer_require_dev_mockery_mockery",
+      "composer_require_dev_nunomaduro_collision",
+      "composer_require_dev_phpunit_phpunit"
+    ],
+    "8": [
+      "composer_allow_plugins_pestphp_pest_plugin",
+      "composer_allow_plugins_php_http_discovery",
+      "composer_config",
+      "composer_config_allow_plugins",
+      "composer_config_optimize_autoloader",
+      "composer_config_preferred_install",
+      "composer_config_sort_packages"
+    ],
+    "9": [
+      "app_providers_appserviceprovider",
+      "app_providers_appserviceprovider_appserviceprovider",
+      "app_providers_appserviceprovider_appserviceprovider_boot",
+      "app_providers_appserviceprovider_appserviceprovider_register",
+      "bootstrap_providers",
+      "illuminate_support_serviceprovider"
+    ],
+    "10": [
+      "bootstrap_app",
+      "illuminate_foundation_application",
+      "illuminate_foundation_configuration_exceptions",
+      "illuminate_foundation_configuration_middleware",
+      "illuminate_http_request",
+      "public_index"
+    ],
+    "11": [
+      "illuminate_foundation_testing_testcase",
+      "tests_feature_exampletest",
+      "tests_feature_exampletest_exampletest",
+      "tests_feature_exampletest_exampletest_test_the_application_returns_a_successful_response",
+      "tests_testcase",
+      "tests_testcase_testcase"
+    ],
+    "12": [
+      "config_logging",
+      "monolog_handler_nullhandler",
+      "monolog_handler_streamhandler",
+      "monolog_handler_syslogudphandler",
+      "monolog_processor_psrlogmessageprocessor"
+    ],
+    "13": [
+      "phpunit_framework_testcase",
+      "tests_unit_exampletest",
+      "tests_unit_exampletest_exampletest",
+      "tests_unit_exampletest_exampletest_test_that_true_is_true"
+    ],
+    "14": [
+      "illuminate_foundation_inspiring",
+      "illuminate_support_facades_artisan",
+      "routes_console"
+    ],
+    "15": [
+      "app_http_controllers_controller",
+      "app_http_controllers_controller_controller"
+    ],
+    "16": [
+      "docker_dev_entrypoint",
+      "docker_dev_entrypoint_sh__entry"
+    ],
+    "17": [
+      "docker_entrypoint",
+      "docker_entrypoint_sh__entry"
+    ],
+    "18": [
+      "illuminate_support_facades_route",
+      "routes_web_php"
+    ],
+    "19": [
+      "artisan"
+    ],
+    "20": [
+      "config_app"
+    ],
+    "21": [
+      "config_filesystems"
+    ],
+    "22": [
+      "config_mail"
+    ],
+    "23": [
+      "config_queue"
+    ],
+    "24": [
+      "config_services"
+    ],
+    "25": [
+      "resources_js_app"
+    ],
+    "26": [
+      "resources_views_welcome_blade"
+    ],
+    "27": [
+      "vite_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.07692307692307693,
+    "1": 0.08,
+    "2": 0.1978021978021978,
+    "3": 0.19696969696969696,
+    "4": 0.22727272727272727,
+    "5": 0.18181818181818182,
+    "6": 0.2,
+    "7": 0.2222222222222222,
+    "8": 0.2857142857142857,
+    "9": 0.4,
+    "10": 0.4,
+    "11": 0.4,
+    "12": 0.4,
+    "13": 0.6666666666666666,
+    "14": 0.6666666666666666,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0
+  },
+  "gods": [
+    {
+      "id": "app_models_user_user",
+      "label": "User",
+      "degree": 9
+    },
+    {
+      "id": "composer_scripts",
+      "label": "scripts",
+      "degree": 9
+    },
+    {
+      "id": "composer_require_dev",
+      "label": "require-dev",
+      "degree": 9
+    },
+    {
+      "id": "composer_scripts_setup",
+      "label": "setup",
+      "degree": 7
+    },
+    {
+      "id": "database_factories_userfactory_userfactory",
+      "label": "UserFactory",
+      "degree": 5
+    },
+    {
+      "id": "app_providers_appserviceprovider_appserviceprovider",
+      "label": "AppServiceProvider",
+      "degree": 5
+    },
+    {
+      "id": "composer_config",
+      "label": "config",
+      "degree": 5
+    },
+    {
+      "id": "tests_testcase_testcase",
+      "label": "TestCase",
+      "degree": 4
+    },
+    {
+      "id": "database_seeders_databaseseeder_databaseseeder",
+      "label": "DatabaseSeeder",
+      "degree": 4
+    },
+    {
+      "id": "composer_autoload_psr_4",
+      "label": "psr-4",
+      "degree": 4
+    }
+  ],
+  "surprises": [
+    {
+      "source": "ExampleTest",
+      "target": "TestCase",
+      "source_files": [
+        "tests/Feature/ExampleTest.php",
+        "tests/TestCase.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "inherits",
+      "why": "cross-file semantic connection"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `scripts` connect `Community 1` to `Community 0`?",
+      "why": "High betweenness centrality (0.088) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `require-dev` connect `Community 7` to `Community 0`?",
+      "why": "High betweenness centrality (0.034) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `config` connect `Community 8` to `Community 0`?",
+      "why": "High betweenness centrality (0.025) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `Controller`, `description`, `dont-discover` to the rest of the system?",
+      "why": "60 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.08 - nodes in this community are weakly interconnected."
+    }
+  ]
+}

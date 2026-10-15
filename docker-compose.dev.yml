@@ -1,0 +1,95 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/dev/Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    container_name: sigps-app-dev
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8000}:80"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - PHP_OPCACHE_VALIDATE_TIMESTAMPS=1
+    volumes:
+      - .:/var/www
+    networks:
+      - sigps-dev-network
+    depends_on:
+      postgres:
+        condition: service_started
+        required: false
+
+  vite:
+    build:
+      context: .
+      dockerfile: docker/dev/Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    container_name: sigps-vite-dev
+    restart: unless-stopped
+    working_dir: /var/www
+    entrypoint: ["sh", "-c", "npm install && npm run dev -- --host 0.0.0.0"]
+    ports:
+      - "${VITE_PORT:-5173}:5173"
+    environment:
+      - VITE_HMR_HOST=localhost
+    volumes:
+      - .:/var/www
+    networks:
+      - sigps-dev-network
+    depends_on:
+      - app
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: sigps-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-sigps}
+      POSTGRES_USER: ${DB_USERNAME:-sigps}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+    ports:
+      - "${FORWARD_DB_PORT:-5432}:5432"
+    volumes:
+      - sigps-postgres-data:/var/lib/postgresql/data
+    networks:
+      - sigps-dev-network
+
+  redis:
+    image: redis:alpine
+    container_name: sigps-redis-dev
+    restart: unless-stopped
+    ports:
+      - "${FORWARD_REDIS_PORT:-6379}:6379"
+    volumes:
+      - sigps-redis-data:/data
+    networks:
+      - sigps-dev-network
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: sigps-mailpit-dev
+    restart: unless-stopped
+    ports:
+      - "${FORWARD_MAILPIT_PORT:-1025}:1025"
+      - "${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025"
+    networks:
+      - sigps-dev-network
+
+volumes:
+  sigps-postgres-data:
+    driver: local
+  sigps-redis-data:
+    driver: local
+
+networks:
+  sigps-dev-network:
+    driver: bridge

@@ -180,9 +180,9 @@
     "semantic_hash": "3c6ce2e6d16444282b24a9aa63885563"
   },
   "routes/web.php": {
-    "mtime": 1792600487.2175632,
-    "seen": 1792600726.856689,
-    "ast_hash": "8f35214865743bec2a53f1edf6597579",
+    "mtime": 1792603636.6389906,
+    "seen": 1792603652.392128,
+    "ast_hash": "07237144aa76482e62d8c7a2d1599242",
     "semantic_hash": ""
   },
   "tests/Feature/ExampleTest.php": {
@@ -345,6 +345,42 @@
     "mtime": 1792600442.0260277,
     "seen": 1792600726.856687,
     "ast_hash": "dcb80277f07a6cbbbc5efc4caede4ef7",
+    "semantic_hash": ""
+  },
+  "app/Http/Controllers/Auth/LoginController.php": {
+    "mtime": 1792603582.7355454,
+    "seen": 1792603652.3920755,
+    "ast_hash": "c0084fac7cb52625104b4d6dd630a3bd",
+    "semantic_hash": ""
+  },
+  "app/Http/Controllers/Auth/ProfileController.php": {
+    "mtime": 1792603591.4914532,
+    "seen": 1792603652.392077,
+    "ast_hash": "066454a67460d3fe17f1a86f881cf5be",
+    "semantic_hash": ""
+  },
+  "app/Http/Requests/Auth/LoginRequest.php": {
+    "mtime": 1792603647.721523,
+    "seen": 1792603652.3920798,
+    "ast_hash": "64dcd63a71468489a0c501a1ac9401f6",
+    "semantic_hash": ""
+  },
+  "app/Http/Requests/Auth/UpdateProfileRequest.php": {
+    "mtime": 1792603647.7312112,
+    "seen": 1792603652.3920808,
+    "ast_hash": "866b375e8c32643969fe7ba1a17d7d02",
+    "semantic_hash": ""
+  },
+  "resources/views/auth/login.blade.php": {
+    "mtime": 1792603606.9662945,
+    "seen": 1792603652.3921235,
+    "ast_hash": "d82a33378aa34442ffb38a6f497a3ad6",
+    "semantic_hash": ""
+  },
+  "resources/views/auth/perfil.blade.php": {
+    "mtime": 1792603623.02113,
+    "seen": 1792603652.3921244,
+    "ast_hash": "3932c60b0777906fcef84672562d641a",
     "semantic_hash": ""
   }
 }

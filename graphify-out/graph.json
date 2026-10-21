@@ -147,6 +147,19 @@
       "source_location": "L12"
     },
     {
+      "id": "app_models_plantilla_plantilla",
+      "label": "Plantilla",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
+      "file_type": "code",
+      "norm_label": "plantilla",
+      "source_file": "app/Models/Plantilla.php",
+      "source_location": "L11"
+    },
+    {
       "id": "app_models_proyecto_proyecto",
       "label": "Proyecto",
       "_callable": true,
@@ -186,32 +199,6 @@
       "source_location": "L7"
     },
     {
-      "id": "app_models_plantilla_plantilla",
-      "label": "Plantilla",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": "plantilla",
-      "source_file": "app/Models/Plantilla.php",
-      "source_location": "L11"
-    },
-    {
-      "id": "app_models_usuario_usuario",
-      "label": "Usuario",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": "usuario",
-      "source_file": "app/Models/Usuario.php",
-      "source_location": "L14"
-    },
-    {
       "id": "database_factories_userfactory_userfactory",
       "label": "UserFactory",
       "_callable": true,
@@ -231,11 +218,24 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "user",
       "source_file": "app/Models/User.php",
       "source_location": "L9"
+    },
+    {
+      "id": "app_models_usuario_usuario",
+      "label": "Usuario",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Usuario",
+      "file_type": "code",
+      "norm_label": "usuario",
+      "source_file": "app/Models/Usuario.php",
+      "source_location": "L14"
     },
     {
       "id": "database_seeders_databaseseeder_databaseseeder",
@@ -244,7 +244,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "databaseseeder",
       "source_file": "database/seeders/DatabaseSeeder.php",
@@ -257,7 +257,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "roleandpermissionseeder",
       "source_file": "database/seeders/RoleAndPermissionSeeder.php",
@@ -627,6 +627,42 @@
       "source_location": "L52"
     },
     {
+      "id": "app_models_plantilla_plantilla_casts",
+      "label": ".casts()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
+      "file_type": "code",
+      "norm_label": ".casts()",
+      "source_file": "app/Models/Plantilla.php",
+      "source_location": "L29"
+    },
+    {
+      "id": "app_models_plantilla_plantilla_versiones",
+      "label": ".versiones()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
+      "file_type": "code",
+      "norm_label": ".versiones()",
+      "source_file": "app/Models/Plantilla.php",
+      "source_location": "L39"
+    },
+    {
+      "id": "app_models_plantilla_plantilla_versionpublicada",
+      "label": ".versionPublicada()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
+      "file_type": "code",
+      "norm_label": ".versionpublicada()",
+      "source_file": "app/Models/Plantilla.php",
+      "source_location": "L47"
+    },
+    {
       "id": "app_models_proyecto_proyecto_areaconocimiento",
       "label": ".areaConocimiento()",
       "_callable": true,
@@ -675,6 +711,30 @@
       "source_location": "L65"
     },
     {
+      "id": "app_models_proyecto_proyecto_memoria",
+      "label": ".memoria()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
+      "file_type": "code",
+      "norm_label": ".memoria()",
+      "source_file": "app/Models/Proyecto.php",
+      "source_location": "L75"
+    },
+    {
+      "id": "app_models_proyecto_proyecto_memorias",
+      "label": ".memorias()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
+      "file_type": "code",
+      "norm_label": ".memorias()",
+      "source_file": "app/Models/Proyecto.php",
+      "source_location": "L83"
+    },
+    {
       "id": "app_models_versionplantilla_versionplantilla_casts",
       "label": ".casts()",
       "_callable": true,
@@ -709,114 +769,6 @@
       "norm_label": ".test_that_true_is_true()",
       "source_file": "tests/Unit/ExampleTest.php",
       "source_location": "L12"
-    },
-    {
-      "id": "app_models_plantilla_plantilla_casts",
-      "label": ".casts()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": ".casts()",
-      "source_file": "app/Models/Plantilla.php",
-      "source_location": "L29"
-    },
-    {
-      "id": "app_models_plantilla_plantilla_versiones",
-      "label": ".versiones()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": ".versiones()",
-      "source_file": "app/Models/Plantilla.php",
-      "source_location": "L39"
-    },
-    {
-      "id": "app_models_plantilla_plantilla_versionpublicada",
-      "label": ".versionPublicada()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": ".versionpublicada()",
-      "source_file": "app/Models/Plantilla.php",
-      "source_location": "L47"
-    },
-    {
-      "id": "app_models_proyecto_proyecto_memoria",
-      "label": ".memoria()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": ".memoria()",
-      "source_file": "app/Models/Proyecto.php",
-      "source_location": "L75"
-    },
-    {
-      "id": "app_models_proyecto_proyecto_memorias",
-      "label": ".memorias()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": ".memorias()",
-      "source_file": "app/Models/Proyecto.php",
-      "source_location": "L83"
-    },
-    {
-      "id": "app_models_usuario_usuario_casts",
-      "label": ".casts()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": ".casts()",
-      "source_file": "app/Models/Usuario.php",
-      "source_location": "L32"
-    },
-    {
-      "id": "app_models_usuario_usuario_logsacciones",
-      "label": ".logsAcciones()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": ".logsacciones()",
-      "source_file": "app/Models/Usuario.php",
-      "source_location": "L59"
-    },
-    {
-      "id": "app_models_usuario_usuario_memoriasregistradas",
-      "label": ".memoriasRegistradas()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": ".memoriasregistradas()",
-      "source_file": "app/Models/Usuario.php",
-      "source_location": "L51"
-    },
-    {
-      "id": "app_models_usuario_usuario_proyectoscreados",
-      "label": ".proyectosCreados()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": ".proyectoscreados()",
-      "source_file": "app/Models/Usuario.php",
-      "source_location": "L43"
     },
     {
       "id": "database_factories_userfactory_userfactory_definition",
@@ -1107,12 +1059,60 @@
       "source_location": "L12"
     },
     {
+      "id": "app_models_usuario_usuario_casts",
+      "label": ".casts()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Usuario",
+      "file_type": "code",
+      "norm_label": ".casts()",
+      "source_file": "app/Models/Usuario.php",
+      "source_location": "L32"
+    },
+    {
+      "id": "app_models_usuario_usuario_logsacciones",
+      "label": ".logsAcciones()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Usuario",
+      "file_type": "code",
+      "norm_label": ".logsacciones()",
+      "source_file": "app/Models/Usuario.php",
+      "source_location": "L59"
+    },
+    {
+      "id": "app_models_usuario_usuario_memoriasregistradas",
+      "label": ".memoriasRegistradas()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Usuario",
+      "file_type": "code",
+      "norm_label": ".memoriasregistradas()",
+      "source_file": "app/Models/Usuario.php",
+      "source_location": "L51"
+    },
+    {
+      "id": "app_models_usuario_usuario_proyectoscreados",
+      "label": ".proyectosCreados()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Usuario",
+      "file_type": "code",
+      "norm_label": ".proyectoscreados()",
+      "source_file": "app/Models/Usuario.php",
+      "source_location": "L43"
+    },
+    {
       "id": "database_seeders_databaseseeder_databaseseeder_run",
       "label": ".run()",
       "_callable": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": ".run()",
       "source_file": "database/seeders/DatabaseSeeder.php",
@@ -1124,7 +1124,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": ".run()",
       "source_file": "database/seeders/RoleAndPermissionSeeder.php",
@@ -1872,14 +1872,14 @@
     },
     {
       "id": "app_http_controllers_controller",
-      "label": "Controller.php",
+      "label": "App\\Http\\Controllers\\Controller",
       "_origin": "ast",
       "community": 10,
       "community_name": "LoginController.php",
       "file_type": "code",
-      "norm_label": "controller.php",
-      "source_file": "app/Http/Controllers/Controller.php",
-      "source_location": "L1"
+      "norm_label": "app\\http\\controllers\\controller",
+      "source_file": "",
+      "source_location": ""
     },
     {
       "id": "app_http_requests_auth_loginrequest",
@@ -2190,6 +2190,17 @@
       "source_location": "L1"
     },
     {
+      "id": "app_models_plantilla",
+      "label": "Plantilla.php",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
+      "file_type": "code",
+      "norm_label": "plantilla.php",
+      "source_file": "app/Models/Plantilla.php",
+      "source_location": "L1"
+    },
+    {
       "id": "app_models_proyecto",
       "label": "Proyecto.php",
       "_origin": "ast",
@@ -2263,6 +2274,28 @@
       "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
       "file_type": "code",
       "norm_label": "illuminate\\database\\eloquent\\relations\\belongstomany",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_database_eloquent_relations_hasmany",
+      "label": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
+      "file_type": "code",
+      "norm_label": "illuminate\\database\\eloquent\\relations\\hasmany",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_database_eloquent_relations_hasone",
+      "label": "Illuminate\\Database\\Eloquent\\Relations\\HasOne",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
+      "file_type": "code",
+      "norm_label": "illuminate\\database\\eloquent\\relations\\hasone",
       "source_file": "",
       "source_location": ""
     },
@@ -2479,94 +2512,6 @@
       "norm_label": "artisan",
       "source_file": "artisan",
       "source_location": "L1"
-    },
-    {
-      "id": "app_models_plantilla",
-      "label": "Plantilla.php",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": "plantilla.php",
-      "source_file": "app/Models/Plantilla.php",
-      "source_location": "L1"
-    },
-    {
-      "id": "app_models_usuario",
-      "label": "Usuario.php",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": "usuario.php",
-      "source_file": "app/Models/Usuario.php",
-      "source_location": "L1"
-    },
-    {
-      "id": "illuminate_database_eloquent_attributes_hidden",
-      "label": "Illuminate\\Database\\Eloquent\\Attributes\\Hidden",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": "illuminate\\database\\eloquent\\attributes\\hidden",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "illuminate_database_eloquent_relations_hasmany",
-      "label": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": "illuminate\\database\\eloquent\\relations\\hasmany",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "illuminate_database_eloquent_relations_hasone",
-      "label": "Illuminate\\Database\\Eloquent\\Relations\\HasOne",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": "illuminate\\database\\eloquent\\relations\\hasone",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "illuminate_foundation_auth_user",
-      "label": "Illuminate\\Foundation\\Auth\\User",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": "illuminate\\foundation\\auth\\user",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "illuminate_notifications_notifiable",
-      "label": "Illuminate\\Notifications\\Notifiable",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": "illuminate\\notifications\\notifiable",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "spatie_permission_traits_hasroles",
-      "label": "Spatie\\Permission\\Traits\\HasRoles",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
-      "file_type": "code",
-      "norm_label": "spatie\\permission\\traits\\hasroles",
-      "source_file": "",
-      "source_location": ""
     },
     {
       "id": "config_app",
@@ -3142,13 +3087,24 @@
     },
     {
       "id": "app_models_user",
-      "label": "User.php",
+      "label": "App\\Models\\User",
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
-      "norm_label": "user.php",
-      "source_file": "app/Models/User.php",
+      "norm_label": "app\\models\\user",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "app_models_usuario",
+      "label": "Usuario.php",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Usuario",
+      "file_type": "code",
+      "norm_label": "usuario.php",
+      "source_file": "app/Models/Usuario.php",
       "source_location": "L1"
     },
     {
@@ -3156,7 +3112,7 @@
       "label": "auth.php",
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "auth.php",
       "source_file": "config/auth.php",
@@ -3167,7 +3123,7 @@
       "label": "permission.php",
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "permission.php",
       "source_file": "config/permission.php",
@@ -3178,7 +3134,7 @@
       "label": "DatabaseSeeder.php",
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "databaseseeder.php",
       "source_file": "database/seeders/DatabaseSeeder.php",
@@ -3189,7 +3145,7 @@
       "label": "RoleAndPermissionSeeder.php",
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "roleandpermissionseeder.php",
       "source_file": "database/seeders/RoleAndPermissionSeeder.php",
@@ -3200,9 +3156,20 @@
       "label": "Illuminate\\Database\\Console\\Seeds\\WithoutModelEvents",
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "illuminate\\database\\console\\seeds\\withoutmodelevents",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_database_eloquent_attributes_hidden",
+      "label": "Illuminate\\Database\\Eloquent\\Attributes\\Hidden",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Usuario",
+      "file_type": "code",
+      "norm_label": "illuminate\\database\\eloquent\\attributes\\hidden",
       "source_file": "",
       "source_location": ""
     },
@@ -3211,9 +3178,31 @@
       "label": "Illuminate\\Database\\Seeder",
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "illuminate\\database\\seeder",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_foundation_auth_user",
+      "label": "Illuminate\\Foundation\\Auth\\User",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Usuario",
+      "file_type": "code",
+      "norm_label": "illuminate\\foundation\\auth\\user",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_notifications_notifiable",
+      "label": "Illuminate\\Notifications\\Notifiable",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Usuario",
+      "file_type": "code",
+      "norm_label": "illuminate\\notifications\\notifiable",
       "source_file": "",
       "source_location": ""
     },
@@ -3222,7 +3211,7 @@
       "label": "Spatie\\Permission\\DefaultTeamResolver",
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "spatie\\permission\\defaultteamresolver",
       "source_file": "",
@@ -3233,7 +3222,7 @@
       "label": "Spatie\\Permission\\Models\\Permission",
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "spatie\\permission\\models\\permission",
       "source_file": "",
@@ -3244,7 +3233,7 @@
       "label": "Spatie\\Permission\\Models\\Role",
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "spatie\\permission\\models\\role",
       "source_file": "",
@@ -3255,9 +3244,20 @@
       "label": "Spatie\\Permission\\PermissionRegistrar",
       "_origin": "ast",
       "community": 6,
-      "community_name": "User",
+      "community_name": "Usuario",
       "file_type": "code",
       "norm_label": "spatie\\permission\\permissionregistrar",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "spatie_permission_traits_hasroles",
+      "label": "Spatie\\Permission\\Traits\\HasRoles",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Usuario",
+      "file_type": "code",
+      "norm_label": "spatie\\permission\\traits\\hasroles",
       "source_file": "",
       "source_location": ""
     },
@@ -3362,14 +3362,14 @@
     },
     {
       "id": "tests_testcase",
-      "label": "TestCase.php",
+      "label": "Tests\\TestCase",
       "_origin": "ast",
       "community": 8,
       "community_name": "TestCase",
       "file_type": "code",
-      "norm_label": "testcase.php",
-      "source_file": "tests/TestCase.php",
-      "source_location": "L1"
+      "norm_label": "tests\\testcase",
+      "source_file": "",
+      "source_location": ""
     },
     {
       "id": "app_providers_appserviceprovider",
@@ -3406,18 +3406,6 @@
     }
   ],
   "links": [
-    {
-      "source": "database_seeders_databaseseeder_databaseseeder_run",
-      "target": "app_models_user_user",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "database/seeders/DatabaseSeeder.php",
-      "source_location": "L20",
-      "weight": 1.0
-    },
     {
       "source": "app_models_carrera_carrera_departamentorel",
       "target": "app_models_carrera_carrera_departamento",
@@ -3708,7 +3696,7 @@
     },
     {
       "source": "app_http_controllers_auth_logincontroller",
-      "target": "app_http_controllers_controller_controller",
+      "target": "app_http_controllers_controller",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3768,7 +3756,7 @@
     },
     {
       "source": "app_http_controllers_auth_profilecontroller",
-      "target": "app_http_controllers_controller_controller",
+      "target": "app_http_controllers_controller",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5232,7 +5220,7 @@
     },
     {
       "source": "database_seeders_databaseseeder",
-      "target": "app_models_user_user",
+      "target": "app_models_user",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5484,7 +5472,7 @@
     },
     {
       "source": "tests_feature_exampletest",
-      "target": "tests_testcase_testcase",
+      "target": "tests_testcase",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7137,7 +7125,7 @@
     },
     {
       "source": "app_http_controllers_auth_logincontroller_logincontroller",
-      "target": "app_http_controllers_controller_controller",
+      "target": "app_http_controllers_controller",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7148,7 +7136,7 @@
     },
     {
       "source": "app_http_controllers_auth_profilecontroller_profilecontroller",
-      "target": "app_http_controllers_controller_controller",
+      "target": "app_http_controllers_controller",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7346,7 +7334,7 @@
     },
     {
       "source": "tests_feature_exampletest_exampletest",
-      "target": "tests_testcase_testcase",
+      "target": "tests_testcase",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -8091,8 +8079,20 @@
       "source_file": "database/factories/UserFactory.php",
       "source_location": "L32",
       "weight": 1.0
+    },
+    {
+      "source": "database_seeders_databaseseeder_databaseseeder_run",
+      "target": "app_models_user_user",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "call",
+      "source_file": "database/seeders/DatabaseSeeder.php",
+      "source_location": "L20",
+      "weight": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "3dcf797cea9e721f2aff507505d5224939d7e9bb"
+  "built_at_commit": "e55677db0bdd41a3023a190e3ae3539c604f03db"
 }

@@ -4,6 +4,71 @@
   "graph": {},
   "nodes": [
     {
+      "id": "app_http_controllers_auth_logincontroller_logincontroller",
+      "label": "LoginController",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "logincontroller",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L13"
+    },
+    {
+      "id": "app_http_controllers_auth_profilecontroller_profilecontroller",
+      "label": "ProfileController",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "profilecontroller",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L11"
+    },
+    {
+      "id": "app_http_controllers_controller_controller",
+      "label": "Controller",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "controller",
+      "source_file": "app/Http/Controllers/Controller.php",
+      "source_location": "L5"
+    },
+    {
+      "id": "app_http_requests_auth_loginrequest_loginrequest",
+      "label": "LoginRequest",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "loginrequest",
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L8"
+    },
+    {
+      "id": "app_http_requests_auth_updateprofilerequest_updateprofilerequest",
+      "label": "UpdateProfileRequest",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "updateprofilerequest",
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L9"
+    },
+    {
       "id": "app_models_areaconocimiento_areaconocimiento",
       "label": "AreaConocimiento",
       "_callable": true,
@@ -82,19 +147,6 @@
       "source_location": "L12"
     },
     {
-      "id": "app_models_plantilla_plantilla",
-      "label": "Plantilla",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
-      "file_type": "code",
-      "norm_label": "plantilla",
-      "source_file": "app/Models/Plantilla.php",
-      "source_location": "L11"
-    },
-    {
       "id": "app_models_proyecto_proyecto",
       "label": "Proyecto",
       "_callable": true,
@@ -134,17 +186,17 @@
       "source_location": "L7"
     },
     {
-      "id": "app_http_controllers_controller_controller",
-      "label": "Controller",
+      "id": "app_models_plantilla_plantilla",
+      "label": "Plantilla",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 15,
-      "community_name": "Controller.php",
+      "community": 2,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "file_type": "code",
-      "norm_label": "controller",
-      "source_file": "app/Http/Controllers/Controller.php",
-      "source_location": "L5"
+      "norm_label": "plantilla",
+      "source_file": "app/Models/Plantilla.php",
+      "source_location": "L11"
     },
     {
       "id": "app_models_usuario_usuario",
@@ -251,6 +303,150 @@
       "source_location": "L7"
     },
     {
+      "id": "app_http_controllers_auth_logincontroller_logincontroller_login",
+      "label": ".login()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": ".login()",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L26"
+    },
+    {
+      "id": "app_http_controllers_auth_logincontroller_logincontroller_logout",
+      "label": ".logout()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": ".logout()",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L73"
+    },
+    {
+      "id": "app_http_controllers_auth_logincontroller_logincontroller_showloginform",
+      "label": ".showLoginForm()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": ".showloginform()",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L18"
+    },
+    {
+      "id": "app_http_controllers_auth_profilecontroller_profilecontroller_edit",
+      "label": ".edit()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": ".edit()",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L16"
+    },
+    {
+      "id": "app_http_controllers_auth_profilecontroller_profilecontroller_update",
+      "label": ".update()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": ".update()",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L26"
+    },
+    {
+      "id": "app_http_requests_auth_loginrequest_loginrequest_authorize",
+      "label": ".authorize()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": ".authorize()",
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L13"
+    },
+    {
+      "id": "app_http_requests_auth_loginrequest_loginrequest_credentials",
+      "label": ".credentials()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": ".credentials()",
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L39"
+    },
+    {
+      "id": "app_http_requests_auth_loginrequest_loginrequest_messages",
+      "label": ".messages()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": ".messages()",
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L56"
+    },
+    {
+      "id": "app_http_requests_auth_loginrequest_loginrequest_rules",
+      "label": ".rules()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": ".rules()",
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L23"
+    },
+    {
+      "id": "app_http_requests_auth_updateprofilerequest_updateprofilerequest_authorize",
+      "label": ".authorize()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": ".authorize()",
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L14"
+    },
+    {
+      "id": "app_http_requests_auth_updateprofilerequest_updateprofilerequest_messages",
+      "label": ".messages()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": ".messages()",
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L47"
+    },
+    {
+      "id": "app_http_requests_auth_updateprofilerequest_updateprofilerequest_rules",
+      "label": ".rules()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": ".rules()",
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L24"
+    },
+    {
       "id": "app_enums_estadomemoria_label",
       "label": "label()",
       "_callable": true,
@@ -273,6 +469,18 @@
       "norm_label": "label()",
       "source_file": "app/Enums/TipoPlantilla.php",
       "source_location": "L10"
+    },
+    {
+      "id": "app_models_areaconocimiento_areaconocimiento_proyectos",
+      "label": ".proyectos()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
+      "file_type": "code",
+      "norm_label": ".proyectos()",
+      "source_file": "app/Models/AreaConocimiento.php",
+      "source_location": "L22"
     },
     {
       "id": "app_models_carrera_carrera_departamento",
@@ -309,6 +517,18 @@
       "norm_label": ".estudiantes()",
       "source_file": "app/Models/Carrera.php",
       "source_location": "L39"
+    },
+    {
+      "id": "app_models_departamento_departamento_carreras",
+      "label": ".carreras()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
+      "file_type": "code",
+      "norm_label": ".carreras()",
+      "source_file": "app/Models/Departamento.php",
+      "source_location": "L22"
     },
     {
       "id": "app_models_estudiante_estudiante_carreras",
@@ -407,42 +627,6 @@
       "source_location": "L52"
     },
     {
-      "id": "app_models_plantilla_plantilla_casts",
-      "label": ".casts()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
-      "file_type": "code",
-      "norm_label": ".casts()",
-      "source_file": "app/Models/Plantilla.php",
-      "source_location": "L29"
-    },
-    {
-      "id": "app_models_plantilla_plantilla_versiones",
-      "label": ".versiones()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
-      "file_type": "code",
-      "norm_label": ".versiones()",
-      "source_file": "app/Models/Plantilla.php",
-      "source_location": "L39"
-    },
-    {
-      "id": "app_models_plantilla_plantilla_versionpublicada",
-      "label": ".versionPublicada()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
-      "file_type": "code",
-      "norm_label": ".versionpublicada()",
-      "source_file": "app/Models/Plantilla.php",
-      "source_location": "L47"
-    },
-    {
       "id": "app_models_proyecto_proyecto_areaconocimiento",
       "label": ".areaConocimiento()",
       "_callable": true,
@@ -491,30 +675,6 @@
       "source_location": "L65"
     },
     {
-      "id": "app_models_proyecto_proyecto_memoria",
-      "label": ".memoria()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
-      "file_type": "code",
-      "norm_label": ".memoria()",
-      "source_file": "app/Models/Proyecto.php",
-      "source_location": "L75"
-    },
-    {
-      "id": "app_models_proyecto_proyecto_memorias",
-      "label": ".memorias()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
-      "file_type": "code",
-      "norm_label": ".memorias()",
-      "source_file": "app/Models/Proyecto.php",
-      "source_location": "L83"
-    },
-    {
       "id": "app_models_versionplantilla_versionplantilla_casts",
       "label": ".casts()",
       "_callable": true,
@@ -551,28 +711,64 @@
       "source_location": "L12"
     },
     {
-      "id": "app_models_areaconocimiento_areaconocimiento_proyectos",
-      "label": ".proyectos()",
+      "id": "app_models_plantilla_plantilla_casts",
+      "label": ".casts()",
       "_callable": true,
       "_origin": "ast",
       "community": 2,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "file_type": "code",
-      "norm_label": ".proyectos()",
-      "source_file": "app/Models/AreaConocimiento.php",
-      "source_location": "L22"
+      "norm_label": ".casts()",
+      "source_file": "app/Models/Plantilla.php",
+      "source_location": "L29"
     },
     {
-      "id": "app_models_departamento_departamento_carreras",
-      "label": ".carreras()",
+      "id": "app_models_plantilla_plantilla_versiones",
+      "label": ".versiones()",
       "_callable": true,
       "_origin": "ast",
       "community": 2,
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "file_type": "code",
-      "norm_label": ".carreras()",
-      "source_file": "app/Models/Departamento.php",
-      "source_location": "L22"
+      "norm_label": ".versiones()",
+      "source_file": "app/Models/Plantilla.php",
+      "source_location": "L39"
+    },
+    {
+      "id": "app_models_plantilla_plantilla_versionpublicada",
+      "label": ".versionPublicada()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+      "file_type": "code",
+      "norm_label": ".versionpublicada()",
+      "source_file": "app/Models/Plantilla.php",
+      "source_location": "L47"
+    },
+    {
+      "id": "app_models_proyecto_proyecto_memoria",
+      "label": ".memoria()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+      "file_type": "code",
+      "norm_label": ".memoria()",
+      "source_file": "app/Models/Proyecto.php",
+      "source_location": "L75"
+    },
+    {
+      "id": "app_models_proyecto_proyecto_memorias",
+      "label": ".memorias()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+      "file_type": "code",
+      "norm_label": ".memorias()",
+      "source_file": "app/Models/Proyecto.php",
+      "source_location": "L83"
     },
     {
       "id": "app_models_usuario_usuario_casts",
@@ -982,28 +1178,6 @@
       "source_location": "L1"
     },
     {
-      "id": "composer_allow_plugins_pestphp_pest_plugin",
-      "label": "pestphp/pest-plugin",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "composer.json",
-      "file_type": "code",
-      "norm_label": "pestphp/pest-plugin",
-      "source_file": "composer.json",
-      "source_location": "L82"
-    },
-    {
-      "id": "composer_allow_plugins_php_http_discovery",
-      "label": "php-http/discovery",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "composer.json",
-      "file_type": "code",
-      "norm_label": "php-http/discovery",
-      "source_file": "composer.json",
-      "source_location": "L83"
-    },
-    {
       "id": "composer_autoload",
       "label": "autoload",
       "_origin": "ast",
@@ -1046,61 +1220,6 @@
       "norm_label": "psr-4",
       "source_file": "composer.json",
       "source_location": "L25"
-    },
-    {
-      "id": "composer_config",
-      "label": "config",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "composer.json",
-      "file_type": "code",
-      "norm_label": "config",
-      "source_file": "composer.json",
-      "source_location": "L77"
-    },
-    {
-      "id": "composer_config_allow_plugins",
-      "label": "allow-plugins",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "composer.json",
-      "file_type": "code",
-      "norm_label": "allow-plugins",
-      "source_file": "composer.json",
-      "source_location": "L81"
-    },
-    {
-      "id": "composer_config_optimize_autoloader",
-      "label": "optimize-autoloader",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "composer.json",
-      "file_type": "code",
-      "norm_label": "optimize-autoloader",
-      "source_file": "composer.json",
-      "source_location": "L78"
-    },
-    {
-      "id": "composer_config_preferred_install",
-      "label": "preferred-install",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "composer.json",
-      "file_type": "code",
-      "norm_label": "preferred-install",
-      "source_file": "composer.json",
-      "source_location": "L79"
-    },
-    {
-      "id": "composer_config_sort_packages",
-      "label": "sort-packages",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "composer.json",
-      "file_type": "code",
-      "norm_label": "sort-packages",
-      "source_file": "composer.json",
-      "source_location": "L80"
     },
     {
       "id": "composer_description",
@@ -1255,6 +1374,105 @@
       "norm_label": "require",
       "source_file": "composer.json",
       "source_location": "L8"
+    },
+    {
+      "id": "composer_require_dev",
+      "label": "require-dev",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "composer.json",
+      "file_type": "code",
+      "norm_label": "require-dev",
+      "source_file": "composer.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "composer_require_dev_fakerphp_faker",
+      "label": "fakerphp/faker",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "composer.json",
+      "file_type": "code",
+      "norm_label": "fakerphp/faker",
+      "source_file": "composer.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "composer_require_dev_laravel_boost",
+      "label": "laravel/boost",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "composer.json",
+      "file_type": "code",
+      "norm_label": "laravel/boost",
+      "source_file": "composer.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "composer_require_dev_laravel_pail",
+      "label": "laravel/pail",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "composer.json",
+      "file_type": "code",
+      "norm_label": "laravel/pail",
+      "source_file": "composer.json",
+      "source_location": "L17"
+    },
+    {
+      "id": "composer_require_dev_laravel_pao",
+      "label": "laravel/pao",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "composer.json",
+      "file_type": "code",
+      "norm_label": "laravel/pao",
+      "source_file": "composer.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "composer_require_dev_laravel_pint",
+      "label": "laravel/pint",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "composer.json",
+      "file_type": "code",
+      "norm_label": "laravel/pint",
+      "source_file": "composer.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "composer_require_dev_mockery_mockery",
+      "label": "mockery/mockery",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "composer.json",
+      "file_type": "code",
+      "norm_label": "mockery/mockery",
+      "source_file": "composer.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "composer_require_dev_nunomaduro_collision",
+      "label": "nunomaduro/collision",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "composer.json",
+      "file_type": "code",
+      "norm_label": "nunomaduro/collision",
+      "source_file": "composer.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "composer_require_dev_phpunit_phpunit",
+      "label": "phpunit/phpunit",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "composer.json",
+      "file_type": "code",
+      "norm_label": "phpunit/phpunit",
+      "source_file": "composer.json",
+      "source_location": "L22"
     },
     {
       "id": "composer_require_laravel_framework",
@@ -1631,22 +1849,88 @@
       "source_location": "L37"
     },
     {
+      "id": "app_http_controllers_auth_logincontroller",
+      "label": "LoginController.php",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "logincontroller.php",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_http_controllers_auth_profilecontroller",
+      "label": "ProfileController.php",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "profilecontroller.php",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_http_controllers_controller",
+      "label": "Controller.php",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "controller.php",
+      "source_file": "app/Http/Controllers/Controller.php",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_http_requests_auth_loginrequest",
+      "label": "LoginRequest.php",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "loginrequest.php",
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_http_requests_auth_updateprofilerequest",
+      "label": "UpdateProfileRequest.php",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "updateprofilerequest.php",
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L1"
+    },
+    {
       "id": "bootstrap_app",
       "label": "bootstrap/app.php",
       "_origin": "ast",
       "community": 10,
-      "community_name": "bootstrap/app.php",
+      "community_name": "LoginController.php",
       "file_type": "code",
       "norm_label": "bootstrap/app.php",
       "source_file": "bootstrap/app.php",
       "source_location": "L1"
     },
     {
+      "id": "illuminate_contracts_validation_validationrule",
+      "label": "Illuminate\\Contracts\\Validation\\ValidationRule",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "illuminate\\contracts\\validation\\validationrule",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
       "id": "illuminate_foundation_application",
       "label": "Illuminate\\Foundation\\Application",
       "_origin": "ast",
       "community": 10,
-      "community_name": "bootstrap/app.php",
+      "community_name": "LoginController.php",
       "file_type": "code",
       "norm_label": "illuminate\\foundation\\application",
       "source_file": "",
@@ -1657,7 +1941,7 @@
       "label": "Illuminate\\Foundation\\Configuration\\Exceptions",
       "_origin": "ast",
       "community": 10,
-      "community_name": "bootstrap/app.php",
+      "community_name": "LoginController.php",
       "file_type": "code",
       "norm_label": "illuminate\\foundation\\configuration\\exceptions",
       "source_file": "",
@@ -1668,9 +1952,31 @@
       "label": "Illuminate\\Foundation\\Configuration\\Middleware",
       "_origin": "ast",
       "community": 10,
-      "community_name": "bootstrap/app.php",
+      "community_name": "LoginController.php",
       "file_type": "code",
       "norm_label": "illuminate\\foundation\\configuration\\middleware",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_foundation_http_formrequest",
+      "label": "Illuminate\\Foundation\\Http\\FormRequest",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "illuminate\\foundation\\http\\formrequest",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_http_redirectresponse",
+      "label": "Illuminate\\Http\\RedirectResponse",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "illuminate\\http\\redirectresponse",
       "source_file": "",
       "source_location": ""
     },
@@ -1679,9 +1985,53 @@
       "label": "Illuminate\\Http\\Request",
       "_origin": "ast",
       "community": 10,
-      "community_name": "bootstrap/app.php",
+      "community_name": "LoginController.php",
       "file_type": "code",
       "norm_label": "illuminate\\http\\request",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_support_facades_auth",
+      "label": "Illuminate\\Support\\Facades\\Auth",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "illuminate\\support\\facades\\auth",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_support_facades_route",
+      "label": "Illuminate\\Support\\Facades\\Route",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "illuminate\\support\\facades\\route",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_validation_rule",
+      "label": "Illuminate\\Validation\\Rule",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "illuminate\\validation\\rule",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_view_view",
+      "label": "Illuminate\\View\\View",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "illuminate\\view\\view",
       "source_file": "",
       "source_location": ""
     },
@@ -1690,10 +2040,32 @@
       "label": "index.php",
       "_origin": "ast",
       "community": 10,
-      "community_name": "bootstrap/app.php",
+      "community_name": "LoginController.php",
       "file_type": "code",
       "norm_label": "index.php",
       "source_file": "public/index.php",
+      "source_location": "L1"
+    },
+    {
+      "id": "routes_api",
+      "label": "api.php",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "api.php",
+      "source_file": "routes/api.php",
+      "source_location": "L1"
+    },
+    {
+      "id": "routes_web",
+      "label": "web.php",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "LoginController.php",
+      "file_type": "code",
+      "norm_label": "web.php",
+      "source_file": "routes/web.php",
       "source_location": "L1"
     },
     {
@@ -1701,7 +2073,7 @@
       "label": "Spatie\\Permission\\Middleware\\PermissionMiddleware",
       "_origin": "ast",
       "community": 10,
-      "community_name": "bootstrap/app.php",
+      "community_name": "LoginController.php",
       "file_type": "code",
       "norm_label": "spatie\\permission\\middleware\\permissionmiddleware",
       "source_file": "",
@@ -1712,7 +2084,7 @@
       "label": "Spatie\\Permission\\Middleware\\RoleMiddleware",
       "_origin": "ast",
       "community": 10,
-      "community_name": "bootstrap/app.php",
+      "community_name": "LoginController.php",
       "file_type": "code",
       "norm_label": "spatie\\permission\\middleware\\rolemiddleware",
       "source_file": "",
@@ -1723,7 +2095,7 @@
       "label": "Spatie\\Permission\\Middleware\\RoleOrPermissionMiddleware",
       "_origin": "ast",
       "community": 10,
-      "community_name": "bootstrap/app.php",
+      "community_name": "LoginController.php",
       "file_type": "code",
       "norm_label": "spatie\\permission\\middleware\\roleorpermissionmiddleware",
       "source_file": "",
@@ -1818,17 +2190,6 @@
       "source_location": "L1"
     },
     {
-      "id": "app_models_plantilla",
-      "label": "Plantilla.php",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
-      "file_type": "code",
-      "norm_label": "plantilla.php",
-      "source_file": "app/Models/Plantilla.php",
-      "source_location": "L1"
-    },
-    {
       "id": "app_models_proyecto",
       "label": "Proyecto.php",
       "_origin": "ast",
@@ -1902,17 +2263,6 @@
       "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
       "file_type": "code",
       "norm_label": "illuminate\\database\\eloquent\\relations\\belongstomany",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "illuminate_database_eloquent_relations_hasone",
-      "label": "Illuminate\\Database\\Eloquent\\Relations\\HasOne",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "Illuminate\\Database\\Eloquent\\Factories\\HasFactory",
-      "file_type": "code",
-      "norm_label": "illuminate\\database\\eloquent\\relations\\hasone",
       "source_file": "",
       "source_location": ""
     },
@@ -2038,15 +2388,15 @@
       "source_location": "L1"
     },
     {
-      "id": "app_http_controllers_controller",
-      "label": "Controller.php",
+      "id": "resources_views_auth_login_blade",
+      "label": "login.blade.php",
       "_origin": "ast",
       "community": 15,
-      "community_name": "Controller.php",
+      "community_name": "login.blade.php",
       "file_type": "code",
-      "norm_label": "controller.php",
-      "source_file": "app/Http/Controllers/Controller.php",
-      "source_location": "L1"
+      "norm_label": "login.blade.php",
+      "source_file": "resources/views/auth/login.blade.php",
+      "source_location": null
     },
     {
       "id": "docker_dev_entrypoint",
@@ -2109,37 +2459,15 @@
       "source_location": "L1"
     },
     {
-      "id": "illuminate_support_facades_route",
-      "label": "Illuminate\\Support\\Facades\\Route",
+      "id": "resources_views_auth_perfil_blade",
+      "label": "perfil.blade.php",
       "_origin": "ast",
       "community": 18,
-      "community_name": "Illuminate\\Support\\Facades\\Route",
+      "community_name": "perfil.blade.php",
       "file_type": "code",
-      "norm_label": "illuminate\\support\\facades\\route",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "routes_api",
-      "label": "api.php",
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "Illuminate\\Support\\Facades\\Route",
-      "file_type": "code",
-      "norm_label": "api.php",
-      "source_file": "routes/api.php",
-      "source_location": "L1"
-    },
-    {
-      "id": "routes_web",
-      "label": "web.php",
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "Illuminate\\Support\\Facades\\Route",
-      "file_type": "code",
-      "norm_label": "web.php",
-      "source_file": "routes/web.php",
-      "source_location": "L1"
+      "norm_label": "perfil.blade.php",
+      "source_file": "resources/views/auth/perfil.blade.php",
+      "source_location": null
     },
     {
       "id": "artisan",
@@ -2150,6 +2478,17 @@
       "file_type": "code",
       "norm_label": "artisan",
       "source_file": "artisan",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_models_plantilla",
+      "label": "Plantilla.php",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+      "file_type": "code",
+      "norm_label": "plantilla.php",
+      "source_file": "app/Models/Plantilla.php",
       "source_location": "L1"
     },
     {
@@ -2182,6 +2521,17 @@
       "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
       "file_type": "code",
       "norm_label": "illuminate\\database\\eloquent\\relations\\hasmany",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "illuminate_database_eloquent_relations_hasone",
+      "label": "Illuminate\\Database\\Eloquent\\Relations\\HasOne",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+      "file_type": "code",
+      "norm_label": "illuminate\\database\\eloquent\\relations\\hasone",
       "source_file": "",
       "source_location": ""
     },
@@ -2912,103 +3262,81 @@
       "source_location": ""
     },
     {
-      "id": "composer_require_dev",
-      "label": "require-dev",
+      "id": "composer_allow_plugins_pestphp_pest_plugin",
+      "label": "pestphp/pest-plugin",
       "_origin": "ast",
       "community": 7,
-      "community_name": "require-dev",
+      "community_name": "config",
       "file_type": "code",
-      "norm_label": "require-dev",
+      "norm_label": "pestphp/pest-plugin",
       "source_file": "composer.json",
-      "source_location": "L14"
+      "source_location": "L82"
     },
     {
-      "id": "composer_require_dev_fakerphp_faker",
-      "label": "fakerphp/faker",
+      "id": "composer_allow_plugins_php_http_discovery",
+      "label": "php-http/discovery",
       "_origin": "ast",
       "community": 7,
-      "community_name": "require-dev",
+      "community_name": "config",
       "file_type": "code",
-      "norm_label": "fakerphp/faker",
+      "norm_label": "php-http/discovery",
       "source_file": "composer.json",
-      "source_location": "L15"
+      "source_location": "L83"
     },
     {
-      "id": "composer_require_dev_laravel_boost",
-      "label": "laravel/boost",
+      "id": "composer_config",
+      "label": "config",
       "_origin": "ast",
       "community": 7,
-      "community_name": "require-dev",
+      "community_name": "config",
       "file_type": "code",
-      "norm_label": "laravel/boost",
+      "norm_label": "config",
       "source_file": "composer.json",
-      "source_location": "L16"
+      "source_location": "L77"
     },
     {
-      "id": "composer_require_dev_laravel_pail",
-      "label": "laravel/pail",
+      "id": "composer_config_allow_plugins",
+      "label": "allow-plugins",
       "_origin": "ast",
       "community": 7,
-      "community_name": "require-dev",
+      "community_name": "config",
       "file_type": "code",
-      "norm_label": "laravel/pail",
+      "norm_label": "allow-plugins",
       "source_file": "composer.json",
-      "source_location": "L17"
+      "source_location": "L81"
     },
     {
-      "id": "composer_require_dev_laravel_pao",
-      "label": "laravel/pao",
+      "id": "composer_config_optimize_autoloader",
+      "label": "optimize-autoloader",
       "_origin": "ast",
       "community": 7,
-      "community_name": "require-dev",
+      "community_name": "config",
       "file_type": "code",
-      "norm_label": "laravel/pao",
+      "norm_label": "optimize-autoloader",
       "source_file": "composer.json",
-      "source_location": "L18"
+      "source_location": "L78"
     },
     {
-      "id": "composer_require_dev_laravel_pint",
-      "label": "laravel/pint",
+      "id": "composer_config_preferred_install",
+      "label": "preferred-install",
       "_origin": "ast",
       "community": 7,
-      "community_name": "require-dev",
+      "community_name": "config",
       "file_type": "code",
-      "norm_label": "laravel/pint",
+      "norm_label": "preferred-install",
       "source_file": "composer.json",
-      "source_location": "L19"
+      "source_location": "L79"
     },
     {
-      "id": "composer_require_dev_mockery_mockery",
-      "label": "mockery/mockery",
+      "id": "composer_config_sort_packages",
+      "label": "sort-packages",
       "_origin": "ast",
       "community": 7,
-      "community_name": "require-dev",
+      "community_name": "config",
       "file_type": "code",
-      "norm_label": "mockery/mockery",
+      "norm_label": "sort-packages",
       "source_file": "composer.json",
-      "source_location": "L20"
-    },
-    {
-      "id": "composer_require_dev_nunomaduro_collision",
-      "label": "nunomaduro/collision",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "require-dev",
-      "file_type": "code",
-      "norm_label": "nunomaduro/collision",
-      "source_file": "composer.json",
-      "source_location": "L21"
-    },
-    {
-      "id": "composer_require_dev_phpunit_phpunit",
-      "label": "phpunit/phpunit",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "require-dev",
-      "file_type": "code",
-      "norm_label": "phpunit/phpunit",
-      "source_file": "composer.json",
-      "source_location": "L22"
+      "source_location": "L80"
     },
     {
       "id": "illuminate_foundation_testing_testcase",
@@ -3352,6 +3680,210 @@
       "context": "import",
       "source_file": "composer.json",
       "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller",
+      "target": "illuminate_support_facades_route",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller",
+      "target": "illuminate_view_view",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller",
+      "target": "app_http_controllers_controller_controller",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller",
+      "target": "app_http_requests_auth_loginrequest_loginrequest",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller",
+      "target": "illuminate_http_redirectresponse",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller",
+      "target": "illuminate_http_request",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller",
+      "target": "illuminate_support_facades_auth",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller",
+      "target": "app_http_controllers_controller_controller",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller",
+      "target": "app_http_requests_auth_updateprofilerequest_updateprofilerequest",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller",
+      "target": "illuminate_http_redirectresponse",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller",
+      "target": "illuminate_http_request",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller",
+      "target": "illuminate_view_view",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_loginrequest",
+      "target": "illuminate_contracts_validation_validationrule",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_loginrequest",
+      "target": "illuminate_foundation_http_formrequest",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_updateprofilerequest",
+      "target": "illuminate_contracts_validation_validationrule",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_updateprofilerequest",
+      "target": "illuminate_foundation_http_formrequest",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_updateprofilerequest",
+      "target": "illuminate_validation_rule",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L7",
       "weight": 1.0
     },
     {
@@ -4916,7 +5448,7 @@
     },
     {
       "source": "routes_web",
-      "target": "illuminate_support_facades_route",
+      "target": "app_http_controllers_auth_logincontroller_logincontroller",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4924,6 +5456,30 @@
       "context": "import",
       "source_file": "routes/web.php",
       "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_web",
+      "target": "app_http_controllers_auth_profilecontroller_profilecontroller",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "routes/web.php",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "routes_web",
+      "target": "illuminate_support_facades_route",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "routes/web.php",
+      "source_location": "L5",
       "weight": 1.0
     },
     {
@@ -4960,6 +5516,114 @@
       "context": "import",
       "source_file": "tests/Unit/ExampleTest.php",
       "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller_logincontroller_login",
+      "target": "app_http_requests_auth_loginrequest_loginrequest",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller_logincontroller_logout",
+      "target": "illuminate_http_request",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller_profilecontroller_edit",
+      "target": "illuminate_http_request",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller_profilecontroller_update",
+      "target": "app_http_requests_auth_updateprofilerequest_updateprofilerequest",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller_logincontroller_login",
+      "target": "illuminate_http_redirectresponse",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller_logincontroller_logout",
+      "target": "illuminate_http_redirectresponse",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller_logincontroller_showloginform",
+      "target": "illuminate_view_view",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller_profilecontroller_edit",
+      "target": "illuminate_view_view",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller_profilecontroller_update",
+      "target": "illuminate_http_redirectresponse",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -5273,6 +5937,28 @@
       "weight": 1.0
     },
     {
+      "source": "app_http_controllers_auth_logincontroller",
+      "target": "app_http_controllers_auth_logincontroller_logincontroller",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller",
+      "target": "app_http_controllers_auth_profilecontroller_profilecontroller",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
       "source": "app_http_controllers_controller",
       "target": "app_http_controllers_controller_controller",
       "relation": "contains",
@@ -5281,6 +5967,28 @@
       "confidence_score": 1.0,
       "source_file": "app/Http/Controllers/Controller.php",
       "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_loginrequest",
+      "target": "app_http_requests_auth_loginrequest_loginrequest",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_updateprofilerequest",
+      "target": "app_http_requests_auth_updateprofilerequest_updateprofilerequest",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -6428,6 +7136,50 @@
       "weight": 1.0
     },
     {
+      "source": "app_http_controllers_auth_logincontroller_logincontroller",
+      "target": "app_http_controllers_controller_controller",
+      "relation": "inherits",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller_profilecontroller",
+      "target": "app_http_controllers_controller_controller",
+      "relation": "inherits",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_loginrequest_loginrequest",
+      "target": "illuminate_foundation_http_formrequest",
+      "relation": "inherits",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_updateprofilerequest_updateprofilerequest",
+      "target": "illuminate_foundation_http_formrequest",
+      "relation": "inherits",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
       "source": "app_models_areaconocimiento_areaconocimiento",
       "target": "illuminate_database_eloquent_model",
       "relation": "inherits",
@@ -6623,6 +7375,138 @@
       "confidence_score": 1.0,
       "source_file": "tests/Unit/ExampleTest.php",
       "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller_logincontroller",
+      "target": "app_http_controllers_auth_logincontroller_logincontroller_showloginform",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller_logincontroller",
+      "target": "app_http_controllers_auth_logincontroller_logincontroller_login",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_logincontroller_logincontroller",
+      "target": "app_http_controllers_auth_logincontroller_logincontroller_logout",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Controllers/Auth/LoginController.php",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller_profilecontroller",
+      "target": "app_http_controllers_auth_profilecontroller_profilecontroller_edit",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_controllers_auth_profilecontroller_profilecontroller",
+      "target": "app_http_controllers_auth_profilecontroller_profilecontroller_update",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Controllers/Auth/ProfileController.php",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_loginrequest_loginrequest",
+      "target": "app_http_requests_auth_loginrequest_loginrequest_authorize",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_loginrequest_loginrequest",
+      "target": "app_http_requests_auth_loginrequest_loginrequest_rules",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_loginrequest_loginrequest",
+      "target": "app_http_requests_auth_loginrequest_loginrequest_credentials",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_loginrequest_loginrequest",
+      "target": "app_http_requests_auth_loginrequest_loginrequest_messages",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Requests/Auth/LoginRequest.php",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_updateprofilerequest_updateprofilerequest",
+      "target": "app_http_requests_auth_updateprofilerequest_updateprofilerequest_authorize",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_updateprofilerequest_updateprofilerequest",
+      "target": "app_http_requests_auth_updateprofilerequest_updateprofilerequest_rules",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "app_http_requests_auth_updateprofilerequest_updateprofilerequest",
+      "target": "app_http_requests_auth_updateprofilerequest_updateprofilerequest_messages",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/Http/Requests/Auth/UpdateProfileRequest.php",
+      "source_location": "L47",
       "weight": 1.0
     },
     {

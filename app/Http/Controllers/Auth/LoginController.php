@@ -53,18 +53,18 @@ class LoginController extends Controller
 
         // Redirección dinámica según el rol del usuario (HU-58)
         if ($user->hasRole('admin')) {
-            $destino = Route::has('admin.usuarios.index') ? route('admin.usuarios.index') : '/admin/usuarios';
+            $destino = Route::has('admin.usuarios.index') ? route('admin.usuarios.index', [], false) : '/admin/usuarios';
 
-            return redirect()->intended($destino);
+            return redirect()->away($destino);
         }
 
         if ($user->hasAnyRole(['auxiliar_ups', 'jefe_ups'])) {
-            $destino = Route::has('ups.dashboard') ? route('ups.dashboard') : '/ups/dashboard';
+            $destino = Route::has('ups.dashboard') ? route('ups.dashboard', [], false) : '/ups/dashboard';
 
-            return redirect()->intended($destino);
+            return redirect()->away($destino);
         }
 
-        return redirect()->intended('/');
+        return redirect()->away('/');
     }
 
     /**
@@ -77,6 +77,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Ha cerrado sesión correctamente.');
+        return redirect()->away('/login')->with('success', 'Ha cerrado sesión correctamente.');
     }
 }

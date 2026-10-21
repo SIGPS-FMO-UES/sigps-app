@@ -38,6 +38,13 @@ return [
             'report' => false,
         ],
 
+        'expedientes_ups' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/expedientes_ups'),
+            'throw' => false,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

@@ -146,6 +146,7 @@ Table areas_de_conocimiento {
   id_area_conocimiento bigint [pk, increment]
   nombre varchar [not null]
   detalles text [null]
+  activa bool [default: true, not null]
   created_at timestamp [null]
   updated_at timestamp [null]
 }
@@ -157,10 +158,15 @@ Table proyectos {
   fecha_final date [null]
   titulo varchar [not null]
   miembros varchar [null, note: 'DUEs separados por coma (campo descriptivo; la relación normalizada está en proyectos_estudiantes)']
-  tutor varchar [not null]
   subcoordinador varchar [not null]
   area_de_conocimiento bigint [not null]
   documento varchar [null]
+  fase_actual varchar(30) [default: 'inscripcion', not null]
+  estado_expediente varchar(30) [default: 'en_tramite', not null]
+  fecha_radicado timestamp [null]
+  fecha_finalizacion timestamp [null]
+  fecha_remision_junta timestamp [null]
+  remitido_junta_por bigint [null]
   deleted_at timestamp [null]
   created_at timestamp [null]
   updated_at timestamp [null]
@@ -175,6 +181,62 @@ Table proyectos_estudiantes {
 
   indexes {
     (id_estudiante, id_proyecto) [unique]
+  }
+}
+
+Table historial_fases_proyecto {
+  id_historial_fase bigint [pk, increment]
+  proyecto_id bigint [not null]
+  fase varchar(30) [not null]
+  evento varchar(30) [not null]
+  observaciones text [null]
+  usuario_id bigint [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+
+  indexes {
+    (proyecto_id, created_at)
+  }
+}
+
+Table documentos_proyecto {
+  id_documento_proyecto bigint [pk, increment]
+  proyecto_id bigint [not null]
+  fase varchar(30) [default: 'inscripcion', not null]
+  nombre_original varchar [not null]
+  ruta varchar [not null]
+  mime_type varchar(100) [not null]
+  tamano_bytes bigint [not null]
+  usuario_id bigint [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+
+  indexes {
+    (proyecto_id, fase)
+  }
+}
+
+Table procesos_extraordinarios {
+  id_proceso_extraordinario bigint [pk, increment]
+  proyecto_id bigint [not null]
+  estudiante_id bigint [null]
+  tipo varchar(30) [not null]
+  motivo text [null]
+  fecha_anterior date [null]
+  fecha_nueva date [null]
+  autorizacion varchar [null]
+  documento_respaldo varchar [null]
+  estado varchar(20) [default: 'registrado', not null]
+  resolucion text [null]
+  registrado_por bigint [null]
+  resuelto_por bigint [null]
+  resuelto_at timestamp [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+
+  indexes {
+    (proyecto_id, tipo, created_at)
+    (estado, tipo)
   }
 }
 
@@ -193,6 +255,40 @@ Table memorias {
   deleted_at timestamp [null]
   created_at timestamp [null]
   updated_at timestamp [null]
+}
+
+Table revisiones_memorias {
+  id_revision_memoria bigint [pk, increment]
+  memoria_id bigint [not null]
+  auditor_id bigint [not null]
+  resultado varchar(20) [not null, note: 'aprobado u observado']
+  sellos_verificados bool [not null]
+  tinta_azul_verificada bool [not null]
+  observaciones text [null, note: 'Motivo obligatorio cuando el resultado es observado']
+  created_at timestamp [null]
+  updated_at timestamp [null]
+
+  indexes {
+    (memoria_id, created_at)
+  }
+}
+
+Table certificaciones {
+  id_certificacion bigint [pk, increment]
+  proyecto_id bigint [not null]
+  estudiante_id bigint [not null]
+  folio varchar [unique, null]
+  fecha_emision timestamp [not null]
+  emitida_por bigint [not null]
+  fecha_entrega date [null]
+  firma_receptor varchar [null]
+  entregada_por bigint [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+
+  indexes {
+    (proyecto_id, estudiante_id) [unique]
+  }
 }
 
 // ------------------------------------------------------------------------------
@@ -253,13 +349,28 @@ Ref: "carreras"."id_carrera" < "carreras_estudiante"."id_carrera" [delete: casca
 
 // Relaciones Proyectos y Estudiantes
 Ref: "usuarios"."id_usuario" < "proyectos"."creado_por" [delete: restrict]
+Ref: "usuarios"."id_usuario" < "proyectos"."remitido_junta_por" [delete: set null]
 Ref: "areas_de_conocimiento"."id_area_conocimiento" < "proyectos"."area_de_conocimiento" [delete: restrict]
 Ref: "estudiantes"."id_estudiante" < "proyectos_estudiantes"."id_estudiante" [delete: cascade]
 Ref: "proyectos"."id_proyecto" < "proyectos_estudiantes"."id_proyecto" [delete: cascade]
+Ref: "proyectos"."id_proyecto" < "historial_fases_proyecto"."proyecto_id" [delete: restrict]
+Ref: "usuarios"."id_usuario" < "historial_fases_proyecto"."usuario_id" [delete: set null]
+Ref: "proyectos"."id_proyecto" < "documentos_proyecto"."proyecto_id" [delete: restrict]
+Ref: "usuarios"."id_usuario" < "documentos_proyecto"."usuario_id" [delete: set null]
+Ref: "proyectos"."id_proyecto" < "procesos_extraordinarios"."proyecto_id" [delete: restrict]
+Ref: "estudiantes"."id_estudiante" < "procesos_extraordinarios"."estudiante_id" [delete: set null]
+Ref: "usuarios"."id_usuario" < "procesos_extraordinarios"."registrado_por" [delete: set null]
+Ref: "usuarios"."id_usuario" < "procesos_extraordinarios"."resuelto_por" [delete: set null]
 
 // Relaciones Memorias
 Ref: "usuarios"."id_usuario" < "memorias"."registrada_por" [delete: restrict]
 Ref: "proyectos"."id_proyecto" - "memorias"."proyecto_id" [delete: cascade]
+Ref: "memorias"."id_memoria" < "revisiones_memorias"."memoria_id" [delete: cascade]
+Ref: "usuarios"."id_usuario" < "revisiones_memorias"."auditor_id" [delete: restrict]
+Ref: "proyectos"."id_proyecto" < "certificaciones"."proyecto_id" [delete: restrict]
+Ref: "estudiantes"."id_estudiante" < "certificaciones"."estudiante_id" [delete: restrict]
+Ref: "usuarios"."id_usuario" < "certificaciones"."emitida_por" [delete: restrict]
+Ref: "usuarios"."id_usuario" < "certificaciones"."entregada_por" [delete: set null]
 
 // Relaciones Logs
 Ref: "usuarios"."id_usuario" < "logs_acciones"."usuario" [delete: cascade]
@@ -293,7 +404,12 @@ TableGroup proyeccion_social {
   areas_de_conocimiento
   proyectos
   proyectos_estudiantes
+  historial_fases_proyecto
+  documentos_proyecto
+  procesos_extraordinarios
   memorias
+  revisiones_memorias
+  certificaciones
 }
 
 TableGroup documentos_plantillas {

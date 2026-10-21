@@ -1985,7 +1985,7 @@
       "source_location": ""
     },
     {
-      "id": "routes_web_php",
+      "id": "routes_web",
       "label": "web.php",
       "_origin": "ast",
       "community": 18,
@@ -4728,7 +4728,7 @@
       "weight": 1.0
     },
     {
-      "source": "routes_web_php",
+      "source": "routes_web",
       "target": "illuminate_support_facades_route",
       "relation": "imports",
       "_origin": "ast",
@@ -6990,5 +6990,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "c1f50d6caaf821f6d081a1f9f35088a98bdbacdc"
+  "built_at_commit": "0ae51f99aaaacc5411065a98ca84802179b9e1d6"
 }

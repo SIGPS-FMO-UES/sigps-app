@@ -6,8 +6,8 @@
     "semantic_hash": "25a307335c0719bc9a91b3f7babd186d"
   },
   "app/Models/User.php": {
-    "mtime": 1791989795.750777,
-    "seen": 1791990292.82158,
+    "mtime": 1792108991.2254605,
+    "seen": 1792108992.2695446,
     "ast_hash": "49c614f6d841a7d30dd0f6d53c8edc39",
     "semantic_hash": ""
   },
@@ -42,8 +42,8 @@
     "semantic_hash": "888c810b5a4720916f07aa05dd2c2dd3"
   },
   "composer.json": {
-    "mtime": 1791990449.7230027,
-    "seen": 1791990642.217314,
+    "mtime": 1792108991.225645,
+    "seen": 1792108992.2695513,
     "ast_hash": "c9e33fbdc162773bbe75e32685e81b67",
     "semantic_hash": ""
   },
@@ -108,14 +108,14 @@
     "semantic_hash": "5ea7169252ec3cc7fad471f5cd0d7678"
   },
   "database/factories/UserFactory.php": {
-    "mtime": 1791990098.5465443,
-    "seen": 1791990292.8215988,
+    "mtime": 1792108991.2267845,
+    "seen": 1792108992.2695599,
     "ast_hash": "9d48402f1d3e91730330d0bf4f7b2dd5",
     "semantic_hash": ""
   },
   "database/migrations/0001_01_01_000000_create_users_table.php": {
-    "mtime": 1791989920.0104494,
-    "seen": 1791990292.8215995,
+    "mtime": 1792108991.2267845,
+    "seen": 1792108992.2695606,
     "ast_hash": "8b7108eadc7c7c081dfbb73bfe46f418",
     "semantic_hash": ""
   },
@@ -132,8 +132,8 @@
     "semantic_hash": "b0603b9fa0a27473971da76bb0c42ee1"
   },
   "database/seeders/DatabaseSeeder.php": {
-    "mtime": 1791990153.3929589,
-    "seen": 1791990292.8216088,
+    "mtime": 1792108991.2270653,
+    "seen": 1792108992.2695682,
     "ast_hash": "debf7b8f648402f5ffeeb33f537ac33d",
     "semantic_hash": ""
   },
@@ -210,128 +210,128 @@
     "semantic_hash": "8da7ad3a0b929d8be9b37e40fa8c389d"
   },
   "app/Enums/EstadoMemoria.php": {
-    "mtime": 1791989771.771035,
-    "seen": 1791990292.8215635,
+    "mtime": 1792108991.224855,
+    "seen": 1792108992.269533,
     "ast_hash": "4be42a0fc02309422ff762cb690823be",
     "semantic_hash": ""
   },
   "app/Enums/TipoPlantilla.php": {
-    "mtime": 1791989777.82997,
-    "seen": 1791990292.821567,
+    "mtime": 1792108991.2249064,
+    "seen": 1792108992.269536,
     "ast_hash": "4560b0b48ecc24f4587e2270b3203b31",
     "semantic_hash": ""
   },
   "app/Models/AreaConocimiento.php": {
-    "mtime": 1791989849.8971977,
-    "seen": 1791990292.8215714,
+    "mtime": 1792108991.2249064,
+    "seen": 1792108992.2695394,
     "ast_hash": "d611cfdb1a503e76497d9e1811891617",
     "semantic_hash": ""
   },
   "app/Models/Carrera.php": {
-    "mtime": 1791989829.8954113,
-    "seen": 1791990292.8215725,
+    "mtime": 1792108991.2250223,
+    "seen": 1792108992.2695398,
     "ast_hash": "2a61b0b5799178f3f518fa3957de1483",
     "semantic_hash": ""
   },
   "app/Models/Departamento.php": {
-    "mtime": 1791989819.2695246,
-    "seen": 1791990292.8215733,
+    "mtime": 1792108991.2250826,
+    "seen": 1792108992.2695405,
     "ast_hash": "436fcfd44c09616508e4c7a9aecf276b",
     "semantic_hash": ""
   },
   "app/Models/Estudiante.php": {
-    "mtime": 1791989843.6992638,
-    "seen": 1791990292.8215742,
+    "mtime": 1792108991.2251513,
+    "seen": 1792108992.2695413,
     "ast_hash": "81bf720c7daf41e7229174cdfd6a2e02",
     "semantic_hash": ""
   },
   "app/Models/LogAccion.php": {
-    "mtime": 1791990562.3605947,
-    "seen": 1791990642.2173007,
+    "mtime": 1792108991.2251987,
+    "seen": 1792108992.2695422,
     "ast_hash": "63a67fdf3799853b67a9b539f3d3dfc8",
     "semantic_hash": ""
   },
   "app/Models/Memoria.php": {
-    "mtime": 1791989873.5059457,
-    "seen": 1791990292.8215756,
+    "mtime": 1792108991.2252517,
+    "seen": 1792108992.269543,
     "ast_hash": "c5f004cda037fd6dc07afb6b576101ba",
     "semantic_hash": ""
   },
   "app/Models/Plantilla.php": {
-    "mtime": 1791989887.7177942,
-    "seen": 1791990292.8215775,
+    "mtime": 1792108991.2252517,
+    "seen": 1792108992.2695436,
     "ast_hash": "c0f86250fc547ad24baa0b77ea77e87d",
     "semantic_hash": ""
   },
   "app/Models/Proyecto.php": {
-    "mtime": 1791989858.3801072,
-    "seen": 1791990292.8215783,
+    "mtime": 1792108991.225365,
+    "seen": 1792108992.2695441,
     "ast_hash": "4b702a09f54903091bd944a77dd424bd",
     "semantic_hash": ""
   },
   "app/Models/Usuario.php": {
-    "mtime": 1791990534.497892,
-    "seen": 1791990642.217307,
+    "mtime": 1792108991.2255137,
+    "seen": 1792108992.2695458,
     "ast_hash": "31157e50711901948854b5927fa3dec8",
     "semantic_hash": ""
   },
   "app/Models/VersionPlantilla.php": {
-    "mtime": 1791989900.8606539,
-    "seen": 1791990292.821582,
+    "mtime": 1792108991.2255137,
+    "seen": 1792108992.2695465,
     "ast_hash": "ab645a7b152f601b22b77089bf7deada",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000002_create_departamentos_and_carreras_tables.php": {
-    "mtime": 1791989938.0882566,
-    "seen": 1791990292.8216033,
+    "mtime": 1792108991.2267845,
+    "seen": 1792108992.2695634,
     "ast_hash": "68f7c01337b850f51feaf439fecb7207",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000003_create_estudiantes_tables.php": {
-    "mtime": 1791989945.3681788,
-    "seen": 1791990292.821604,
+    "mtime": 1792108991.2267845,
+    "seen": 1792108992.269564,
     "ast_hash": "a84015e8ee8684dc9bf9ec8c3d799965",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000004_create_areas_de_conocimiento_table.php": {
-    "mtime": 1791989963.4089863,
-    "seen": 1791990292.821605,
+    "mtime": 1792108991.2267845,
+    "seen": 1792108992.2695646,
     "ast_hash": "953a78f4636456b17d0a9e45b0656608",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000005_create_proyectos_tables.php": {
-    "mtime": 1791989977.0128412,
-    "seen": 1791990292.8216057,
+    "mtime": 1792108991.2267845,
+    "seen": 1792108992.269565,
     "ast_hash": "0e22c0d0aa9de97636cc40a852b2ab15",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000006_create_memorias_table.php": {
-    "mtime": 1791989989.385709,
-    "seen": 1791990292.8216064,
+    "mtime": 1792108991.2267845,
+    "seen": 1792108992.269566,
     "ast_hash": "212c75e733821af18970133c65f16d1e",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000007_create_logs_acciones_table.php": {
-    "mtime": 1791990518.7890596,
-    "seen": 1791990642.2173367,
+    "mtime": 1792108991.2270653,
+    "seen": 1792108992.2695665,
     "ast_hash": "a3d1602fa0df87097523cfd955fc8b96",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000008_create_plantillas_tables.php": {
-    "mtime": 1791990005.22754,
-    "seen": 1791990292.8216078,
+    "mtime": 1792108991.2270653,
+    "seen": 1792108992.2695675,
     "ast_hash": "231765dcd28a1cd703e5bfb3a81ba1b0",
     "semantic_hash": ""
   },
   "config/permission.php": {
-    "mtime": 1791990454.2730236,
-    "seen": 1791990642.2173219,
+    "mtime": 1792108991.226694,
+    "seen": 1792108992.269557,
     "ast_hash": "4e1b4f3cf77c21e8b979bc511af1d4b8",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000001_create_permission_tables.php": {
-    "mtime": 1791990454.2737622,
-    "seen": 1791990642.2173307,
+    "mtime": 1792108991.2267845,
+    "seen": 1792108992.2695627,
     "ast_hash": "d0ce4624021f5b3121a91c406a5f79f2",
     "semantic_hash": ""
   }

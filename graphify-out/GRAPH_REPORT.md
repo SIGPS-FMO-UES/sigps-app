@@ -1,4 +1,4 @@
-# Graph Report - sigps-app  (2026-10-14)
+# Graph Report - sigps-app  (2026-10-15)
 
 ## Corpus Check
 - 56 files · ~12,713 words
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c1f50d6c`
+- Built from commit: `0ae51f99`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

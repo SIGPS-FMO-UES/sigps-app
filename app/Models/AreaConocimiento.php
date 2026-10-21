@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['nombre', 'detalles'])]
+#[Fillable(['nombre', 'detalles', 'activa'])]
 class AreaConocimiento extends Model
 {
     use HasFactory;
@@ -15,6 +15,11 @@ class AreaConocimiento extends Model
     protected $table = 'areas_de_conocimiento';
 
     protected $primaryKey = 'id_area_conocimiento';
+
+    protected function casts(): array
+    {
+        return ['activa' => 'boolean'];
+    }
 
     /**
      * Proyectos registrados en esta área de conocimiento.

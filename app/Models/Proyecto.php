@@ -17,10 +17,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'fecha_final',
     'titulo',
     'miembros',
-    'tutor',
     'subcoordinador',
     'area_de_conocimiento',
     'documento',
+    'fase_actual',
+    'estado_expediente',
+    'fecha_radicado',
+    'fecha_finalizacion',
+    'fecha_remision_junta',
+    'remitido_junta_por',
 ])]
 class Proyecto extends Model
 {
@@ -40,6 +45,9 @@ class Proyecto extends Model
         return [
             'fecha_inicio' => 'date',
             'fecha_final' => 'date',
+            'fecha_radicado' => 'datetime',
+            'fecha_finalizacion' => 'datetime',
+            'fecha_remision_junta' => 'datetime',
         ];
     }
 
@@ -49,6 +57,11 @@ class Proyecto extends Model
     public function creador(): BelongsTo
     {
         return $this->belongsTo(Usuario::class, 'creado_por', 'id_usuario');
+    }
+
+    public function remitenteJunta(): BelongsTo
+    {
+        return $this->belongsTo(Usuario::class, 'remitido_junta_por', 'id_usuario');
     }
 
     /**
@@ -83,5 +96,25 @@ class Proyecto extends Model
     public function memorias(): HasMany
     {
         return $this->hasMany(Memoria::class, 'proyecto_id', 'id_proyecto');
+    }
+
+    public function historialFases(): HasMany
+    {
+        return $this->hasMany(HistorialFaseProyecto::class, 'proyecto_id', 'id_proyecto')->latest();
+    }
+
+    public function documentos(): HasMany
+    {
+        return $this->hasMany(DocumentoProyecto::class, 'proyecto_id', 'id_proyecto')->latest();
+    }
+
+    public function procesosExtraordinarios(): HasMany
+    {
+        return $this->hasMany(ProcesoExtraordinario::class, 'proyecto_id', 'id_proyecto')->latest();
+    }
+
+    public function certificaciones(): HasMany
+    {
+        return $this->hasMany(Certificacion::class, 'proyecto_id', 'id_proyecto');
     }
 }

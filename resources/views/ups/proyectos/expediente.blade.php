@@ -1,0 +1,14 @@
+@extends('layouts.portal')
+@section('title', 'Expediente documental')
+@section('heading', 'Expediente documental')
+@section('subtitle', 'Proyecto / Expediente documental · '.$proyecto->titulo)
+@section('page-actions')<a class="btn" href="{{ route('ups.proyectos.show', $proyecto->id_proyecto) }}">← Volver al proyecto</a>@endsection
+@section('content')
+<section class="card"><div class="card-head"><div><h2>Documentos del expediente</h2><p class="muted" style="margin:5px 0 0">Proyecto: {{ $proyecto->titulo }}</p></div><span class="badge">{{ $proyecto->documentos->count() }} documentos</span></div>
+<div class="table-wrap"><table class="table"><thead><tr><th>Documento</th><th>Tipo / fase</th><th>Información</th><th>Acción</th></tr></thead><tbody>
+@forelse($proyecto->documentos as $documento)<tr><td><strong>{{ $documento->nombre_original }}</strong></td><td>{{ ['inscripcion'=>'Inscripción','anteproyecto'=>'Anteproyecto','avance_50'=>'Avance 50%','memoria_final'=>'Memoria final','otro'=>'Otro'][$documento->fase] ?? $documento->fase }}</td><td>{{ number_format($documento->tamano_bytes / 1024, 0) }} KB · {{ $documento->usuario?->nombre_completo ?? 'Sistema' }} · {{ $documento->created_at?->format('d/m/Y H:i') }}</td><td><a href="{{ route('ups.documentos-proyecto.descargar', $documento->id_documento_proyecto) }}" target="_blank" rel="noopener">Ver / descargar</a></td></tr>@empty<tr><td colspan="4" class="empty">Todavía no hay documentos cargados en este expediente.</td></tr>@endforelse
+@if($proyecto->documento)<tr><td><strong>{{ $proyecto->documento }}</strong></td><td>Referencia del expediente</td><td>Referencia heredada del registro del proyecto</td><td><span class="muted">Sin archivo cargado</span></td></tr>@endif
+@if($proyecto->memoria)<tr><td><strong>Memoria final</strong></td><td>Memoria final</td><td>{{ $proyecto->memoria->estado->label() }}</td><td><a href="{{ route('ups.memorias.show', $proyecto->memoria->id_memoria) }}">Ver memoria</a></td></tr>@endif
+</tbody></table></div></section>
+@if($proyecto->estado_expediente === 'en_tramite')<section class="card"><div class="card-head"><h2>Cargar documento</h2></div><div class="card-body"><form method="POST" enctype="multipart/form-data" action="{{ route('ups.proyectos.documentos.store', $proyecto->id_proyecto) }}">@csrf<div class="filters"><div class="field"><label for="fase">Fase</label><select id="fase" name="fase" required><option value="inscripcion">Inscripción</option><option value="anteproyecto">Anteproyecto</option><option value="avance_50">Avance 50%</option><option value="memoria_final">Memoria final</option><option value="otro">Otro</option></select></div><div class="field"><label for="archivo">Documento PDF (máximo 15 MB)</label><input id="archivo" name="archivo" type="file" accept="application/pdf,.pdf" required></div><button class="btn btn-primary" type="submit">Cargar documento</button></div></form></div></section>@endif
+@endsection

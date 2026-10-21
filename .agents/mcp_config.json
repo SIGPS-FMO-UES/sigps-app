@@ -6,6 +6,14 @@
                 "artisan",
                 "boost:mcp"
             ]
+        },
+        "graphify": {
+            "command": "/usr/bin/python3.12",
+            "args": [
+                "-m",
+                "graphify.serve",
+                "graphify-out/graph.json"
+            ]
         }
     }
 }

@@ -1,0 +1,302 @@
+// ==============================================================================
+// SIGPS - Sistema Integral de Gestión de Proyección Social
+// Diagrama de Base de Datos DBML (Sincronizado con esquema real de Laravel 13)
+// ==============================================================================
+
+// ------------------------------------------------------------------------------
+// ENUMS
+// ------------------------------------------------------------------------------
+
+Enum estado_memoria {
+  recibido
+  en_revision
+  observada
+  aprobada
+  esperando_firmas
+  lista
+  entregada
+  rechazada
+}
+
+Enum tipo_plantilla {
+  archivo_ejemplo
+  autorellenable
+}
+
+// ------------------------------------------------------------------------------
+// TABLAS: USUARIOS Y AUTENTICACIÓN
+// ------------------------------------------------------------------------------
+
+Table usuarios {
+  id_usuario bigint [pk, increment]
+  nombre_usuario varchar [unique, not null]
+  nombre_completo varchar [not null]
+  email varchar [unique, null]
+  email_verified_at timestamp [null]
+  password varchar [not null]
+  activo bool [default: true, not null]
+  remember_token varchar [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+}
+
+// ------------------------------------------------------------------------------
+// TABLAS: ROLES Y PERMISOS (SPATIE LARAVEL-PERMISSION)
+// ------------------------------------------------------------------------------
+
+Table roles {
+  id bigint [pk, increment]
+  name varchar [not null]
+  guard_name varchar [not null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+
+  indexes {
+    (name, guard_name) [unique]
+  }
+}
+
+Table permissions {
+  id bigint [pk, increment]
+  name varchar [not null]
+  guard_name varchar [not null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+
+  indexes {
+    (name, guard_name) [unique]
+  }
+}
+
+Table model_has_roles {
+  role_id bigint [not null]
+  model_type varchar [not null]
+  model_id bigint [not null]
+
+  indexes {
+    (role_id, model_id, model_type) [pk]
+    (model_id, model_type)
+  }
+}
+
+Table model_has_permissions {
+  permission_id bigint [not null]
+  model_type varchar [not null]
+  model_id bigint [not null]
+
+  indexes {
+    (permission_id, model_id, model_type) [pk]
+    (model_id, model_type)
+  }
+}
+
+Table role_has_permissions {
+  permission_id bigint [not null]
+  role_id bigint [not null]
+
+  indexes {
+    (permission_id, role_id) [pk]
+  }
+}
+
+// ------------------------------------------------------------------------------
+// TABLAS: ESTRUCTURA ACADÉMICA Y ESTUDIANTES
+// ------------------------------------------------------------------------------
+
+Table departamentos {
+  id_departamento bigint [pk, increment]
+  nombre varchar [not null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+}
+
+Table carreras {
+  id_carrera bigint [pk, increment]
+  nombre varchar [not null]
+  departamento bigint [not null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+}
+
+Table estudiantes {
+  id_estudiante bigint [pk, increment]
+  due varchar [unique, not null]
+  nombre_completo varchar [not null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+}
+
+Table carreras_estudiante {
+  id_carrera_estudiante bigint [pk, increment]
+  id_estudiante bigint [not null]
+  id_carrera bigint [not null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+
+  indexes {
+    (id_estudiante, id_carrera) [unique]
+  }
+}
+
+// ------------------------------------------------------------------------------
+// TABLAS: PROYECTOS Y MEMORIAS
+// ------------------------------------------------------------------------------
+
+Table areas_de_conocimiento {
+  id_area_conocimiento bigint [pk, increment]
+  nombre varchar [not null]
+  detalles text [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+}
+
+Table proyectos {
+  id_proyecto bigint [pk, increment]
+  creado_por bigint [not null]
+  fecha_inicio date [not null]
+  fecha_final date [null]
+  titulo varchar [not null]
+  miembros varchar [null, note: 'DUEs separados por coma (campo descriptivo; la relación normalizada está en proyectos_estudiantes)']
+  tutor varchar [not null]
+  subcoordinador varchar [not null]
+  area_de_conocimiento bigint [not null]
+  documento varchar [null]
+  deleted_at timestamp [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+}
+
+Table proyectos_estudiantes {
+  id_proyecto_estudiante bigint [pk, increment]
+  id_estudiante bigint [not null]
+  id_proyecto bigint [not null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+
+  indexes {
+    (id_estudiante, id_proyecto) [unique]
+  }
+}
+
+Table memorias {
+  id_memoria bigint [pk, increment]
+  registrada_por bigint [not null]
+  intento int [default: 1, not null]
+  fecha_recibimiento date [not null]
+  estado estado_memoria [default: 'recibido', not null]
+  fecha_aprovado date [null]
+  fecha_listo date [null]
+  fecha_entrega date [null]
+  observaciones text [null]
+  proyecto_id bigint [unique, not null]
+  documento varchar [null]
+  deleted_at timestamp [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+}
+
+// ------------------------------------------------------------------------------
+// TABLAS: AUDITORÍA (LOGS)
+// ------------------------------------------------------------------------------
+
+Table logs_acciones {
+  id_log bigint [pk, increment]
+  accion varchar [not null]
+  usuario bigint [not null]
+  permiso_utilizado bigint [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+}
+
+// ------------------------------------------------------------------------------
+// TABLAS: GESTIÓN DE PLANTILLAS Y DOCUMENTOS
+// ------------------------------------------------------------------------------
+
+Table plantillas {
+  id_plantilla bigint [pk, increment]
+  nombre varchar [not null]
+  descripcion text [null]
+  activa bool [default: true, not null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+}
+
+Table versiones_plantillas {
+  id_version_plantilla bigint [pk, increment]
+  numero_version int [not null]
+  id_plantilla bigint [not null]
+  tipo tipo_plantilla [default: 'archivo_ejemplo', not null]
+  nombre_archivo varchar [null]
+  ruta_archivo varchar [null]
+  esquema json [null]
+  publicada bool [default: false, not null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+}
+
+// ------------------------------------------------------------------------------
+// RELACIONES (FOREIGN KEYS)
+// ------------------------------------------------------------------------------
+
+// Relaciones Spatie Permission
+Ref: "roles"."id" < "role_has_permissions"."role_id" [delete: cascade]
+Ref: "permissions"."id" < "role_has_permissions"."permission_id" [delete: cascade]
+Ref: "roles"."id" < "model_has_roles"."role_id" [delete: cascade]
+Ref: "permissions"."id" < "model_has_permissions"."permission_id" [delete: cascade]
+Ref: "usuarios"."id_usuario" < "model_has_roles"."model_id"
+Ref: "usuarios"."id_usuario" < "model_has_permissions"."model_id"
+
+// Relaciones Académicas
+Ref: "departamentos"."id_departamento" < "carreras"."departamento" [delete: cascade]
+Ref: "estudiantes"."id_estudiante" < "carreras_estudiante"."id_estudiante" [delete: cascade]
+Ref: "carreras"."id_carrera" < "carreras_estudiante"."id_carrera" [delete: cascade]
+
+// Relaciones Proyectos y Estudiantes
+Ref: "usuarios"."id_usuario" < "proyectos"."creado_por" [delete: restrict]
+Ref: "areas_de_conocimiento"."id_area_conocimiento" < "proyectos"."area_de_conocimiento" [delete: restrict]
+Ref: "estudiantes"."id_estudiante" < "proyectos_estudiantes"."id_estudiante" [delete: cascade]
+Ref: "proyectos"."id_proyecto" < "proyectos_estudiantes"."id_proyecto" [delete: cascade]
+
+// Relaciones Memorias
+Ref: "usuarios"."id_usuario" < "memorias"."registrada_por" [delete: restrict]
+Ref: "proyectos"."id_proyecto" - "memorias"."proyecto_id" [delete: cascade]
+
+// Relaciones Logs
+Ref: "usuarios"."id_usuario" < "logs_acciones"."usuario" [delete: cascade]
+Ref: "permissions"."id" < "logs_acciones"."permiso_utilizado" [delete: set null]
+
+// Relaciones Plantillas
+Ref: "plantillas"."id_plantilla" < "versiones_plantillas"."id_plantilla" [delete: cascade]
+
+// ------------------------------------------------------------------------------
+// GRUPOS LÓGICOS DE TABLAS (TABLE GROUPS)
+// ------------------------------------------------------------------------------
+
+TableGroup seguridad_autenticacion {
+  usuarios
+  roles
+  permissions
+  model_has_roles
+  model_has_permissions
+  role_has_permissions
+  logs_acciones
+}
+
+TableGroup estructura_academica {
+  departamentos
+  carreras
+  estudiantes
+  carreras_estudiante
+}
+
+TableGroup proyeccion_social {
+  areas_de_conocimiento
+  proyectos
+  proyectos_estudiantes
+  memorias
+}
+
+TableGroup documentos_plantillas {
+  plantillas
+  versiones_plantillas
+}

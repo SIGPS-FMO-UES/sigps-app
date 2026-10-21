@@ -1,0 +1,49 @@
+node_modules/
+.next/
+dist/
+build/
+out/
+coverage/
+.git/
+.DS_Store
+
+# Markdown en mayúsculas
+*.MD
+*.Mdx
+*.MDX
+
+# Carpetas de herramientas
+.agents/
+graphify-out/
+.graphify-cache/
+
+# Documentación
+docs/
+documentation/
+README*
+CHANGELOG*
+LICENSE*
+CONTRIBUTING*
+NOTES*
+*.md
+*.mdx
+*.txt
+*.rst
+*.adoc
+*.html
+*.htm
+*.pdf
+*.docx
+*.pptx
+*.csv
+
+# Imágenes
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.svg
+
+.env
+*.yml

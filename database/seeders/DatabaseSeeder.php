@@ -15,12 +15,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call(RoleAndPermissionSeeder::class);
 
-        User::factory()->create([
-            'nombre_usuario' => 'admin',
-            'nombre_completo' => 'Administrador UPS',
-            'email' => 'admin@ues.edu.sv',
-        ]);
+        $admin = User::firstOrCreate(
+            ['nombre_usuario' => 'admin'],
+            [
+                'nombre_completo' => 'Administrador UPS',
+                'email' => 'admin@ues.edu.sv',
+                'password' => 'Password123*',
+                'activo' => true,
+            ]
+        );
+
+        if (! $admin->hasRole('admin')) {
+            $admin->assignRole('admin');
+        }
     }
 }

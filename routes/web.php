@@ -65,6 +65,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/estudiantes', [EstudianteController::class, 'index'])->name('estudiantes.index');
         Route::get('/estudiantes/crear', [EstudianteController::class, 'create'])->name('estudiantes.create');
         Route::post('/estudiantes', [EstudianteController::class, 'store'])->name('estudiantes.store');
+        Route::get('/estudiantes/buscar', [EstudianteController::class, 'buscar'])->name('estudiantes.buscar');
+        Route::post('/estudiantes/rapido', [EstudianteController::class, 'storeRapido'])->name('estudiantes.storeRapido');
         Route::get('/estudiantes/{id}/editar', [EstudianteController::class, 'edit'])->name('estudiantes.edit');
         Route::put('/estudiantes/{id}', [EstudianteController::class, 'update'])->name('estudiantes.update');
         Route::get('/estudiantes/{id}', [EstudianteController::class, 'show'])->name('estudiantes.show');

@@ -7,6 +7,7 @@ use App\Models\AreaConocimiento;
 use App\Models\Carrera;
 use App\Models\Estudiante;
 use App\Models\LogAccion;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -92,6 +93,80 @@ class EstudianteController extends Controller
 
         return redirect()->route('ups.estudiantes.show', $estudiante->id_estudiante)
             ->with('success', 'El estudiante fue registrado.');
+    }
+
+    public function buscar(Request $request): JsonResponse
+    {
+        $search = trim((string) $request->query('q', ''));
+        if (mb_strlen($search) < 2) {
+            return response()->json([]);
+        }
+
+        $driver = DB::connection()->getDriverName();
+        $like = $driver === 'pgsql' ? 'ilike' : 'like';
+
+        $estudiantes = Estudiante::query()
+            ->with(['carreras:id_carrera,nombre'])
+            ->where(function ($q) use ($search, $like): void {
+                $q->where('due', $like, "%{$search}%")
+                    ->orWhere('nombre_completo', $like, "%{$search}%");
+            })
+            ->orderBy('nombre_completo')
+            ->limit(15)
+            ->get(['id_estudiante', 'due', 'nombre_completo']);
+
+        return response()->json($estudiantes->map(fn (Estudiante $e): array => [
+            'id_estudiante' => $e->id_estudiante,
+            'due' => $e->due,
+            'nombre_completo' => $e->nombre_completo,
+            'carreras' => $e->carreras->pluck('nombre')->all(),
+        ]));
+    }
+
+    public function storeRapido(Request $request): JsonResponse
+    {
+        $reglasCarreras = Carrera::query()->exists()
+            ? ['required', 'array', 'min:1']
+            : ['nullable', 'array'];
+
+        $datos = $request->validate([
+            'due' => ['required', 'string', 'max:50', 'unique:estudiantes,due'],
+            'nombre_completo' => ['required', 'string', 'max:255'],
+            'carreras' => $reglasCarreras,
+            'carreras.*' => ['required', 'integer', 'distinct', 'exists:carreras,id_carrera'],
+        ]);
+
+        $estudiante = DB::transaction(function () use ($datos): Estudiante {
+            $carreras = $datos['carreras'] ?? [];
+            unset($datos['carreras']);
+
+            $estudiante = Estudiante::create([
+                'due' => strtoupper(trim((string) $datos['due'])),
+                'nombre_completo' => trim((string) $datos['nombre_completo']),
+            ]);
+
+            if (! empty($carreras)) {
+                $estudiante->carreras()->sync($carreras);
+            }
+
+            LogAccion::create([
+                'accion' => "Registro rápido de estudiante {$estudiante->due}: {$estudiante->nombre_completo}",
+                'usuario' => auth()->id(),
+            ]);
+
+            return $estudiante->load('carreras:id_carrera,nombre');
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => "Estudiante {$estudiante->due} registrado exitosamente.",
+            'estudiante' => [
+                'id_estudiante' => $estudiante->id_estudiante,
+                'due' => $estudiante->due,
+                'nombre_completo' => $estudiante->nombre_completo,
+                'carreras' => $estudiante->carreras->pluck('nombre')->all(),
+            ],
+        ], 201);
     }
 
     public function update(Request $request, string $id): RedirectResponse

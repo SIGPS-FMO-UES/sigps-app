@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Ups;
 use App\Enums\EstadoMemoria;
 use App\Http\Controllers\Controller;
 use App\Models\AreaConocimiento;
+use App\Models\Carrera;
 use App\Models\Estudiante;
 use App\Models\LogAccion;
 use App\Models\Proyecto;
@@ -22,26 +23,85 @@ class ProyectoController extends Controller
     {
         $filtros = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
+            'triaje' => ['nullable', Rule::in(['todos', 'urgentes', 'tramite', 'al_dia', 'concluidos'])],
+            'orden' => ['nullable', Rule::in(['gravedad', 'recientes', 'antiguos', 'correlativo'])],
             'area_id' => ['nullable', 'integer', 'exists:areas_de_conocimiento,id_area_conocimiento'],
             'fecha' => ['nullable', 'date'],
             'estado' => ['nullable', Rule::in(['sin_memoria', 'recibido', 'en_revision', 'observada', 'aprobada', 'esperando_firmas', 'lista', 'entregada', 'rechazada'])],
             'plazo' => ['nullable', Rule::in(['memoria', 'junta', 'alerta', 'sin_alerta'])],
         ]);
 
+        $triajeActivo = $filtros['triaje'] ?? 'todos';
+        $ordenActivo = $filtros['orden'] ?? 'gravedad';
+
         $fechaLimiteMemoria = now()->subMonths(3)->toDateString();
         $fechaLimiteJunta = now()->subMonths(18)->toDateString();
 
-        $proyectos = Proyecto::query()
-            ->with(['areaConocimiento', 'estudiantes', 'memoria'])
-            ->when($filtros['search'] ?? null, fn ($query, $search) => $query->where(fn ($subquery) => $subquery->where('titulo', 'ilike', "%{$search}%")
-                ->when(is_numeric($search), fn ($numericQuery) => $numericQuery->orWhere('numero_proyecto', (int) $search))
-                ->orWhere('tutor', 'ilike', "%{$search}%")
-                ->orWhereHas('estudiantes', fn ($estudiantes) => $estudiantes->where('due', 'ilike', "%{$search}%")->orWhere('nombre_completo', 'ilike', "%{$search}%"))))
-            ->when($filtros['area_id'] ?? null, fn ($query, $id) => $query->where('area_de_conocimiento', $id))
-            ->when($filtros['fecha'] ?? null, fn ($query, $fecha) => $query->whereDate('fecha_inicio', $fecha))
-            ->when($filtros['estado'] ?? null, function ($query, string $estado): void {
+        $query = Proyecto::query()
+            ->with([
+                'areaConocimiento:id_area_conocimiento,nombre',
+                'estudiantes:id_estudiante,due,nombre_completo',
+                'memoria',
+            ]);
+
+        // 1. Omnibúsqueda universal
+        if (! empty($filtros['search'])) {
+            $search = trim((string) $filtros['search']);
+            $searchNum = preg_replace('/\D/', '', $search);
+            $driver = DB::connection()->getDriverName();
+            $like = $driver === 'pgsql' ? 'ilike' : 'like';
+
+            $query->where(function ($subquery) use ($search, $searchNum, $like): void {
+                $subquery->where('titulo', $like, "%{$search}%")
+                    ->orWhere('tutor', $like, "%{$search}%")
+                    ->orWhere('subcoordinador', $like, "%{$search}%")
+                    ->orWhere('documento', $like, "%{$search}%")
+                    ->orWhereHas('estudiantes', fn ($estudiantes) => $estudiantes
+                        ->where('due', $like, "%{$search}%")
+                        ->orWhere('nombre_completo', $like, "%{$search}%")
+                    );
+
+                if ($searchNum !== '') {
+                    $subquery->orWhere('numero_proyecto', (int) $searchNum);
+                }
+            });
+        }
+
+        // 2. Filtro rápido de Triaje (Chips superiores)
+        if ($triajeActivo === 'urgentes') {
+            $query->where(function ($urgentesQuery) use ($fechaLimiteMemoria, $fechaLimiteJunta): void {
+                $urgentesQuery->whereDate('fecha_inicio', '<=', $fechaLimiteJunta)
+                    ->orWhere(fn ($q) => $q->whereDate('fecha_inicio', '<=', $fechaLimiteMemoria)->whereDoesntHave('memoria'))
+                    ->orWhereHas('memoria', fn ($m) => $m->where('estado', EstadoMemoria::Observada->value));
+            });
+        } elseif ($triajeActivo === 'tramite') {
+            $query->whereHas('memoria', fn ($m) => $m->whereIn('estado', [
+                EstadoMemoria::Recibido->value,
+                EstadoMemoria::EnRevision->value,
+                EstadoMemoria::EsperandoFirmas->value,
+                EstadoMemoria::Lista->value,
+            ]));
+        } elseif ($triajeActivo === 'concluidos') {
+            $query->where(fn ($q) => $q->where('estado_expediente', 'finalizado')
+                ->orWhereHas('memoria', fn ($m) => $m->where('estado', EstadoMemoria::Entregada->value)));
+        } elseif ($triajeActivo === 'al_dia') {
+            $query->where('estado_expediente', '!=', 'finalizado')
+                ->whereDate('fecha_inicio', '>', $fechaLimiteJunta)
+                ->where(function ($alDia) use ($fechaLimiteMemoria): void {
+                    $alDia->whereDate('fecha_inicio', '>', $fechaLimiteMemoria)
+                        ->orWhereHas('memoria', fn ($m) => $m->whereNotIn('estado', [
+                            EstadoMemoria::Observada->value,
+                            EstadoMemoria::Entregada->value,
+                        ]));
+                });
+        }
+
+        // 3. Filtros secundarios (en caso de usarse)
+        $query->when($filtros['area_id'] ?? null, fn ($q, $id) => $q->where('area_de_conocimiento', $id))
+            ->when($filtros['fecha'] ?? null, fn ($q, $fecha) => $q->whereDate('fecha_inicio', $fecha))
+            ->when($filtros['estado'] ?? null, function ($q, string $estado): void {
                 if ($estado === 'sin_memoria') {
-                    $query->whereDoesntHave('memoria');
+                    $q->whereDoesntHave('memoria');
 
                     return;
                 }
@@ -49,41 +109,94 @@ class ProyectoController extends Controller
                 $estados = $estado === 'aprobada'
                     ? [EstadoMemoria::Aprobada->value, EstadoMemoria::Aprovada->value]
                     : [$estado];
-                $query->whereHas('memoria', fn ($memorias) => $memorias->whereIn('estado', $estados));
+                $q->whereHas('memoria', fn ($memorias) => $memorias->whereIn('estado', $estados));
             })
-            ->when(($filtros['plazo'] ?? null) === 'memoria', fn ($query) => $query->whereDate('fecha_inicio', '<=', $fechaLimiteMemoria)->whereDoesntHave('memoria'))
-            ->when(($filtros['plazo'] ?? null) === 'junta', fn ($query) => $query->whereDate('fecha_inicio', '<=', $fechaLimiteJunta))
-            ->when(($filtros['plazo'] ?? null) === 'alerta', fn ($query) => $query->where(fn ($alertas) => $alertas
+            ->when(($filtros['plazo'] ?? null) === 'memoria', fn ($q) => $q->whereDate('fecha_inicio', '<=', $fechaLimiteMemoria)->whereDoesntHave('memoria'))
+            ->when(($filtros['plazo'] ?? null) === 'junta', fn ($q) => $q->whereDate('fecha_inicio', '<=', $fechaLimiteJunta))
+            ->when(($filtros['plazo'] ?? null) === 'alerta', fn ($q) => $q->where(fn ($alertas) => $alertas
                 ->where(fn ($memoriaVencida) => $memoriaVencida->whereDate('fecha_inicio', '<=', $fechaLimiteMemoria)->whereDoesntHave('memoria'))
                 ->orWhereDate('fecha_inicio', '<=', $fechaLimiteJunta)))
-            ->when(($filtros['plazo'] ?? null) === 'sin_alerta', fn ($query) => $query->whereDate('fecha_inicio', '>', $fechaLimiteJunta)
-                ->where(fn ($sinAlertaMemoria) => $sinAlertaMemoria->whereDate('fecha_inicio', '>', $fechaLimiteMemoria)->orWhereHas('memoria')))
-            ->latest('fecha_inicio')
-            ->paginate(12)
-            ->withQueryString();
+            ->when(($filtros['plazo'] ?? null) === 'sin_alerta', fn ($q) => $q->whereDate('fecha_inicio', '>', $fechaLimiteJunta)
+                ->where(fn ($sinAlertaMemoria) => $sinAlertaMemoria->whereDate('fecha_inicio', '>', $fechaLimiteMemoria)->orWhereHas('memoria')));
+
+        // 4. Algoritmo de Ordenamiento por Gravedad (Default)
+        if ($ordenActivo === 'gravedad') {
+            $query->orderByRaw("
+                CASE
+                    WHEN fecha_inicio <= '{$fechaLimiteJunta}' AND fecha_remision_junta IS NULL THEN 1
+                    WHEN fecha_inicio <= '{$fechaLimiteMemoria}' AND NOT EXISTS (SELECT 1 FROM memorias WHERE memorias.numero_proyecto = proyectos.numero_proyecto) THEN 2
+                    WHEN EXISTS (SELECT 1 FROM memorias WHERE memorias.numero_proyecto = proyectos.numero_proyecto AND memorias.estado = 'observada') THEN 3
+                    WHEN EXISTS (SELECT 1 FROM memorias WHERE memorias.numero_proyecto = proyectos.numero_proyecto AND memorias.estado IN ('recibido', 'en_revision', 'esperando_firmas')) THEN 4
+                    WHEN estado_expediente = 'finalizado' OR EXISTS (SELECT 1 FROM memorias WHERE memorias.numero_proyecto = proyectos.numero_proyecto AND memorias.estado = 'entregada') THEN 6
+                    ELSE 5
+                END ASC, fecha_inicio ASC
+            ");
+        } elseif ($ordenActivo === 'recientes') {
+            $query->orderByDesc('fecha_inicio');
+        } elseif ($ordenActivo === 'antiguos') {
+            $query->orderBy('fecha_inicio');
+        } elseif ($ordenActivo === 'correlativo') {
+            $query->orderByDesc('numero_proyecto');
+        }
+
+        $proyectos = $query->paginate(12)->withQueryString();
+
+        // 5. Conteos para chips de triaje superior
+        $conteos = [
+            'todos' => Proyecto::count(),
+            'urgentes' => Proyecto::query()
+                ->where(function ($q) use ($fechaLimiteMemoria, $fechaLimiteJunta): void {
+                    $q->whereDate('fecha_inicio', '<=', $fechaLimiteJunta)
+                        ->orWhere(fn ($sub) => $sub->whereDate('fecha_inicio', '<=', $fechaLimiteMemoria)->whereDoesntHave('memoria'))
+                        ->orWhereHas('memoria', fn ($m) => $m->where('estado', EstadoMemoria::Observada->value));
+                })->count(),
+            'tramite' => Proyecto::query()
+                ->whereHas('memoria', fn ($m) => $m->whereIn('estado', [
+                    EstadoMemoria::Recibido->value,
+                    EstadoMemoria::EnRevision->value,
+                    EstadoMemoria::EsperandoFirmas->value,
+                    EstadoMemoria::Lista->value,
+                ]))->count(),
+            'concluidos' => Proyecto::query()
+                ->where(fn ($q) => $q->where('estado_expediente', 'finalizado')
+                    ->orWhereHas('memoria', fn ($m) => $m->where('estado', EstadoMemoria::Entregada->value)))
+                ->count(),
+        ];
+        $conteos['al_dia'] = max(0, $conteos['todos'] - $conteos['urgentes'] - $conteos['concluidos']);
 
         return view('ups.proyectos.index', [
             'proyectos' => $proyectos,
             'areas' => AreaConocimiento::query()->where('activa', true)->orderBy('nombre')->get(),
             'filtros' => $filtros,
+            'conteos' => $conteos,
+            'triajeActivo' => $triajeActivo,
+            'ordenActivo' => $ordenActivo,
         ]);
     }
 
     public function create(): View
     {
+        $siguienteNumero = (Proyecto::max('numero_proyecto') ?? 0) + 1;
+        $participantesIds = (array) old('estudiantes', []);
+        $participantesSeleccionados = ! empty($participantesIds)
+            ? Estudiante::with('carreras')->whereIn('id_estudiante', $participantesIds)->get()
+            : collect();
+
         return view('ups.proyectos.form', [
-            'proyecto' => new Proyecto,
+            'proyecto' => new Proyecto(['numero_proyecto' => $siguienteNumero]),
+            'siguienteNumero' => $siguienteNumero,
             'areas' => AreaConocimiento::query()->where('activa', true)->orderBy('nombre')->get(),
-            'estudiantes' => Estudiante::query()->orderBy('nombre_completo')->get(),
-            'participantesSeleccionados' => [],
+            'carreras' => Carrera::query()->orderBy('nombre')->get(),
+            'participantesSeleccionados' => $participantesSeleccionados,
             'modoEdicion' => false,
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
+        $this->procesarNuevosEstudiantes($request);
         $datos = $request->validate($this->reglasProyecto(true));
-        $participantes = $datos['estudiantes'];
+        $participantes = array_values(array_unique($datos['estudiantes']));
         $archivo = $datos['archivo_documento'] ?? null;
         unset($datos['estudiantes']);
         unset($datos['archivo_documento']);
@@ -148,14 +261,20 @@ class ProyectoController extends Controller
 
     public function edit(string $id): View
     {
-        $proyecto = Proyecto::query()->with('estudiantes')->findOrFail($id);
+        $proyecto = Proyecto::query()->with('estudiantes.carreras')->findOrFail($id);
         abort_unless($proyecto->estado_expediente === 'en_tramite', 409, 'El expediente está cerrado y no se puede editar.');
+
+        $participantesIds = old('estudiantes');
+        $participantesSeleccionados = $participantesIds !== null
+            ? Estudiante::with('carreras')->whereIn('id_estudiante', (array) $participantesIds)->get()
+            : $proyecto->estudiantes;
 
         return view('ups.proyectos.form', [
             'proyecto' => $proyecto,
+            'siguienteNumero' => $proyecto->numero_proyecto,
             'areas' => AreaConocimiento::query()->where(fn ($query) => $query->where('activa', true)->orWhere('id_area_conocimiento', $proyecto->area_de_conocimiento))->orderBy('nombre')->get(),
-            'estudiantes' => Estudiante::query()->orderBy('nombre_completo')->get(),
-            'participantesSeleccionados' => $proyecto->estudiantes->modelKeys(),
+            'carreras' => Carrera::query()->orderBy('nombre')->get(),
+            'participantesSeleccionados' => $participantesSeleccionados,
             'modoEdicion' => true,
         ]);
     }
@@ -164,8 +283,9 @@ class ProyectoController extends Controller
     {
         $proyecto = Proyecto::findOrFail($id);
         abort_unless($proyecto->estado_expediente === 'en_tramite', 409, 'El expediente está cerrado y no se puede editar.');
+        $this->procesarNuevosEstudiantes($request);
         $datos = $request->validate($this->reglasProyecto(false, $proyecto));
-        $participantes = $datos['estudiantes'];
+        $participantes = array_values(array_unique($datos['estudiantes']));
         $archivo = $datos['archivo_documento'] ?? null;
         unset($datos['estudiantes']);
         unset($datos['archivo_documento']);
@@ -180,6 +300,37 @@ class ProyectoController extends Controller
         });
 
         return redirect()->route('ups.proyectos.show', $proyecto->id_proyecto)->with('success', 'Se actualizaron los datos del proyecto.');
+    }
+
+    private function procesarNuevosEstudiantes(Request $request): void
+    {
+        $nuevos = $request->input('nuevos_estudiantes', []);
+        if (! is_array($nuevos) || empty($nuevos)) {
+            return;
+        }
+
+        $estudiantesIds = (array) $request->input('estudiantes', []);
+
+        foreach ($nuevos as $nuevo) {
+            $due = strtoupper(trim((string) ($nuevo['due'] ?? '')));
+            $nombre = trim((string) ($nuevo['nombre_completo'] ?? ''));
+            if ($due === '' || $nombre === '') {
+                continue;
+            }
+
+            $estudiante = Estudiante::firstOrCreate(
+                ['due' => $due],
+                ['nombre_completo' => $nombre]
+            );
+
+            if (! empty($nuevo['carrera_id'])) {
+                $estudiante->carreras()->syncWithoutDetaching([(int) $nuevo['carrera_id']]);
+            }
+
+            $estudiantesIds[] = $estudiante->id_estudiante;
+        }
+
+        $request->merge(['estudiantes' => array_values(array_unique($estudiantesIds))]);
     }
 
     private function reglasProyecto(bool $incluyeInicio, ?Proyecto $proyecto = null): array

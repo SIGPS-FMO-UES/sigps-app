@@ -18,5 +18,5 @@ Whenever constructing, modifying, refactoring, or generating any feature, route,
    - **Routes Web (`routes/web.php`)**: Sesión de estado, protección CSRF (`@csrf`), middleware `web`, nombres canónicos (`ups.*`, `admin.*`), vistas Blade o redirecciones con mensajes flash (`with('success', ...)`).
    - **Routes API (`routes/api.php`)**: Rutas RESTful bajo prefijo `/api/v1/ups/` con `auth:sanctum`, y endpoint de integración `/api/v1/integracion/expedientes-avalados` con token de servicio de carrera (`carrera-service-token`).
    - **Namespaces de Controladores**: Respetar estrictamente los namespaces definidos en el documento (`App\Http\Controllers\Auth`, `Publico`, `Ups`, `Admin`, `Api\V1`).
-   - **RBAC con Spatie (`spatie/laravel-permission`)**: Aplicar exclusivamente los roles de la UPS (`role:admin`, `role:jefe_ups`, `role:auxiliar_ups`) y permisos atómicos correspondientes (`prorrogas.resolver`, `certificaciones.emitir`, etc.).
+   - **RBAC con Spatie (`spatie/laravel-permission`)**: Aplicar exclusivamente los roles de la UPS (`role:jefe_ups`, `role:auxiliar_ups`) y permisos atómicos correspondientes (`prorrogas.resolver`, `certificaciones.emitir`, etc.). La administración técnica también pertenece a `jefe_ups`.
    - **Validación**: Utilizar Form Requests dedicados (`app/Http/Requests/...`) para validación y autorización previa.

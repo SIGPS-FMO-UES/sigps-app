@@ -31,7 +31,9 @@ use Illuminate\Support\Facades\Route;
 
 // 1. Acceso Público y Redirección
 Route::get('/', function () {
-    return redirect()->away('/login');
+    return auth()->check()
+        ? redirect()->route('ups.dashboard')
+        : redirect()->route('login');
 })->name('home');
 Route::get('/formatos-oficiales', [CatalogoFormatosController::class, 'index'])->name('formatos.index');
 Route::get('/formatos-oficiales/{id}/descargar', [CatalogoFormatosController::class, 'descargar'])->whereNumber('id')->name('plantillas.descargar');
@@ -92,7 +94,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/estadisticas/exportar', [EstadisticasController::class, 'exportar'])->middleware('permission:estadisticas.exportar')->name('estadisticas.exportar');
     });
 
-    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('role:jefe_ups')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/auditoria', [BitacoraAuditoriaController::class, 'index'])->name('auditoria.index');
         Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
         Route::get('/usuarios/crear', [UsuarioController::class, 'create'])->name('usuarios.create');

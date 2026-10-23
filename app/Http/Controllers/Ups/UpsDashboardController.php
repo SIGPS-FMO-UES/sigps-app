@@ -113,6 +113,10 @@ class UpsDashboardController extends Controller
             ->take(4)
             ->values();
 
+        $usuario = auth()->user();
+        $notificaciones = $usuario ? $usuario->notifications()->latest()->limit(8)->get() : collect();
+        $notificacionesSinLeer = $usuario ? $usuario->unreadNotifications()->count() : 0;
+
         return view('ups.dashboard', [
             'fechaActual' => $ahora->locale('es')->translatedFormat('l, d \\d\\e F \\d\\e Y').' · '.$ahora->format('H:i'),
             'mesActual' => ucfirst($fechaCalendario->locale('es')->translatedFormat('F Y')),
@@ -123,6 +127,8 @@ class UpsDashboardController extends Controller
             'busqueda' => $filtros['buscar'] ?? '',
             'nombreUsuario' => auth()->user()->nombre_completo,
             'rolUsuario' => auth()->user()->getRoleNames()->first() === 'jefe_ups' ? 'Jefatura UPS' : (auth()->user()->hasRole('admin') ? 'Administrador' : 'Auxiliar UPS'),
+            'notificaciones' => $notificaciones,
+            'notificacionesSinLeer' => $notificacionesSinLeer,
             'triaje' => [
                 'plazosCriticos' => $plazosCriticos,
                 'auditoriasPendientes' => $auditoriasPendientes,

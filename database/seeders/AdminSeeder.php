@@ -9,7 +9,7 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = User::updateOrCreate(
+        $usuario = User::updateOrCreate(
             ['nombre_usuario' => 'admin'],
             [
                 'nombre_completo' => 'Administrador UPS',
@@ -19,6 +19,6 @@ class AdminSeeder extends Seeder
             ]
         );
 
-        $admin->syncRoles(['admin']);
+        $usuario->syncRoles(['jefe_ups']);
     }
 }

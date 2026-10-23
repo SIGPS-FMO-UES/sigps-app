@@ -10,6 +10,8 @@ use App\Models\HistorialFaseProyecto;
 use App\Models\LogAccion;
 use App\Models\Memoria;
 use App\Models\Proyecto;
+use App\Models\User;
+use App\Notifications\ExpedienteRecibidoNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -106,6 +108,16 @@ class IntegracionApiController extends Controller
 
             return $doc;
         });
+
+        User::role(['jefe_ups', 'auxiliar_ups'])
+            ->where('activo', true)
+            ->get()
+            ->each(fn (User $usuario) => $usuario->notify(new ExpedienteRecibidoNotification(
+                $proyecto->id_proyecto,
+                $proyecto->titulo,
+                $fase,
+                $codigoAval,
+            )));
 
         return response()->json([
             'status' => 'success',

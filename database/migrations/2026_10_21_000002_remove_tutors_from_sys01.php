@@ -9,21 +9,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::dropIfExists('tutores');
-
-        if (Schema::hasTable('proyectos') && Schema::hasColumn('proyectos', 'tutor')) {
-            Schema::table('proyectos', function (Blueprint $table): void {
-                $table->dropColumn('tutor');
-            });
-        }
     }
 
     public function down(): void
     {
-        if (Schema::hasTable('proyectos') && ! Schema::hasColumn('proyectos', 'tutor')) {
-            Schema::table('proyectos', function (Blueprint $table): void {
-                $table->string('tutor')->nullable();
-            });
-        }
 
         if (! Schema::hasTable('tutores')) {
             Schema::create('tutores', function (Blueprint $table): void {

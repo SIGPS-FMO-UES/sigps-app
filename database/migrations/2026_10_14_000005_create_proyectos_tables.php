@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('proyectos', function (Blueprint $table) {
             $table->id('id_proyecto');
+            $table->unsignedBigInteger('numero_proyecto')->unique();
             $table->foreignId('creado_por')->constrained('usuarios', 'id_usuario')->restrictOnDelete();
             $table->date('fecha_inicio');
             $table->date('fecha_final')->nullable();

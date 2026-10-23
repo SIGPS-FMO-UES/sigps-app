@@ -45,6 +45,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>N° Proyecto</th>
                         <th>Expediente</th>
                         <th>Estudiante(s)</th>
                         <th>Área</th>
@@ -58,7 +59,8 @@
                     @forelse($memorias as $memoria)
                         @php($estado = $memoria->estado instanceof \App\Enums\EstadoMemoria ? $memoria->estado->value : $memoria->estado)
                         <tr>
-                            <td><a href="{{ route('ups.proyectos.show', $memoria->proyecto_id) }}">{{ $memoria->proyecto?->titulo ?? 'Proyecto no disponible' }}</a></td>
+                            <td><strong>#{{ $memoria->numero_proyecto }}</strong></td>
+                            <td><a href="{{ route('ups.proyectos.show', $memoria->proyecto?->id_proyecto ?? $memoria->numero_proyecto) }}">{{ $memoria->proyecto?->titulo ?? 'Proyecto no disponible' }}</a></td>
                             <td>{{ $memoria->proyecto?->estudiantes->pluck('nombre_completo')->join(', ') ?: '—' }}</td>
                             <td>{{ $memoria->proyecto?->areaConocimiento?->nombre ?? '—' }}</td>
                             <td>{{ $memoria->fecha_recibimiento?->format('d/m/Y') ?? '—' }}</td>
@@ -72,7 +74,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="7" class="empty">No hay memorias recibidas que coincidan con la búsqueda.</td></tr>
+                        <tr><td colspan="8" class="empty">No hay memorias recibidas que coincidan con la búsqueda.</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -95,11 +97,12 @@
         </div>
         <div class="table-wrap">
             <table class="table">
-                <thead><tr><th>Proyecto</th><th>Área</th><th>Participantes</th><th>Inicio</th><th>Plazo de memoria</th><th>Estado del plazo</th></tr></thead>
+                <thead><tr><th>N° Proyecto</th><th>Proyecto</th><th>Área</th><th>Participantes</th><th>Inicio</th><th>Plazo de memoria</th><th>Estado del plazo</th></tr></thead>
                 <tbody>
                     @forelse($proyectosSinMemoria as $proyecto)
                         @php($fechaLimite = $proyecto->fecha_inicio?->copy()->addMonths(3))
                         <tr>
+                            <td><strong>#{{ $proyecto->numero_proyecto ?? $proyecto->id_proyecto }}</strong></td>
                             <td><a href="{{ route('ups.proyectos.show', $proyecto->id_proyecto) }}">{{ $proyecto->titulo }}</a></td>
                             <td>{{ $proyecto->areaConocimiento?->nombre ?? '—' }}</td>
                             <td>{{ $proyecto->estudiantes->pluck('nombre_completo')->join(', ') ?: '—' }}</td>

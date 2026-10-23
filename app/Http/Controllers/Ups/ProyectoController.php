@@ -11,6 +11,7 @@ use App\Models\Proyecto;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -33,6 +34,8 @@ class ProyectoController extends Controller
         $proyectos = Proyecto::query()
             ->with(['areaConocimiento', 'estudiantes', 'memoria'])
             ->when($filtros['search'] ?? null, fn ($query, $search) => $query->where(fn ($subquery) => $subquery->where('titulo', 'ilike', "%{$search}%")
+                ->when(is_numeric($search), fn ($numericQuery) => $numericQuery->orWhere('numero_proyecto', (int) $search))
+                ->orWhere('tutor', 'ilike', "%{$search}%")
                 ->orWhereHas('estudiantes', fn ($estudiantes) => $estudiantes->where('due', 'ilike', "%{$search}%")->orWhere('nombre_completo', 'ilike', "%{$search}%"))))
             ->when($filtros['area_id'] ?? null, fn ($query, $id) => $query->where('area_de_conocimiento', $id))
             ->when($filtros['fecha'] ?? null, fn ($query, $fecha) => $query->whereDate('fecha_inicio', $fecha))
@@ -91,7 +94,7 @@ class ProyectoController extends Controller
             if ($archivo) {
                 $this->guardarDocumento($proyecto, $archivo, 'inscripcion');
             }
-            $this->registrarCambio("Apertura del expediente del proyecto #{$proyecto->id_proyecto}: {$proyecto->titulo}");
+            $this->registrarCambio("Apertura del expediente del proyecto #{$proyecto->numero_proyecto} (ID #{$proyecto->id_proyecto}): {$proyecto->titulo}");
 
             return $proyecto;
         });
@@ -122,7 +125,7 @@ class ProyectoController extends Controller
         ]);
     }
 
-    private function historialProyecto(Proyecto $proyecto): \Illuminate\Support\Collection
+    private function historialProyecto(Proyecto $proyecto): Collection
     {
         return $proyecto->historialFases->reject(fn ($movimiento): bool => in_array($movimiento->evento, [
             'proyecto_cancelado', 'estudiante_retirado', 'prorroga_registrada', 'ampliacion_aprobada', 'ampliacion_rechazada',
@@ -161,7 +164,7 @@ class ProyectoController extends Controller
     {
         $proyecto = Proyecto::findOrFail($id);
         abort_unless($proyecto->estado_expediente === 'en_tramite', 409, 'El expediente está cerrado y no se puede editar.');
-        $datos = $request->validate($this->reglasProyecto(false));
+        $datos = $request->validate($this->reglasProyecto(false, $proyecto));
         $participantes = $datos['estudiantes'];
         $archivo = $datos['archivo_documento'] ?? null;
         unset($datos['estudiantes']);
@@ -173,19 +176,28 @@ class ProyectoController extends Controller
             if ($archivo) {
                 $this->guardarDocumento($proyecto, $archivo, $proyecto->fase_actual);
             }
-            $this->registrarCambio("Actualización de datos autorizados del proyecto #{$proyecto->id_proyecto}: {$proyecto->titulo}");
+            $this->registrarCambio("Actualización de datos autorizados del proyecto #{$proyecto->numero_proyecto} (ID #{$proyecto->id_proyecto}): {$proyecto->titulo}");
         });
 
         return redirect()->route('ups.proyectos.show', $proyecto->id_proyecto)->with('success', 'Se actualizaron los datos del proyecto.');
     }
 
-    private function reglasProyecto(bool $incluyeInicio): array
+    private function reglasProyecto(bool $incluyeInicio, ?Proyecto $proyecto = null): array
     {
         return [
+            'numero_proyecto' => [
+                'required',
+                'integer',
+                'min:1',
+                $proyecto
+                    ? Rule::unique('proyectos', 'numero_proyecto')->ignore($proyecto->id_proyecto, 'id_proyecto')
+                    : 'unique:proyectos,numero_proyecto',
+            ],
             'titulo' => ['required', 'string', 'max:255'],
             'fecha_inicio' => [$incluyeInicio ? 'required' : 'sometimes', 'date'],
             'fecha_final' => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
             'area_de_conocimiento' => ['required', 'integer', 'exists:areas_de_conocimiento,id_area_conocimiento'],
+            'tutor' => ['required', 'string', 'max:255'],
             'subcoordinador' => ['required', 'string', 'max:255'],
             'documento' => ['nullable', 'string', 'max:255'],
             'archivo_documento' => ['nullable', 'file', 'mimes:pdf', 'max:15360'],

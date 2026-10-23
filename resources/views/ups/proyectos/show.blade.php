@@ -27,16 +27,18 @@
         <div class="card-head">
             <div>
                 <h2>{{ $proyecto->titulo }}</h2>
-                <p class="muted" style="margin:5px 0 0">Expediente #{{ $proyecto->id_proyecto }}</p>
+                <p class="muted" style="margin:5px 0 0">Número de proyecto #{{ $proyecto->numero_proyecto ?? $proyecto->id_proyecto }} · Expediente #{{ $proyecto->id_proyecto }}</p>
             </div>
             <span class="badge {{ $proyecto->estado_expediente === 'finalizado' ? 'badge-success' : ($proyecto->estado_expediente === 'cancelado' ? 'badge-danger' : 'badge-info') }}">{{ ['en_tramite'=>'En trámite','finalizado'=>'Finalizado','cancelado'=>'Cancelado'][$proyecto->estado_expediente] ?? $proyecto->estado_expediente }}</span>
         </div>
         <div class="card-body">
             <div class="detail-grid">
+                <div class="detail"><small>N° Proyecto</small><strong>#{{ $proyecto->numero_proyecto ?? '—' }}</strong></div>
                 <div class="detail"><small>Área</small><strong>{{ $proyecto->areaConocimiento?->nombre ?? '—' }}</strong></div>
                 <div class="detail"><small>Fecha de inicio</small><strong>{{ $proyecto->fecha_inicio?->format('d/m/Y') ?? '—' }}</strong></div>
                 <div class="detail"><small>Fecha final</small><strong>{{ $proyecto->fecha_final?->format('d/m/Y') ?? 'Pendiente' }}</strong></div>
                 <div class="detail"><small>Registrado por</small><strong>{{ $proyecto->creador?->nombre_completo ?? '—' }}</strong></div>
+                <div class="detail"><small>Docente tutor</small><strong>{{ $proyecto->tutor ?: '—' }}</strong></div>
                 <div class="detail"><small>Subcoordinador en expediente</small><strong>{{ $proyecto->subcoordinador }}</strong></div>
                 <div class="detail"><small>Referencia documental</small><strong>{{ $proyecto->documento ?: '—' }}</strong></div>
                 <div class="detail"><small>Participantes</small><strong>{{ $proyecto->estudiantes->count() }}</strong></div>

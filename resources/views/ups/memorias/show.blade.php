@@ -6,7 +6,7 @@
 
 @section('page-actions')
     <a class="btn" href="{{ route('ups.memorias.index') }}">← Memorias</a>
-    <a class="btn" href="{{ route('ups.proyectos.show', $memoria->proyecto_id) }}">Abrir proyecto</a>
+    <a class="btn" href="{{ route('ups.proyectos.show', $memoria->proyecto?->id_proyecto ?? $memoria->numero_proyecto) }}">Abrir proyecto</a>
     @if($documentoDisponible && in_array($memoria->estado->value, ['recibido', 'en_revision', 'observada'], true))
         <a class="btn btn-primary" href="{{ route('ups.auditoria.show', $memoria->id_memoria) }}">Auditar sellos y tinta azul</a>
     @endif
@@ -17,13 +17,14 @@
         <div class="card-head">
             <div>
                 <h2>{{ $memoria->proyecto?->titulo ?? 'Proyecto no disponible' }}</h2>
-                <p class="muted" style="margin:5px 0 0">Expediente #{{ $memoria->proyecto_id }} · Intento {{ $memoria->intento }}</p>
+                <p class="muted" style="margin:5px 0 0">Proyecto #{{ $memoria->numero_proyecto }} · Expediente #{{ $memoria->proyecto?->id_proyecto }} · Intento {{ $memoria->intento }}</p>
             </div>
             @php($estado = $memoria->estado instanceof \App\Enums\EstadoMemoria ? $memoria->estado->value : $memoria->estado)
             <span class="badge {{ $estado === 'observada' ? 'badge-warning' : (in_array($estado, ['aprobada', 'aprovada'], true) ? 'badge-success' : 'badge-info') }}">{{ $memoria->estado->label() }}</span>
         </div>
         <div class="card-body">
             <div class="detail-grid">
+                <div class="detail"><small>N° Proyecto</small><strong>#{{ $memoria->numero_proyecto }}</strong></div>
                 <div class="detail"><small>Área de conocimiento</small><strong>{{ $memoria->proyecto?->areaConocimiento?->nombre ?? '—' }}</strong></div>
                 <div class="detail"><small>Fecha de recepción</small><strong>{{ $memoria->fecha_recibimiento?->format('d/m/Y') ?? '—' }}</strong></div>
                 <div class="detail"><small>Registrada por</small><strong>{{ $memoria->registrador?->nombre_completo ?? 'Integración institucional' }}</strong></div>

@@ -16,9 +16,11 @@ class ProyectoResource extends JsonResource
     {
         return [
             'id_proyecto' => $this->id_proyecto,
+            'numero_proyecto' => $this->numero_proyecto,
             'titulo' => $this->titulo,
             'fase_actual' => $this->fase_actual,
             'estado_expediente' => $this->estado_expediente,
+            'tutor' => $this->tutor,
             'subcoordinador' => $this->subcoordinador,
             'fecha_inicio' => $this->fecha_inicio?->toDateString(),
             'fecha_final' => $this->fecha_final?->toDateString(),

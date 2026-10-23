@@ -153,11 +153,13 @@ Table areas_de_conocimiento {
 
 Table proyectos {
   id_proyecto bigint [pk, increment]
+  numero_proyecto bigint [unique, not null, note: 'Correlativo numérico único del proyecto']
   creado_por bigint [not null]
   fecha_inicio date [not null]
   fecha_final date [null]
   titulo varchar [not null]
   miembros varchar [null, note: 'DUEs separados por coma (campo descriptivo; la relación normalizada está en proyectos_estudiantes)']
+  tutor varchar [not null, note: 'Nombre completo del docente tutor']
   subcoordinador varchar [not null]
   area_de_conocimiento bigint [not null]
   documento varchar [null]
@@ -250,7 +252,7 @@ Table memorias {
   fecha_listo date [null]
   fecha_entrega date [null]
   observaciones text [null]
-  proyecto_id bigint [unique, not null]
+  numero_proyecto bigint [unique, not null, note: 'Correlativo del proyecto asociado']
   documento varchar [null]
   deleted_at timestamp [null]
   created_at timestamp [null]
@@ -364,7 +366,7 @@ Ref: "usuarios"."id_usuario" < "procesos_extraordinarios"."resuelto_por" [delete
 
 // Relaciones Memorias
 Ref: "usuarios"."id_usuario" < "memorias"."registrada_por" [delete: restrict]
-Ref: "proyectos"."id_proyecto" - "memorias"."proyecto_id" [delete: cascade]
+Ref: "proyectos"."numero_proyecto" - "memorias"."numero_proyecto" [delete: cascade]
 Ref: "memorias"."id_memoria" < "revisiones_memorias"."memoria_id" [delete: cascade]
 Ref: "usuarios"."id_usuario" < "revisiones_memorias"."auditor_id" [delete: restrict]
 Ref: "proyectos"."id_proyecto" < "certificaciones"."proyecto_id" [delete: restrict]

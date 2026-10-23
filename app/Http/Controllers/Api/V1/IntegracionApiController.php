@@ -79,7 +79,7 @@ class IntegracionApiController extends Controller
             // Si es memoria final, se inicializa el registro para auditoría de sellos y tinta azul
             if ($fase === 'memoria_final') {
                 Memoria::updateOrCreate(
-                    ['proyecto_id' => $proyecto->id_proyecto],
+                    ['numero_proyecto' => $proyecto->numero_proyecto],
                     [
                         'registrada_por' => $proyecto->creado_por,
                         'fecha_recibimiento' => now()->toDateString(),

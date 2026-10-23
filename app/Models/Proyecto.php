@@ -12,11 +12,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
+    'numero_proyecto',
     'creado_por',
     'fecha_inicio',
     'fecha_final',
     'titulo',
     'miembros',
+    'tutor',
     'subcoordinador',
     'area_de_conocimiento',
     'documento',
@@ -43,6 +45,7 @@ class Proyecto extends Model
     protected function casts(): array
     {
         return [
+            'numero_proyecto' => 'integer',
             'fecha_inicio' => 'date',
             'fecha_final' => 'date',
             'fecha_radicado' => 'datetime',
@@ -83,19 +86,19 @@ class Proyecto extends Model
     }
 
     /**
-     * Memoria única o actual asociada al proyecto.
+     * Memoria única o actual asociada al proyecto mediante el correlativo de proyecto.
      */
     public function memoria(): HasOne
     {
-        return $this->hasOne(Memoria::class, 'proyecto_id', 'id_proyecto');
+        return $this->hasOne(Memoria::class, 'numero_proyecto', 'numero_proyecto');
     }
 
     /**
-     * Historial de memorias o intentos presentados para este proyecto.
+     * Historial de memorias o intentos presentados para este proyecto mediante el correlativo de proyecto.
      */
     public function memorias(): HasMany
     {
-        return $this->hasMany(Memoria::class, 'proyecto_id', 'id_proyecto');
+        return $this->hasMany(Memoria::class, 'numero_proyecto', 'numero_proyecto');
     }
 
     public function historialFases(): HasMany

@@ -13,7 +13,7 @@
         <div class="card-head">
             <div>
                 <h2>{{ $memoria->proyecto?->titulo ?? 'Proyecto no disponible' }}</h2>
-                <p class="muted" style="margin:5px 0 0">Expediente #{{ $memoria->proyecto_id }} · Intento {{ $memoria->intento }} · Recibida {{ $memoria->fecha_recibimiento?->format('d/m/Y') ?? '—' }}</p>
+                <p class="muted" style="margin:5px 0 0">Proyecto #{{ $memoria->numero_proyecto }} · Expediente #{{ $memoria->proyecto?->id_proyecto }} · Intento {{ $memoria->intento }} · Recibida {{ $memoria->fecha_recibimiento?->format('d/m/Y') ?? '—' }}</p>
             </div>
             <span class="badge badge-info">En auditoría</span>
         </div>

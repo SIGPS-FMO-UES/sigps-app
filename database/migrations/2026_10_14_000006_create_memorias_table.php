@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('fecha_listo')->nullable();
             $table->date('fecha_entrega')->nullable();
             $table->text('observaciones')->nullable();
-            $table->foreignId('proyecto_id')->unique()->constrained('proyectos', 'id_proyecto')->cascadeOnDelete();
+            $table->foreignId('numero_proyecto')->unique()->constrained('proyectos', 'numero_proyecto')->cascadeOnDelete();
             $table->string('documento')->nullable();
             $table->softDeletes();
             $table->timestamps();

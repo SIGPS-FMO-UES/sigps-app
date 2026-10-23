@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AreaConocimientoController;
 use App\Http\Controllers\Admin\BitacoraAuditoriaController;
+use App\Http\Controllers\Admin\CarreraDepartamentoController;
 use App\Http\Controllers\Admin\PlantillaController;
 use App\Http\Controllers\Admin\UsuarioController;
 use App\Http\Controllers\Auth\LoginController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Ups\EstadisticasController;
 use App\Http\Controllers\Ups\EstudianteController;
 use App\Http\Controllers\Ups\GestionProrrogasController;
 use App\Http\Controllers\Ups\MemoriaController;
+use App\Http\Controllers\Ups\NotificacionController;
 use App\Http\Controllers\Ups\ProcesosExtraordinariosController;
 use App\Http\Controllers\Ups\ProyectoController;
 use App\Http\Controllers\Ups\UpsDashboardController;
@@ -52,6 +54,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:auxiliar_ups|jefe_ups')->prefix('ups')->name('ups.')->group(function () {
         Route::get('/dashboard', [UpsDashboardController::class, 'index'])->name('dashboard');
         Route::get('/bandeja', [BandejaExpedientesController::class, 'index'])->name('bandeja.index');
+        Route::post('/notificaciones/{id}/leida', [NotificacionController::class, 'marcarLeida'])->name('notificaciones.leida');
+        Route::post('/notificaciones/leidas', [NotificacionController::class, 'marcarTodasLeidas'])->name('notificaciones.leidas-todas');
         Route::post('/proyectos/{id}/admitir-fase', [BandejaExpedientesController::class, 'admitirFase'])->whereNumber('id')->name('proyectos.admitirFase');
         Route::post('/proyectos/{id}/finalizar', [BandejaExpedientesController::class, 'finalizar'])->whereNumber('id')->name('proyectos.finalizar');
         Route::post('/proyectos/{id}/fases/{fase}/observaciones', [BandejaExpedientesController::class, 'guardarObservaciones'])->whereNumber('id')->name('proyectos.fase.observaciones');
@@ -106,9 +110,17 @@ Route::middleware('auth')->group(function () {
         Route::post('/areas-conocimiento', [AreaConocimientoController::class, 'store'])->name('areas.store');
         Route::put('/areas-conocimiento/{id}', [AreaConocimientoController::class, 'update'])->whereNumber('id')->name('areas.update');
         Route::patch('/areas-conocimiento/{id}/estado', [AreaConocimientoController::class, 'cambiarEstado'])->whereNumber('id')->name('areas.estado');
+        Route::delete('/areas-conocimiento/{id}', [AreaConocimientoController::class, 'destroy'])->whereNumber('id')->name('areas.destroy');
         Route::get('/plantillas', [PlantillaController::class, 'index'])->name('plantillas.index');
         Route::post('/plantillas', [PlantillaController::class, 'store'])->name('plantillas.store');
         Route::put('/plantillas/{id}', [PlantillaController::class, 'update'])->whereNumber('id')->name('plantillas.update');
         Route::patch('/plantillas/{id}/estado', [PlantillaController::class, 'cambiarEstado'])->whereNumber('id')->name('plantillas.estado');
+        Route::get('/carreras-departamentos', [CarreraDepartamentoController::class, 'index'])->name('catalogos.index');
+        Route::post('/departamentos', [CarreraDepartamentoController::class, 'storeDepartamento'])->name('departamentos.store');
+        Route::put('/departamentos/{id}', [CarreraDepartamentoController::class, 'updateDepartamento'])->whereNumber('id')->name('departamentos.update');
+        Route::delete('/departamentos/{id}', [CarreraDepartamentoController::class, 'destroyDepartamento'])->whereNumber('id')->name('departamentos.destroy');
+        Route::post('/carreras', [CarreraDepartamentoController::class, 'storeCarrera'])->name('carreras.store');
+        Route::put('/carreras/{id}', [CarreraDepartamentoController::class, 'updateCarrera'])->whereNumber('id')->name('carreras.update');
+        Route::delete('/carreras/{id}', [CarreraDepartamentoController::class, 'destroyCarrera'])->whereNumber('id')->name('carreras.destroy');
     });
 });

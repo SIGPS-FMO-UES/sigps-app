@@ -81,6 +81,9 @@ class UpsDashboardController extends Controller
         $certificacionesPendientes = Memoria::query()
             ->whereIn('estado', [EstadoMemoria::Lista->value, EstadoMemoria::EsperandoFirmas->value])
             ->count();
+        $usuario = auth()->user();
+        $notificaciones = $usuario->notifications()->latest()->limit(8)->get();
+        $notificacionesSinLeer = $usuario->unreadNotifications()->count();
 
         return view('ups.dashboard', [
             'fechaActual' => $ahora->locale('es')->translatedFormat('l, d \\d\\e F \\d\\e Y').' · '.$ahora->format('H:i'),
@@ -92,6 +95,8 @@ class UpsDashboardController extends Controller
             'busqueda' => $filtros['buscar'] ?? '',
             'nombreUsuario' => auth()->user()->nombre_completo,
             'rolUsuario' => auth()->user()->getRoleNames()->first() === 'jefe_ups' ? 'Jefatura UPS' : 'Auxiliar UPS',
+            'notificaciones' => $notificaciones,
+            'notificacionesSinLeer' => $notificacionesSinLeer,
             'metricas' => [
                 ['valor' => $memoriasPendientes, 'titulo' => 'Expedientes recibidos', 'detalle' => 'Pendientes de revisión UPS', 'icono' => 'archivo'],
                 ['valor' => $plazosCriticos, 'titulo' => 'Plazos críticos', 'detalle' => 'Proyectos sin memoria y con más de 3 meses', 'icono' => 'alerta'],

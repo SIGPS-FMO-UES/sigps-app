@@ -31,7 +31,6 @@
     </div>
     <nav class="nav" id="sidebar-nav" aria-label="Módulos UPS">
             <a class="nav-item {{ request()->routeIs('ups.dashboard') ? 'active' : '' }}" href="{{ route('ups.dashboard', [], false) }}" aria-label="Dashboard" title="Dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"></rect><rect x="13" y="3" width="8" height="5" rx="1.5"></rect><rect x="13" y="10" width="8" height="11" rx="1.5"></rect><rect x="3" y="13" width="8" height="8" rx="1.5"></rect></svg><span>Dashboard</span></a>
-            <a class="nav-item {{ request()->routeIs('ups.bandeja.*') ? 'active' : '' }}" href="{{ route('ups.bandeja.index', [], false) }}" aria-label="Bandeja UPS" title="Bandeja UPS"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4zM4 13h4l2 3h4l2-3h4"></path></svg><span>Bandeja UPS</span></a>
             <a class="nav-item {{ request()->routeIs('ups.estudiantes.*') ? 'active' : '' }}" href="{{ route('ups.estudiantes.index', [], false) }}" aria-label="Estudiantes" title="Estudiantes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20a7 7 0 0 1 14 0"></path></svg><span>Estudiantes</span></a>
             <details class="nav-group" @if(request()->routeIs('ups.proyectos.*', 'ups.prorrogas.*', 'ups.plazos.*')) open @endif>
                 <summary class="nav-group-toggle {{ request()->routeIs('ups.proyectos.*', 'ups.prorrogas.*', 'ups.plazos.*') ? 'active' : '' }}" aria-label="Proyectos y seguimiento" title="Proyectos y seguimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"></path><path d="m3 8 9 5 9-5M3 8v9l9 5 9-5V8M12 13v9"></path></svg><span>Proyectos</span></summary>
@@ -51,6 +50,7 @@
                     <a class="nav-child {{ request()->routeIs('admin.usuarios.*') ? 'active' : '' }}" href="{{ route('admin.usuarios.index', [], false) }}">Usuarios</a>
                     <a class="nav-child {{ request()->routeIs('admin.auditoria.*') ? 'active' : '' }}" href="{{ route('admin.auditoria.index', [], false) }}">Auditoría administrativa</a>
                     <a class="nav-child {{ request()->routeIs('admin.areas.*') ? 'active' : '' }}" href="{{ route('admin.areas.index', [], false) }}">Áreas de conocimiento</a>
+                    <a class="nav-child {{ request()->routeIs('admin.catalogos.*', 'admin.carreras.*', 'admin.departamentos.*') ? 'active' : '' }}" href="{{ route('admin.catalogos.index', [], false) }}">Carreras y departamentos</a>
                     <a class="nav-child {{ request()->routeIs('admin.plantillas.*') ? 'active' : '' }}" href="{{ route('admin.plantillas.index', [], false) }}">Plantillas oficiales</a>
                 </div>
             </details>

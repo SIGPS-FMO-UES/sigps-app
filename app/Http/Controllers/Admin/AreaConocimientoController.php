@@ -54,4 +54,16 @@ class AreaConocimientoController extends Controller
 
         return back()->with('success', 'Disponibilidad del área actualizada.');
     }
+
+    public function destroy(string $id): RedirectResponse
+    {
+        $area = AreaConocimiento::query()->withCount('proyectos')->findOrFail($id);
+        if ($area->proyectos_count > 0) {
+            return back()->withErrors(['area' => 'No se puede eliminar: hay proyectos vinculados a esta área. Puedes desactivarla para que no aparezca en nuevos proyectos.']);
+        }
+
+        $area->delete();
+
+        return to_route('admin.areas.index')->with('success', 'Área de conocimiento eliminada correctamente.');
+    }
 }

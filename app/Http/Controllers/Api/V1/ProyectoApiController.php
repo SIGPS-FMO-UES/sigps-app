@@ -65,6 +65,7 @@ class ProyectoApiController extends Controller
             'area_de_conocimiento' => ['required', 'integer', 'exists:areas_de_conocimiento,id_area_conocimiento'],
             'tutor' => ['required', 'string', 'max:255'],
             'subcoordinador' => ['required', 'string', 'max:255'],
+            'correo_coordinador' => ['nullable', 'email', 'max:255'],
             'fecha_inicio' => ['required', 'date'],
             'fecha_final' => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
             'estudiantes' => ['required', 'array', 'min:1'],
@@ -79,6 +80,7 @@ class ProyectoApiController extends Controller
                 'area_de_conocimiento' => $datos['area_de_conocimiento'],
                 'tutor' => $datos['tutor'],
                 'subcoordinador' => $datos['subcoordinador'],
+                'correo_coordinador' => $datos['correo_coordinador'] ?? null,
                 'fecha_inicio' => $datos['fecha_inicio'],
                 'fecha_final' => $datos['fecha_final'] ?? null,
                 'fase_actual' => 'inscripcion',
@@ -125,6 +127,7 @@ class ProyectoApiController extends Controller
             'titulo' => ['sometimes', 'required', 'string', 'max:255'],
             'tutor' => ['sometimes', 'required', 'string', 'max:255'],
             'subcoordinador' => ['sometimes', 'required', 'string', 'max:255'],
+            'correo_coordinador' => ['nullable', 'email', 'max:255'],
             'fecha_final' => ['nullable', 'date'],
             'area_de_conocimiento' => ['sometimes', 'required', 'integer', 'exists:areas_de_conocimiento,id_area_conocimiento'],
         ]);

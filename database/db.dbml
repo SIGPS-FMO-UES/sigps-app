@@ -114,6 +114,7 @@ Table carreras {
   id_carrera bigint [pk, increment]
   nombre varchar [not null]
   departamento bigint [not null]
+  horas_servicio_social int [default: 500, not null, note: 'Horas necesarias para completar servicio social']
   created_at timestamp [null]
   updated_at timestamp [null]
 }
@@ -161,6 +162,7 @@ Table proyectos {
   miembros varchar [null, note: 'DUEs separados por coma (campo descriptivo; la relación normalizada está en proyectos_estudiantes)']
   tutor varchar [not null, note: 'Nombre completo del docente tutor']
   subcoordinador varchar [not null]
+  correo_coordinador varchar [null, note: 'Correo electrónico de contacto del coordinador']
   area_de_conocimiento bigint [not null]
   documento varchar [null]
   fase_actual varchar(30) [default: 'inscripcion', not null]
@@ -307,6 +309,25 @@ Table logs_acciones {
 }
 
 // ------------------------------------------------------------------------------
+// TABLAS: NOTIFICACIONES DEL SISTEMA (LARAVEL DATABASE NOTIFICATIONS)
+// ------------------------------------------------------------------------------
+
+Table notifications {
+  id uuid [pk]
+  type varchar [not null]
+  notifiable_type varchar [not null]
+  notifiable_id bigint [not null]
+  data json [not null]
+  read_at timestamp [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+
+  indexes {
+    (notifiable_type, notifiable_id, read_at)
+  }
+}
+
+// ------------------------------------------------------------------------------
 // TABLAS: GESTIÓN DE PLANTILLAS Y DOCUMENTOS
 // ------------------------------------------------------------------------------
 
@@ -393,6 +414,7 @@ TableGroup seguridad_autenticacion {
   model_has_permissions
   role_has_permissions
   logs_acciones
+  notifications
 }
 
 TableGroup estructura_academica {

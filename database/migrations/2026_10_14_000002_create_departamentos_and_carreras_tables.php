@@ -21,6 +21,7 @@ return new class extends Migration
             $table->id('id_carrera');
             $table->string('nombre');
             $table->foreignId('departamento')->constrained('departamentos', 'id_departamento')->cascadeOnDelete();
+            $table->unsignedInteger('horas_servicio_social')->default(500);
             $table->timestamps();
         });
     }

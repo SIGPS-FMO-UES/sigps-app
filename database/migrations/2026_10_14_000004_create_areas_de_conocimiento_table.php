@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_area_conocimiento');
             $table->string('nombre');
             $table->text('detalles')->nullable();
+            $table->boolean('activa')->default(true)->index();
             $table->timestamps();
         });
     }

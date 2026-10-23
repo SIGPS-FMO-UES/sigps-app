@@ -350,6 +350,7 @@ class ProyectoController extends Controller
             'area_de_conocimiento' => ['required', 'integer', 'exists:areas_de_conocimiento,id_area_conocimiento'],
             'tutor' => ['required', 'string', 'max:255'],
             'subcoordinador' => ['required', 'string', 'max:255'],
+            'correo_coordinador' => ['nullable', 'email', 'max:255'],
             'documento' => ['nullable', 'string', 'max:255'],
             'archivo_documento' => ['nullable', 'file', 'mimes:pdf', 'max:15360'],
             'estudiantes' => ['required', 'array', 'min:1'],

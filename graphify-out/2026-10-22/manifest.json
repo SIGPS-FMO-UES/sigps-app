@@ -342,9 +342,9 @@
     "semantic_hash": ""
   },
   "routes/api.php": {
-    "mtime": 1792730092.9694874,
-    "seen": 1792730105.253673,
-    "ast_hash": "7321afcabd41be407c2457850f49b5b5",
+    "mtime": 1792732129.118702,
+    "seen": 1792732145.4103713,
+    "ast_hash": "9d31d729d31dce96d7e4a83116efba12",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Auth/LoginController.php": {
@@ -915,6 +915,30 @@
     "mtime": 1792731504.3939693,
     "seen": 1792731670.2726169,
     "ast_hash": "3aca7144a04314ac363087132c1630c1",
+    "semantic_hash": ""
+  },
+  "app/Http/Controllers/Api/V1/CarreraApiController.php": {
+    "mtime": 1792732102.4980116,
+    "seen": 1792732145.4102502,
+    "ast_hash": "3222553051990a0849880bf25b26ba8c",
+    "semantic_hash": ""
+  },
+  "app/Http/Controllers/Api/V1/DepartamentoApiController.php": {
+    "mtime": 1792732112.5048952,
+    "seen": 1792732145.410253,
+    "ast_hash": "b8c91c23e675e2f20e4affca17cdd895",
+    "semantic_hash": ""
+  },
+  "app/Http/Resources/CarreraResource.php": {
+    "mtime": 1792732087.323188,
+    "seen": 1792732145.4102786,
+    "ast_hash": "25f81a4fa758e8bfc52ed264d19eab6f",
+    "semantic_hash": ""
+  },
+  "app/Http/Resources/DepartamentoResource.php": {
+    "mtime": 1792732092.9851222,
+    "seen": 1792732145.4102807,
+    "ast_hash": "19a602cabc8a0764e40a3acdbd3a0434",
     "semantic_hash": ""
   }
 }

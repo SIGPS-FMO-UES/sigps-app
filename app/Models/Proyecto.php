@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'miembros',
     'tutor',
     'subcoordinador',
+    'correo_coordinador',
     'area_de_conocimiento',
     'documento',
     'fase_actual',
@@ -33,6 +34,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Proyecto extends Model
 {
     use HasFactory, SoftDeletes;
+
+    /**
+     * Alias de correo del coordinador.
+     */
+    public function getEmailCoordinadorAttribute(): ?string
+    {
+        return $this->correo_coordinador;
+    }
 
     protected $table = 'proyectos';
 

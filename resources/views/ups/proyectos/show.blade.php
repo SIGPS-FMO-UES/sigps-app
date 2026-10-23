@@ -40,6 +40,7 @@
                 <div class="detail"><small>Registrado por</small><strong>{{ $proyecto->creador?->nombre_completo ?? '—' }}</strong></div>
                 <div class="detail"><small>Docente tutor</small><strong>{{ $proyecto->tutor ?: '—' }}</strong></div>
                 <div class="detail"><small>Subcoordinador en expediente</small><strong>{{ $proyecto->subcoordinador }}</strong></div>
+                <div class="detail"><small>Correo del coordinador</small><strong>{{ $proyecto->correo_coordinador ?: 'No registrado' }}</strong></div>
                 <div class="detail"><small>Referencia documental</small><strong>{{ $proyecto->documento ?: '—' }}</strong></div>
                 <div class="detail"><small>Participantes</small><strong>{{ $proyecto->estudiantes->count() }}</strong></div>
                 <div class="detail"><small>Fase actual</small><strong>{{ ['inscripcion'=>'Inscripción','anteproyecto'=>'Anteproyecto','avance_50'=>'Avance 50%','memoria_final'=>'Memoria final','finalizacion'=>'Finalización'][$proyecto->fase_actual] ?? $proyecto->fase_actual }}</strong></div>

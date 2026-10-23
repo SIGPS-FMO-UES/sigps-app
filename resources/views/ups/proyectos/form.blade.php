@@ -492,6 +492,14 @@
                         </div>
 
                         <div class="field">
+                            <label for="correo_coordinador">Correo del coordinador (opcional)</label>
+                            <input id="correo_coordinador" name="correo_coordinador" type="email" maxlength="255" value="{{ old('correo_coordinador', $proyecto->correo_coordinador) }}" placeholder="ejemplo@ues.edu.sv">
+                            @error('correo_coordinador')
+                                <small style="color:var(--danger, #dc2626)">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <div class="field">
                             <label for="documento">Referencia documental (opcional)</label>
                             <input id="documento" name="documento" maxlength="255" value="{{ old('documento', $proyecto->documento) }}" placeholder="Ej. Oficio UPS-2026-089 o referencia de solicitud">
                         </div>
@@ -630,6 +638,10 @@
                             <div class="summary-item">
                                 <small>Subcoordinador / Coordinador</small>
                                 <span id="resumen-subcoordinador">—</span>
+                            </div>
+                            <div class="summary-item">
+                                <small>Correo del Coordinador</small>
+                                <span id="resumen-correo-coordinador">—</span>
                             </div>
                             <div class="summary-item">
                                 <small>Referencia Documental</small>
@@ -874,6 +886,7 @@
 
             document.getElementById('resumen-tutor').textContent = getVal('tutor') || '—';
             document.getElementById('resumen-subcoordinador').textContent = getVal('subcoordinador') || '—';
+            document.getElementById('resumen-correo-coordinador').textContent = getVal('correo_coordinador') || 'No registrado';
             document.getElementById('resumen-documento').textContent = getVal('documento') || 'Sin referencia';
 
             const arch = document.getElementById('archivo_documento');

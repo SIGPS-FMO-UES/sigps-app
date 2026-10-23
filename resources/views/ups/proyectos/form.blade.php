@@ -717,7 +717,7 @@
                     <select id="modal-carrera" required>
                         <option value="">Selecciona la carrera</option>
                         @foreach($carreras as $carrera)
-                            <option value="{{ $carrera->id_carrera }}">{{ $carrera->nombre }}</option>
+                            <option value="{{ $carrera->id_carrera }}">{{ $carrera->nombre }} ({{ number_format($carrera->horas_servicio_social) }} h)</option>
                         @endforeach
                     </select>
                 </div>

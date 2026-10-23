@@ -21,6 +21,7 @@ class EstudianteResource extends JsonResource
             'carreras' => $this->whenLoaded('carreras', fn () => $this->carreras->map(fn ($c) => [
                 'id_carrera' => $c->id_carrera,
                 'nombre' => $c->nombre,
+                'horas_servicio_social' => $c->horas_servicio_social,
             ])),
             'proyectos' => $this->whenLoaded('proyectos', fn () => $this->proyectos->map(fn ($p) => [
                 'id_proyecto' => $p->id_proyecto,

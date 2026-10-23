@@ -60,6 +60,7 @@ class CarreraDepartamentoController extends Controller
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:150', Rule::unique('carreras', 'nombre')->where(fn ($query) => $query->where('departamento', $request->input('departamento')))],
             'departamento' => ['required', 'integer', 'exists:departamentos,id_departamento'],
+            'horas_servicio_social' => ['required', 'integer', 'min:1', 'max:5000'],
         ]);
 
         Carrera::query()->create($data);
@@ -73,6 +74,7 @@ class CarreraDepartamentoController extends Controller
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:150', Rule::unique('carreras', 'nombre')->where(fn ($query) => $query->where('departamento', $request->input('departamento')))->ignore($carrera->id_carrera, 'id_carrera')],
             'departamento' => ['required', 'integer', 'exists:departamentos,id_departamento'],
+            'horas_servicio_social' => ['required', 'integer', 'min:1', 'max:5000'],
         ]);
 
         $carrera->update($data);

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-#[Fillable(['nombre', 'departamento'])]
+#[Fillable(['nombre', 'departamento', 'horas_servicio_social'])]
 class Carrera extends Model
 {
     use HasFactory;
@@ -16,6 +16,26 @@ class Carrera extends Model
     protected $table = 'carreras';
 
     protected $primaryKey = 'id_carrera';
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'horas_servicio_social' => 'integer',
+        ];
+    }
+
+    /**
+     * Alias de horas requeridas para servicio social.
+     */
+    public function getHorasRequeridasAttribute(): int
+    {
+        return (int) ($this->horas_servicio_social ?? 500);
+    }
 
     /**
      * Departamento al que pertenece la carrera.

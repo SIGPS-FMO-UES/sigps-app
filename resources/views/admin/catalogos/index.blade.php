@@ -49,16 +49,16 @@
         <div><h2>Carreras <span class="badge catalog-count">{{ $carreras->count() }}</span></h2><p class="muted" style="margin:5px 0 0;font-size:12px">Las carreras se asignan a un departamento.</p></div>
         <button class="btn btn-primary" type="button" data-open-modal="create-career-modal" @disabled($departamentos->isEmpty())>＋ Nueva carrera</button>
     </div>
-    <div class="table-wrap"><table class="table"><thead><tr><th>Carrera</th><th>Departamento</th><th>Estudiantes inscritos</th><th>Acciones</th></tr></thead><tbody>
+    <div class="table-wrap"><table class="table"><thead><tr><th>Carrera</th><th>Departamento</th><th>Horas de servicio</th><th>Estudiantes inscritos</th><th>Acciones</th></tr></thead><tbody>
         @forelse($carreras as $carrera)
             <tr>
-                <td><strong>{{ $carrera->nombre }}</strong></td><td>{{ $carrera->departamentoRel?->nombre ?? 'Sin departamento' }}</td><td>{{ $carrera->estudiantes_count }}</td>
+                <td><strong>{{ $carrera->nombre }}</strong></td><td>{{ $carrera->departamentoRel?->nombre ?? 'Sin departamento' }}</td><td><span class="badge" style="background:#eaf2fd;color:#1e40af;font-weight:700">{{ number_format($carrera->horas_servicio_social) }} h</span></td><td>{{ $carrera->estudiantes_count }}</td>
                 <td><div class="catalog-actions">
-                    <button class="catalog-icon-button" type="button" aria-label="Editar {{ $carrera->nombre }}" title="Editar" data-open-modal="edit-career-modal" data-record-id="{{ $carrera->id_carrera }}" data-record-name="{{ $carrera->nombre }}" data-department-id="{{ $carrera->departamento }}" data-update-url="{{ route('admin.carreras.update', $carrera->id_carrera, false) }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z"></path></svg></button>
+                    <button class="catalog-icon-button" type="button" aria-label="Editar {{ $carrera->nombre }}" title="Editar" data-open-modal="edit-career-modal" data-record-id="{{ $carrera->id_carrera }}" data-record-name="{{ $carrera->nombre }}" data-department-id="{{ $carrera->departamento }}" data-hours="{{ $carrera->horas_servicio_social }}" data-update-url="{{ route('admin.carreras.update', $carrera->id_carrera, false) }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z"></path></svg></button>
                     <button class="catalog-icon-button catalog-danger" type="button" aria-label="Eliminar {{ $carrera->nombre }}" title="Eliminar" @disabled($carrera->estudiantes_count > 0) data-open-modal="delete-modal" data-record-name="la carrera {{ $carrera->nombre }}" data-delete-url="{{ route('admin.carreras.destroy', $carrera->id_carrera, false) }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6m4-6v6M5 7l1 14h12l1-14M9 7V4h6v3"></path></svg></button>
                 </div></td>
             </tr>
-        @empty<tr><td colspan="4" class="empty">Aún no hay carreras registradas.</td></tr>@endforelse
+        @empty<tr><td colspan="5" class="empty">Aún no hay carreras registradas.</td></tr>@endforelse
     </tbody></table></div>
 </section>
 
@@ -72,8 +72,8 @@
 
 <dialog class="catalog-modal" id="create-career-modal" aria-labelledby="create-career-title">
     <form method="POST" action="{{ route('admin.carreras.store', [], false) }}">@csrf
-        <div class="catalog-modal-head"><h2 id="create-career-title">Nueva carrera</h2><p>Indica el nombre y el departamento al que pertenece.</p></div>
-        <div class="catalog-modal-body"><div class="field"><label for="new-career-name">Nombre de la carrera</label><input id="new-career-name" name="nombre" maxlength="150" required placeholder="Ej. Ingeniería de Sistemas"></div><div class="field"><label for="new-career-department">Departamento</label><select id="new-career-department" name="departamento" required><option value="">Selecciona un departamento</option>@foreach($departamentos as $departamento)<option value="{{ $departamento->id_departamento }}">{{ $departamento->nombre }}</option>@endforeach</select></div></div>
+        <div class="catalog-modal-head"><h2 id="create-career-title">Nueva carrera</h2><p>Indica el nombre, departamento y las horas de servicio social requeridas.</p></div>
+        <div class="catalog-modal-body"><div class="field"><label for="new-career-name">Nombre de la carrera</label><input id="new-career-name" name="nombre" maxlength="150" required placeholder="Ej. Ingeniería de Sistemas"></div><div class="field"><label for="new-career-department">Departamento</label><select id="new-career-department" name="departamento" required><option value="">Selecciona un departamento</option>@foreach($departamentos as $departamento)<option value="{{ $departamento->id_departamento }}">{{ $departamento->nombre }}</option>@endforeach</select></div><div class="field"><label for="new-career-hours">Horas requeridas de servicio social *</label><input id="new-career-hours" name="horas_servicio_social" type="number" min="1" max="5000" required value="{{ old('horas_servicio_social', 500) }}" placeholder="Ej. 500"><small class="muted" style="font-size:11px;margin-top:2px">Horas requeridas para que un estudiante complete el servicio social en esta carrera.</small></div></div>
         <div class="catalog-modal-actions"><button class="btn" type="button" data-close-modal>Cancelar</button><button class="btn btn-primary" type="submit">Crear carrera</button></div>
     </form>
 </dialog>
@@ -88,8 +88,8 @@
 
 <dialog class="catalog-modal" id="edit-career-modal" aria-labelledby="edit-career-title">
     <form method="POST" id="edit-career-form">@csrf @method('PUT')
-        <div class="catalog-modal-head"><h2 id="edit-career-title">Editar carrera</h2><p>Puedes actualizar su nombre o cambiarla de departamento.</p></div>
-        <div class="catalog-modal-body"><div class="field"><label for="edit-career-name">Nombre de la carrera</label><input id="edit-career-name" name="nombre" maxlength="150" required></div><div class="field"><label for="edit-career-department">Departamento</label><select id="edit-career-department" name="departamento" required>@foreach($departamentos as $departamento)<option value="{{ $departamento->id_departamento }}">{{ $departamento->nombre }}</option>@endforeach</select></div></div>
+        <div class="catalog-modal-head"><h2 id="edit-career-title">Editar carrera</h2><p>Puedes actualizar su nombre, departamento o las horas necesarias.</p></div>
+        <div class="catalog-modal-body"><div class="field"><label for="edit-career-name">Nombre de la carrera</label><input id="edit-career-name" name="nombre" maxlength="150" required></div><div class="field"><label for="edit-career-department">Departamento</label><select id="edit-career-department" name="departamento" required>@foreach($departamentos as $departamento)<option value="{{ $departamento->id_departamento }}">{{ $departamento->nombre }}</option>@endforeach</select></div><div class="field"><label for="edit-career-hours">Horas requeridas de servicio social *</label><input id="edit-career-hours" name="horas_servicio_social" type="number" min="1" max="5000" required placeholder="Ej. 500"><small class="muted" style="font-size:11px;margin-top:2px">Horas requeridas para que un estudiante complete el servicio social en esta carrera.</small></div></div>
         <div class="catalog-modal-actions"><button class="btn" type="button" data-close-modal>Cancelar</button><button class="btn btn-primary" type="submit">Guardar cambios</button></div>
     </form>
 </dialog>
@@ -116,6 +116,7 @@
                 document.getElementById('edit-career-form').action = button.dataset.updateUrl;
                 document.getElementById('edit-career-name').value = button.dataset.recordName;
                 document.getElementById('edit-career-department').value = button.dataset.departmentId;
+                document.getElementById('edit-career-hours').value = button.dataset.hours || 500;
             }
             if (modal.id === 'delete-modal') {
                 document.getElementById('delete-form').action = button.dataset.deleteUrl;

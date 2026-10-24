@@ -570,6 +570,11 @@
                                 <a class="project-title-link" href="{{ route('ups.proyectos.show', $proyecto->id_proyecto) }}">
                                     {{ $proyecto->titulo }}
                                 </a>
+                                @if($ext = $proyecto->extensionPlazoVigente())
+                                    <span class="badge badge-warning" style="font-size: 10px; padding: 1px 6px; margin-left: 4px; vertical-align: middle;" title="Proyecto con prórroga o ampliación aprobada activa">
+                                        {{ $ext->tipo === 'ampliacion_plazo' ? 'Plazo ampliado' : 'En prórroga' }}
+                                    </span>
+                                @endif
                             </div>
 
                             @if($proyecto->estudiantes->isNotEmpty())
@@ -627,6 +632,20 @@
                                 <span class="priority-plazo {{ $semaforo['nivel'] === 'urgente' ? 'urgente' : ($semaforo['nivel'] === 'tramite' ? 'tramite' : ($semaforo['nivel'] === 'al_dia' ? 'al-dia' : 'concluido')) }}">
                                     {{ $semaforo['plazo_humano'] }}
                                 </span>
+                                @if(!empty($semaforo['fecha_referencia']))
+                                    <div class="subtext-item" style="margin-top: 1px; font-size: 11px;">
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                        <span>
+                                            @if($semaforo['etiqueta'] === 'Memoria pendiente')
+                                                Límite: <strong>{{ $semaforo['fecha_referencia']->format('d/m/Y') }}</strong>
+                                            @elseif($semaforo['etiqueta'] === 'Remisión a Junta')
+                                                Límite 18m: <strong>{{ $semaforo['fecha_referencia']->format('d/m/Y') }}</strong>
+                                            @else
+                                                Plazo: {{ $semaforo['fecha_referencia']->format('d/m/Y') }}
+                                            @endif
+                                        </span>
+                                    </div>
+                                @endif
                             </div>
                         </td>
 
@@ -643,6 +662,18 @@
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                                 <span>Inicio: {{ $proyecto->fecha_inicio?->format('d/m/Y') ?? '—' }}</span>
                             </div>
+                            @if($proyecto->fecha_final)
+                                @php($extVigente = $proyecto->extensionPlazoVigente())
+                                <div class="subtext-item" @if($extVigente) style="color:#92400e; font-weight:600;" @endif>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    <span>Fin: {{ $proyecto->fecha_final->format('d/m/Y') }}</span>
+                                    @if($extVigente)
+                                        <span class="badge badge-warning" style="font-size: 9.5px; padding: 0 4px; line-height: 1.4;">
+                                            {{ $extVigente->tipo === 'ampliacion_plazo' ? 'Ampliación' : 'Prórroga' }}
+                                        </span>
+                                    @endif
+                                </div>
+                            @endif
                         </td>
 
                         <!-- Columna 5: Acción Directa con Alto Contraste -->

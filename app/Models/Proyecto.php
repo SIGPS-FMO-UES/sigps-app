@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 #[Fillable([
     'numero_proyecto',
@@ -126,6 +127,101 @@ class Proyecto extends Model
         return $this->hasMany(ProcesoExtraordinario::class, 'proyecto_id', 'id_proyecto')->latest();
     }
 
+    /**
+     * Retorna la prórroga aprobada con mayor fecha límite (o más reciente).
+     */
+    public function prorrogaAprobada(): ?ProcesoExtraordinario
+    {
+        return $this->procesosExtraordinarios
+            ->where('tipo', 'prorroga')
+            ->whereIn('estado', ['aprobada', 'registrado'])
+            ->sortByDesc(fn (ProcesoExtraordinario $p) => $p->fecha_nueva?->timestamp ?? 0)
+            ->first();
+    }
+
+    /**
+     * Retorna la ampliación de plazo aprobada con mayor fecha límite (o más reciente).
+     */
+    public function ampliacionAprobada(): ?ProcesoExtraordinario
+    {
+        return $this->procesosExtraordinarios
+            ->where('tipo', 'ampliacion_plazo')
+            ->whereIn('estado', ['aprobada', 'registrado'])
+            ->sortByDesc(fn (ProcesoExtraordinario $p) => $p->fecha_nueva?->timestamp ?? 0)
+            ->first();
+    }
+
+    /**
+     * Retorna la extensión de plazo vigente que abarca más tiempo (prórroga o ampliación de plazo aprobada).
+     * Si ambas existen, prioriza la que otorgue la fecha límite más lejana.
+     */
+    public function extensionPlazoVigente(): ?ProcesoExtraordinario
+    {
+        $prorroga = $this->prorrogaAprobada();
+        $ampliacion = $this->ampliacionAprobada();
+
+        if ($prorroga && $ampliacion) {
+            $fechaProrroga = $prorroga->fecha_nueva?->timestamp ?? 0;
+            $fechaAmpliacion = $ampliacion->fecha_nueva?->timestamp ?? 0;
+
+            if ($fechaAmpliacion > $fechaProrroga) {
+                return $ampliacion;
+            }
+
+            if ($fechaProrroga > $fechaAmpliacion) {
+                return $prorroga;
+            }
+
+            return ($ampliacion->id_proceso_extraordinario > $prorroga->id_proceso_extraordinario)
+                ? $ampliacion
+                : $prorroga;
+        }
+
+        return $prorroga ?? $ampliacion;
+    }
+
+    /**
+     * Retorna la extensión de plazo secundaria cuando coexisten prórroga y ampliación aprobadas.
+     */
+    public function extensionPlazoSecundaria(): ?ProcesoExtraordinario
+    {
+        $vigente = $this->extensionPlazoVigente();
+        if (! $vigente) {
+            return null;
+        }
+
+        $prorroga = $this->prorrogaAprobada();
+        $ampliacion = $this->ampliacionAprobada();
+
+        if ($prorroga && $ampliacion) {
+            return $vigente->id_proceso_extraordinario === $prorroga->id_proceso_extraordinario
+                ? $ampliacion
+                : $prorroga;
+        }
+
+        return null;
+    }
+
+    /**
+     * Alias compatible con extensionPlazoVigente().
+     */
+    public function prorrogaActiva(): ?ProcesoExtraordinario
+    {
+        return $this->extensionPlazoVigente();
+    }
+
+    /**
+     * Retorna la solicitud de ampliación de plazo pendiente de resolución.
+     */
+    public function ampliacionPendiente(): ?ProcesoExtraordinario
+    {
+        return $this->procesosExtraordinarios
+            ->where('tipo', 'ampliacion_plazo')
+            ->where('estado', 'pendiente')
+            ->sortByDesc('id_proceso_extraordinario')
+            ->first();
+    }
+
     public function certificaciones(): HasMany
     {
         return $this->hasMany(Certificacion::class, 'proyecto_id', 'id_proyecto');
@@ -134,7 +230,7 @@ class Proyecto extends Model
     /**
      * Retorna el estado semafórico y diagnóstico operativo para usuarios administrativos no técnicos.
      *
-     * @return array{nivel: string, badge_class: string, etiqueta: string, plazo_humano: string, siguiente_accion: string}
+     * @return array{nivel: string, badge_class: string, etiqueta: string, plazo_humano: string, fecha_referencia?: ?Carbon, siguiente_accion: string}
      */
     public function semaforoOperativo(): array
     {
@@ -149,6 +245,7 @@ class Proyecto extends Model
                 'badge_class' => 'badge-info',
                 'etiqueta' => 'Concluido',
                 'plazo_humano' => 'Expediente cerrado',
+                'fecha_referencia' => $memoria?->fecha_entrega ?? $this->fecha_finalizacion ?? $this->fecha_final,
                 'siguiente_accion' => 'Ver expediente',
             ];
         }
@@ -163,6 +260,7 @@ class Proyecto extends Model
                 'badge_class' => 'badge-danger',
                 'etiqueta' => 'Remisión a Junta',
                 'plazo_humano' => $mesesVencido > 0 ? "Excedió 18m (+{$mesesVencido}m)" : 'Cumplió 18 meses',
+                'fecha_referencia' => $limite18Meses,
                 'siguiente_accion' => $this->fecha_remision_junta ? 'Remitido a Junta' : 'Remitir a Junta',
             ];
         }
@@ -178,6 +276,7 @@ class Proyecto extends Model
                     'badge_class' => 'badge-danger',
                     'etiqueta' => 'Memoria pendiente',
                     'plazo_humano' => "Vencido hace {$diasVencido}d",
+                    'fecha_referencia' => $limite3Meses,
                     'siguiente_accion' => 'Notificar estudiante',
                 ];
             }
@@ -189,6 +288,7 @@ class Proyecto extends Model
                 'badge_class' => 'badge-success',
                 'etiqueta' => 'En curso normal',
                 'plazo_humano' => $diasRestantes > 0 ? "Quedan {$diasRestantes}d de plazo" : 'Vence hoy',
+                'fecha_referencia' => $limite3Meses,
                 'siguiente_accion' => 'Seguimiento',
             ];
         }
@@ -200,6 +300,7 @@ class Proyecto extends Model
                 'badge_class' => 'badge-danger',
                 'etiqueta' => 'Memoria observada',
                 'plazo_humano' => 'Requiere subsanación',
+                'fecha_referencia' => $memoria->fecha_recibimiento,
                 'siguiente_accion' => 'Ver observaciones',
             ];
         }
@@ -211,6 +312,7 @@ class Proyecto extends Model
                 'badge_class' => 'badge-warning',
                 'etiqueta' => 'Pendiente auditoría',
                 'plazo_humano' => 'En espera de revisión',
+                'fecha_referencia' => $memoria->fecha_recibimiento,
                 'siguiente_accion' => 'Auditar sellos',
             ];
         }
@@ -221,6 +323,7 @@ class Proyecto extends Model
                 'badge_class' => 'badge-warning',
                 'etiqueta' => 'Esperando firmas',
                 'plazo_humano' => 'Firma de Jefatura',
+                'fecha_referencia' => $memoria->fecha_aprovado,
                 'siguiente_accion' => 'Firmar certificación',
             ];
         }
@@ -231,6 +334,7 @@ class Proyecto extends Model
                 'badge_class' => 'badge-info',
                 'etiqueta' => 'Certificación lista',
                 'plazo_humano' => 'Lista para entregar',
+                'fecha_referencia' => $memoria->fecha_listo ?? $memoria->fecha_aprovado,
                 'siguiente_accion' => 'Registrar entrega',
             ];
         }
@@ -240,6 +344,7 @@ class Proyecto extends Model
             'badge_class' => 'badge-success',
             'etiqueta' => 'Al día',
             'plazo_humano' => 'Trámite normal',
+            'fecha_referencia' => $this->fecha_final,
             'siguiente_accion' => 'Ver expediente',
         ];
     }

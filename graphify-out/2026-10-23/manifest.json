@@ -432,9 +432,9 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/DocumentoProyectoController.php": {
-    "mtime": 1792631598.0611074,
-    "seen": 1792632932.1836393,
-    "ast_hash": "5096c95b9f46f5949d2ebe9a9541d2b1",
+    "mtime": 1792815518.695052,
+    "seen": 1792815649.5135155,
+    "ast_hash": "41e5da091bacaa1d2ae1db892f382ec7",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/EstadisticasController.php": {
@@ -690,9 +690,9 @@
     "semantic_hash": ""
   },
   "resources/views/ups/proyectos/expediente.blade.php": {
-    "mtime": 1792631598.0643096,
-    "seen": 1792632932.1837351,
-    "ast_hash": "71625ef2c0fe0ec6080e464ee183f3cc",
+    "mtime": 1792816656.9944437,
+    "seen": 1792816683.5539129,
+    "ast_hash": "6eaa5ac25d70c1fd8af0e1fc3f41e2f7",
     "semantic_hash": ""
   },
   "resources/views/ups/proyectos/form.blade.php": {
@@ -714,9 +714,9 @@
     "semantic_hash": ""
   },
   "resources/views/ups/proyectos/show.blade.php": {
-    "mtime": 1792768560.858977,
-    "seen": 1792768677.8058705,
-    "ast_hash": "73d9b1ff75996bc05c96a66cf3bb6353",
+    "mtime": 1792817074.4565752,
+    "seen": 1792817102.5471165,
+    "ast_hash": "bc754086f79e37e489de64e0aeb725ca",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Api/V1/AuditoriaApiController.php": {

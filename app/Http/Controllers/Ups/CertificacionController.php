@@ -28,8 +28,8 @@ class CertificacionController extends Controller
             ->when($filtros['fecha'] ?? null, fn ($q, $date) => $q->where(fn ($dates) => $dates->whereDate('fecha_listo', $date)->orWhere(fn ($x) => $x->whereNull('fecha_listo')->whereDate('fecha_aprovado', $date))))
             ->when($filtros['search'] ?? null, fn ($q, $term) => $q->whereHas('proyecto', fn ($p) => $p->where('titulo', 'ilike', "%{$term}%")
                 ->orWhereHas('estudiantes', fn ($s) => $s->where('due', 'ilike', "%{$term}%")->orWhere('nombre_completo', 'ilike', "%{$term}%"))))
-            ->latest('fecha_listo')->paginate(12)->withQueryString();
-        $certificaciones = Certificacion::query()->with(['estudiante', 'proyecto.areaConocimiento'])->latest('fecha_emision')->paginate(12, ['*'], 'certificaciones_page')->withQueryString();
+            ->latest('fecha_listo')->paginate(100)->withQueryString();
+        $certificaciones = Certificacion::query()->with(['estudiante', 'proyecto.areaConocimiento'])->latest('fecha_emision')->paginate(100, ['*'], 'certificaciones_page')->withQueryString();
 
         return view('ups.certificaciones.index', [
             'memorias' => $memorias,

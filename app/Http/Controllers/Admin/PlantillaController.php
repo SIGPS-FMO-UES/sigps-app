@@ -15,7 +15,7 @@ class PlantillaController extends Controller
     public function index(): View
     {
         return view('admin.plantillas.index', [
-            'plantillas' => Plantilla::query()->with(['versiones' => fn ($q) => $q->latest('numero_version')])->withCount('versiones')->orderBy('nombre')->paginate(15),
+            'plantillas' => Plantilla::query()->with(['versiones' => fn ($q) => $q->latest('numero_version')])->withCount('versiones')->orderBy('nombre')->paginate(100)->withQueryString(),
             'tipos' => TipoPlantilla::cases(),
         ]);
     }

@@ -32,7 +32,7 @@ class BandejaExpedientesController extends Controller
                     ->orWhere('nombre_completo', 'ilike', "%{$search}%"))))
             ->when($filtros['fase'] ?? null, fn ($query, $fase) => $query->where('fase_actual', $fase))
             ->when($filtros['estado'] ?? null, fn ($query, $estado) => $query->where('estado_expediente', $estado))
-            ->latest('created_at')->paginate(12)->withQueryString();
+            ->latest('created_at')->paginate(100)->withQueryString();
 
         return view('ups.bandeja.index', compact('expedientes', 'filtros'));
     }

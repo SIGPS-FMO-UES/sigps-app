@@ -264,9 +264,9 @@
     "semantic_hash": ""
   },
   "app/Models/Proyecto.php": {
-    "mtime": 1792768468.371156,
-    "seen": 1792768677.8057945,
-    "ast_hash": "9ad1e82694b6a5a881b37f106862dbe8",
+    "mtime": 1792845016.1831818,
+    "seen": 1792845023.6222324,
+    "ast_hash": "d7b00c3f1fee0f462ec786c61df9a112",
     "semantic_hash": ""
   },
   "app/Models/Usuario.php": {
@@ -384,51 +384,51 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/AreaConocimientoController.php": {
-    "mtime": 1792730109.3009465,
-    "seen": 1792730439.8537855,
-    "ast_hash": "eb315d25d587b509043942b05631fedb",
+    "mtime": 1792846217.8867347,
+    "seen": 1792846426.5953066,
+    "ast_hash": "450a80ca3dc18bcd170f242ada4e6740",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/BitacoraAuditoriaController.php": {
-    "mtime": 1792631598.0607574,
-    "seen": 1792632932.1836264,
+    "mtime": 1792857666.5706742,
+    "seen": 1792857690.464035,
     "ast_hash": "42c7ef614ff800c71985d4889514fe85",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/PlantillaController.php": {
-    "mtime": 1792631598.0607574,
-    "seen": 1792632932.1836278,
-    "ast_hash": "d0ee3f815ed65c448ef449717a94a2f4",
+    "mtime": 1792846228.6436093,
+    "seen": 1792846426.5953112,
+    "ast_hash": "fd30cda56d9cb3fcd0a84720d695ab4d",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/UsuarioController.php": {
-    "mtime": 1792730109.3009465,
-    "seen": 1792730439.8537905,
-    "ast_hash": "07713f0455f61aeb4184a622ab1d0c45",
+    "mtime": 1792846417.2783453,
+    "seen": 1792846426.595312,
+    "ast_hash": "eba7412faefe88f2f1687abe1c977481",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Publico/CatalogoFormatosController.php": {
-    "mtime": 1792631598.0607574,
-    "seen": 1792632932.1836352,
-    "ast_hash": "44efe30c44a12dd8dfaad6f7f2d5a36c",
+    "mtime": 1792846260.2952397,
+    "seen": 1792846426.5953298,
+    "ast_hash": "ae3207296145ca8cb338d28313500085",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/BandejaExpedientesController.php": {
-    "mtime": 1792631598.0607574,
-    "seen": 1792632932.1836364,
-    "ast_hash": "df98fd0f075711b8012ba8e8be0e590f",
+    "mtime": 1792846161.1743968,
+    "seen": 1792846426.5953307,
+    "ast_hash": "c0a715ef67b6ce10d5d9e7bce84bb102",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/CertificacionController.php": {
-    "mtime": 1792631598.061068,
-    "seen": 1792632932.1836376,
-    "ast_hash": "6afce44d5fb1fc39c849454fcd968ee0",
+    "mtime": 1792846197.3119748,
+    "seen": 1792846426.595332,
+    "ast_hash": "5693c4273930e1b6eaa6b51640123625",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/ControlPlazosController.php": {
-    "mtime": 1792631598.0611074,
-    "seen": 1792632932.1836386,
-    "ast_hash": "3a0b5ecd3ae479e753ca00706f8d9760",
+    "mtime": 1792846188.048083,
+    "seen": 1792846426.5953326,
+    "ast_hash": "a69cc5b7cb6c89143dd30dd6666ed3ad",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/DocumentoProyectoController.php": {
@@ -444,21 +444,21 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/EstudianteController.php": {
-    "mtime": 1792805644.813186,
-    "seen": 1792805756.4008374,
-    "ast_hash": "b9e46ac00dfca6198e2bf474196723f3",
+    "mtime": 1792846146.6705546,
+    "seen": 1792846426.5953357,
+    "ast_hash": "8e53222c75b40a02eb4c3ba38dc85e7e",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/GestionProrrogasController.php": {
-    "mtime": 1792631598.0611074,
-    "seen": 1792632932.183642,
-    "ast_hash": "ec496d61c2c87f54b9dd822c36c51df9",
+    "mtime": 1792846177.3912075,
+    "seen": 1792846426.5953364,
+    "ast_hash": "10896a134bf6e3af2c686b22763876b0",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/MemoriaController.php": {
-    "mtime": 1792631598.0611074,
-    "seen": 1792632932.1836429,
-    "ast_hash": "803cd6f1dbd9f5c70bf888faeec919df",
+    "mtime": 1792846171.773273,
+    "seen": 1792846426.5953374,
+    "ast_hash": "acbde8f7657786d722cd5443e0a93ed9",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/ProcesosExtraordinariosController.php": {
@@ -468,9 +468,9 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/ProyectoController.php": {
-    "mtime": 1792768479.1040192,
-    "seen": 1792768677.8057752,
-    "ast_hash": "ed35729370d9f50b88f266f9be65030b",
+    "mtime": 1792846155.1544635,
+    "seen": 1792846426.59534,
+    "ast_hash": "2e7ac568e4c1feeccad150742b778817",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/UpsDashboardController.php": {
@@ -552,9 +552,9 @@
     "semantic_hash": ""
   },
   "resources/views/admin/areas/index.blade.php": {
-    "mtime": 1792730109.3009465,
-    "seen": 1792730439.8538702,
-    "ast_hash": "b4e24490496db3b177eb5bc6da90c2f3",
+    "mtime": 1792846270.6951184,
+    "seen": 1792846426.5954096,
+    "ast_hash": "c0dcd663cba16a120add40ce35b00749",
     "semantic_hash": ""
   },
   "resources/views/admin/auditoria/index.blade.php": {
@@ -564,9 +564,9 @@
     "semantic_hash": ""
   },
   "resources/views/admin/plantillas/index.blade.php": {
-    "mtime": 1792631598.0629625,
-    "seen": 1792632932.1837156,
-    "ast_hash": "2dd8cb8a51e00a45c98adc007f3ec971",
+    "mtime": 1792846280.5330036,
+    "seen": 1792846426.595412,
+    "ast_hash": "5b57b7b7ba36816f19f833b2d8c57718",
     "semantic_hash": ""
   },
   "resources/views/admin/usuarios/create.blade.php": {
@@ -594,9 +594,9 @@
     "semantic_hash": ""
   },
   "resources/views/publico/formatos/index.blade.php": {
-    "mtime": 1792631598.0634391,
-    "seen": 1792632932.1837218,
-    "ast_hash": "ce1bc875d9335b486641f05d056b0cae",
+    "mtime": 1792846355.054134,
+    "seen": 1792846426.5954173,
+    "ast_hash": "54dadd29722d369c5977d904b723ec13",
     "semantic_hash": ""
   },
   "resources/views/ups/auditoria.blade.php": {
@@ -618,9 +618,9 @@
     "semantic_hash": ""
   },
   "resources/views/ups/certificaciones/index.blade.php": {
-    "mtime": 1792730103.2265189,
-    "seen": 1792730105.2536602,
-    "ast_hash": "0eca21d4fb182421bc5a1f23ec054387",
+    "mtime": 1792846371.048947,
+    "seen": 1792846426.5954206,
+    "ast_hash": "43b9f331dd0461e069e30d3afe92d297",
     "semantic_hash": ""
   },
   "resources/views/ups/dashboard.blade.php": {
@@ -672,9 +672,9 @@
     "semantic_hash": ""
   },
   "resources/views/ups/plazos/index.blade.php": {
-    "mtime": 1792631598.0641072,
-    "seen": 1792632932.1837325,
-    "ast_hash": "6aaef831ea805aa01df3216bfb5834dd",
+    "mtime": 1792846398.5786257,
+    "seen": 1792846426.5954278,
+    "ast_hash": "3c8d574b9b58ea3618e83efdc43e1ca0",
     "semantic_hash": ""
   },
   "resources/views/ups/plazos/remision.blade.php": {
@@ -708,15 +708,15 @@
     "semantic_hash": ""
   },
   "resources/views/ups/proyectos/index.blade.php": {
-    "mtime": 1792730103.2272816,
-    "seen": 1792730105.253671,
-    "ast_hash": "cbd17b68c4edd32fc60b4a9a18bfecaa",
+    "mtime": 1792845000.0773356,
+    "seen": 1792845023.6223013,
+    "ast_hash": "721d8691c1d5beedc2c192a84afb0b22",
     "semantic_hash": ""
   },
   "resources/views/ups/proyectos/show.blade.php": {
-    "mtime": 1792817074.4565752,
-    "seen": 1792817102.5471165,
-    "ast_hash": "bc754086f79e37e489de64e0aeb725ca",
+    "mtime": 1792844305.671644,
+    "seen": 1792844325.483207,
+    "ast_hash": "eeb3b2bcada1402a2a0e0dff0be6f853",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Api/V1/AuditoriaApiController.php": {
@@ -834,9 +834,9 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/CarreraDepartamentoController.php": {
-    "mtime": 1792731534.8886147,
-    "seen": 1792731670.272533,
-    "ast_hash": "cdbf29390e79ef2d6dd69fc0911f9a03",
+    "mtime": 1792846250.3793554,
+    "seen": 1792846426.59531,
+    "ast_hash": "409b6fe02f12c328f6bf756183c57902",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/NotificacionController.php": {
@@ -858,9 +858,9 @@
     "semantic_hash": ""
   },
   "resources/views/admin/catalogos/index.blade.php": {
-    "mtime": 1792731570.6531985,
-    "seen": 1792731670.2726295,
-    "ast_hash": "7e5f74f9aa19fc549476d174486850c0",
+    "mtime": 1792846339.2793179,
+    "seen": 1792846426.5954113,
+    "ast_hash": "81a4f0c6ef003574dced0b65f3ded7f2",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Api/V1/CarreraApiController.php": {

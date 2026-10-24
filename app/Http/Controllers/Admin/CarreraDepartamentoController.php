@@ -15,8 +15,9 @@ class CarreraDepartamentoController extends Controller
     public function index(): View
     {
         return view('admin.catalogos.index', [
-            'departamentos' => Departamento::query()->withCount('carreras')->orderBy('nombre')->get(),
-            'carreras' => Carrera::query()->with('departamentoRel')->withCount('estudiantes')->orderBy('nombre')->get(),
+            'departamentos' => Departamento::query()->withCount('carreras')->orderBy('nombre')->paginate(100, ['*'], 'departamentos_page')->withQueryString(),
+            'carreras' => Carrera::query()->with('departamentoRel')->withCount('estudiantes')->orderBy('nombre')->paginate(100, ['*'], 'carreras_page')->withQueryString(),
+            'todosLosDepartamentos' => Departamento::query()->orderBy('nombre')->get(),
         ]);
     }
 

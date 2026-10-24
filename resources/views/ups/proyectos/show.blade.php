@@ -5,12 +5,27 @@
 @section('subtitle', 'Ficha administrativa, participantes y situación documental.')
 
 @section('page-actions')
-    <a class="btn" href="{{ route('ups.proyectos.index') }}">← Proyectos</a>
-    <a class="btn" href="{{ route('ups.proyectos.historial', $proyecto->id_proyecto) }}">Ver historial</a>
-    <a class="btn" href="{{ route('ups.proyectos.documentos', $proyecto->id_proyecto) }}">Expediente documental</a>
+    <a class="btn" href="{{ route('ups.proyectos.index') }}" title="Volver al listado general de proyectos">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        <span>Volver a proyectos</span>
+    </a>
+
+    <a class="btn" href="{{ route('ups.proyectos.documentos', $proyecto->id_proyecto) }}" title="Ver repositorio completo de documentos y archivos adjuntos">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        <span>Todos los documentos ({{ $proyecto->documentos->count() }})</span>
+    </a>
+
+    <a class="btn" href="{{ route('ups.proyectos.historial', $proyecto->id_proyecto) }}" title="Ver registro cronológico de cambios de fase y eventos">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>Historial de cambios</span>
+    </a>
+
     @if($proyecto->estado_expediente === 'en_tramite')
         <details class="project-actions-menu">
-            <summary class="btn">Más acciones</summary>
+            <summary class="btn" title="Opciones extraordinarias y trámites administrativos">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                <span>Más opciones</span>
+            </summary>
             <div class="project-actions-popover" role="menu" aria-label="Acciones del proyecto">
                 <button type="button" role="menuitem" data-project-modal="modal-ampliar">Ampliar plazo</button>
                 @can('prorrogas.resolver')<button type="button" role="menuitem" data-project-modal="modal-prorroga">Registrar prórroga</button>@endcan
@@ -18,7 +33,10 @@
                 @if(auth()->user()->hasRole('jefe_ups'))<button type="button" role="menuitem" class="project-actions-danger" data-project-modal="modal-cancelar">Cancelar proyecto</button>@endif
             </div>
         </details>
-        <a class="btn btn-primary" href="{{ route('ups.proyectos.edit', $proyecto->id_proyecto) }}">Editar datos</a>
+        <a class="btn btn-primary" href="{{ route('ups.proyectos.edit', $proyecto->id_proyecto) }}" title="Modificar datos del proyecto y participantes">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <span>Editar proyecto</span>
+        </a>
     @endif
 @endsection
 
@@ -40,6 +58,10 @@
             \App\Enums\EstadoMemoria::Lista->value,
             \App\Enums\EstadoMemoria::Entregada->value,
         ], true);
+        $extensionVigente = $proyecto->extensionPlazoVigente();
+        $extensionSecundaria = $proyecto->extensionPlazoSecundaria();
+        $ampliacionPendiente = $proyecto->ampliacionPendiente();
+        $prorrogaActiva = $extensionVigente;
     @endphp
 
     <!-- 1. Ficha del Proyecto, Estado Actual y Siguiente Paso -->
@@ -49,11 +71,69 @@
                 <h2>{{ $proyecto->titulo }}</h2>
                 <p class="muted" style="margin:5px 0 0">Número de proyecto #{{ $proyecto->numero_proyecto ?? $proyecto->id_proyecto }} · Expediente #{{ $proyecto->id_proyecto }}</p>
             </div>
-            <span class="badge {{ $proyecto->estado_expediente === 'finalizado' ? 'badge-success' : ($proyecto->estado_expediente === 'cancelado' ? 'badge-danger' : 'badge-info') }}">
-                {{ ['en_tramite'=>'En trámite','finalizado'=>'Finalizado','cancelado'=>'Cancelado'][$proyecto->estado_expediente] ?? $proyecto->estado_expediente }}
-            </span>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                @if($extensionVigente && $proyecto->estado_expediente === 'en_tramite')
+                    <span class="badge badge-warning" style="display: inline-flex; align-items: center; gap: 5px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span>{{ $extensionVigente->tipo === 'ampliacion_plazo' ? 'Plazo ampliado' : 'En prórroga' }}</span>
+                    </span>
+                @endif
+                <span class="badge {{ $proyecto->estado_expediente === 'finalizado' ? 'badge-success' : ($proyecto->estado_expediente === 'cancelado' ? 'badge-danger' : 'badge-info') }}">
+                    {{ ['en_tramite'=>'En trámite','finalizado'=>'Finalizado','cancelado'=>'Cancelado'][$proyecto->estado_expediente] ?? $proyecto->estado_expediente }}
+                </span>
+            </div>
         </div>
         <div class="card-body">
+            @if($extensionVigente && $proyecto->estado_expediente === 'en_tramite')
+                @php
+                    $esAmpliacion = $extensionVigente->tipo === 'ampliacion_plazo';
+                    $tituloBanner = $esAmpliacion ? 'Proyecto con ampliación de plazo vigente' : 'Proyecto en período de prórroga';
+                    $fechaActiva = ($extensionVigente->fecha_nueva ?? $proyecto->fecha_final)?->format('d/m/Y');
+                    $resolucionTexto = $extensionVigente->autorizacion ?: $extensionVigente->resolucion;
+                @endphp
+                <div style="margin-bottom: 20px; padding: 14px 18px; background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 9px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: flex-start; gap: 12px; min-width: 260px; flex: 1;">
+                        <div style="font-size: 20px; line-height: 1;" aria-hidden="true">⏱</div>
+                        <div>
+                            <strong style="color: #92400e; font-size: 13.5px; display: block; margin-bottom: 2px;">
+                                {{ $tituloBanner }}
+                            </strong>
+                            <p style="margin: 0; color: #78350f; font-size: 12.5px; line-height: 1.5;">
+                                Nueva fecha activa límite: <strong style="font-size: 13px;">{{ $fechaActiva }}</strong>
+                                @if($extensionSecundaria)
+                                    <span style="color: #b45309;">
+                                        (Abarca más que {{ $extensionSecundaria->tipo === 'ampliacion_plazo' ? 'la ampliación previa' : 'la prórroga previa' }} del {{ $extensionSecundaria->fecha_nueva?->format('d/m/Y') }})
+                                    </span>
+                                @elseif($extensionVigente->fecha_anterior)
+                                    <span style="color: #b45309;">(Plazo original: {{ $extensionVigente->fecha_anterior->format('d/m/Y') }})</span>
+                                @endif
+                                @if($resolucionTexto)
+                                    <br><span style="font-size: 11.5px; color: #92400e;">{{ $esAmpliacion ? 'Resolución / Dictamen' : 'Autorización / Resolución' }}: <strong>{{ $resolucionTexto }}</strong></span>
+                                @endif
+                                @if($extensionVigente->motivo)
+                                    <br><span style="font-size: 11.5px; color: #78350f;">Motivo: {{ \Illuminate\Support\Str::limit($extensionVigente->motivo, 160) }}</span>
+                                @endif
+                            </p>
+                        </div>
+                    </div>
+                    <a href="{{ route('ups.proyectos.historial', $proyecto->id_proyecto) }}" class="btn btn-small" style="background: #ffffff; border-color: #fcd34d; color: #92400e; text-decoration: none;">
+                        Ver en historial →
+                    </a>
+                </div>
+            @endif
+
+            @if($ampliacionPendiente && $proyecto->estado_expediente === 'en_tramite')
+                <div style="margin-bottom: 20px; padding: 12px 16px; background: #fefce8; border: 1px solid #fef08a; border-radius: 8px; color: #854d0e; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                    <div style="font-size: 12.5px;">
+                        <strong>Solicitud de ampliación en trámite:</strong> Se solicitó extensión de plazo hasta el <strong>{{ $ampliacionPendiente->fecha_nueva?->format('d/m/Y') }}</strong> (Pendiente de resolución).
+                    </div>
+                    @can('prorrogas.resolver')
+                        <a href="{{ route('ups.prorrogas.index', ['estado' => 'pendiente']) }}" class="btn btn-small" style="background: #ffffff;">
+                            Revisar solicitud →
+                        </a>
+                    @endcan
+                </div>
+            @endif
             @if($proyecto->estado_expediente === 'finalizado')
                 <div class="notice" style="margin-bottom: 20px;">
                     <strong>Proyecto finalizado</strong>
@@ -254,7 +334,29 @@
                 <div class="detail"><small>N° Proyecto</small><strong>#{{ $proyecto->numero_proyecto ?? '—' }}</strong></div>
                 <div class="detail"><small>Área</small><strong>{{ $proyecto->areaConocimiento?->nombre ?? '—' }}</strong></div>
                 <div class="detail"><small>Fecha de inicio</small><strong>{{ $proyecto->fecha_inicio?->format('d/m/Y') ?? '—' }}</strong></div>
-                <div class="detail"><small>Fecha final</small><strong>{{ $proyecto->fecha_final?->format('d/m/Y') ?? 'Pendiente' }}</strong></div>
+                <div class="detail" @if($extensionVigente && $proyecto->estado_expediente === 'en_tramite') style="border-color: #fde68a; background: #fffdf5;" @endif>
+                    <small style="{{ $extensionVigente && $proyecto->estado_expediente === 'en_tramite' ? 'color: #92400e; font-weight: 700;' : '' }}">
+                        @if($extensionVigente && $proyecto->estado_expediente === 'en_tramite')
+                            {{ $extensionVigente->tipo === 'ampliacion_plazo' ? 'Fecha final (Plazo ampliado)' : 'Fecha final (Prórroga activa)' }}
+                        @else
+                            Fecha final
+                        @endif
+                    </small>
+                    <strong style="{{ $extensionVigente && $proyecto->estado_expediente === 'en_tramite' ? 'color: #b45309;' : '' }}">
+                        {{ $proyecto->fecha_final?->format('d/m/Y') ?? 'Pendiente' }}
+                    </strong>
+                    @if($extensionVigente && $proyecto->estado_expediente === 'en_tramite')
+                        @if($extensionSecundaria)
+                            <span class="muted" style="display: block; font-size: 10px; margin-top: 2px;">
+                                {{ $extensionSecundaria->tipo === 'ampliacion_plazo' ? 'Ampliación previa' : 'Prórroga previa' }}: {{ $extensionSecundaria->fecha_nueva?->format('d/m/Y') }}
+                            </span>
+                        @elseif($extensionVigente->fecha_anterior)
+                            <span class="muted" style="display: block; font-size: 10px; margin-top: 2px;">
+                                Plazo inicial: {{ $extensionVigente->fecha_anterior->format('d/m/Y') }}
+                            </span>
+                        @endif
+                    @endif
+                </div>
                 <div class="detail"><small>Docente tutor</small><strong>{{ $proyecto->tutor ?: '—' }}</strong></div>
                 <div class="detail"><small>Subcoordinador</small><strong>{{ $proyecto->subcoordinador }}</strong></div>
                 <div class="detail"><small>Correo coordinador</small><strong>{{ $proyecto->correo_coordinador ?: 'No registrado' }}</strong></div>

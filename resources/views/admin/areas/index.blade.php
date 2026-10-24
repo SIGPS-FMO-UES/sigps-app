@@ -47,7 +47,7 @@
         </tr>
     @empty<tr><td colspan="5" class="empty">No hay áreas registradas. Crea una para comenzar.</td></tr>@endforelse
     </tbody></table></div>
-    @if($areas->hasPages())<div class="pagination"><span>{{ $areas->total() }} registros</span>{{ $areas->links() }}</div>@endif
+    @if($areas->hasPages())<div class="pagination"><span>Mostrando {{ $areas->firstItem() }}–{{ $areas->lastItem() }} de {{ $areas->total() }}</span>{{ $areas->onEachSide(1)->links() }}</div>@endif
 </section>
 
 <dialog class="areas-modal" id="create-area-modal" aria-labelledby="create-area-title">

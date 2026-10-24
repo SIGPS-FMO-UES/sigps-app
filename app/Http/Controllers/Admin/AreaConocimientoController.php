@@ -14,7 +14,7 @@ class AreaConocimientoController extends Controller
     public function index(): View
     {
         return view('admin.areas.index', [
-            'areas' => AreaConocimiento::query()->withCount('proyectos')->orderBy('nombre')->paginate(15),
+            'areas' => AreaConocimiento::query()->withCount('proyectos')->orderBy('nombre')->paginate(100)->withQueryString(),
         ]);
     }
 

@@ -28,7 +28,7 @@
 
 <section class="card">
     <div class="card-head catalog-toolbar">
-        <div><h2>Departamentos <span class="badge catalog-count">{{ $departamentos->count() }}</span></h2><p class="muted" style="margin:5px 0 0;font-size:12px">Cada departamento puede agrupar varias carreras.</p></div>
+        <div><h2>Departamentos <span class="badge catalog-count">{{ $departamentos->total() }}</span></h2><p class="muted" style="margin:5px 0 0;font-size:12px">Cada departamento puede agrupar varias carreras.</p></div>
         <button class="btn btn-primary" type="button" data-open-modal="create-department-modal">＋ Nuevo departamento</button>
     </div>
     <div class="table-wrap"><table class="table"><thead><tr><th>Departamento</th><th>Carreras</th><th>Acciones</th></tr></thead><tbody>
@@ -42,12 +42,18 @@
             </tr>
         @empty<tr><td colspan="3" class="empty">Aún no hay departamentos. Crea uno para comenzar el catálogo.</td></tr>@endforelse
     </tbody></table></div>
+    @if($departamentos->hasPages())
+        <div class="pagination">
+            <span>Mostrando {{ $departamentos->firstItem() }}–{{ $departamentos->lastItem() }} de {{ $departamentos->total() }}</span>
+            {{ $departamentos->onEachSide(1)->links() }}
+        </div>
+    @endif
 </section>
 
 <section class="card" style="margin-top:16px">
     <div class="card-head catalog-toolbar">
-        <div><h2>Carreras <span class="badge catalog-count">{{ $carreras->count() }}</span></h2><p class="muted" style="margin:5px 0 0;font-size:12px">Las carreras se asignan a un departamento.</p></div>
-        <button class="btn btn-primary" type="button" data-open-modal="create-career-modal" @disabled($departamentos->isEmpty())>＋ Nueva carrera</button>
+        <div><h2>Carreras <span class="badge catalog-count">{{ $carreras->total() }}</span></h2><p class="muted" style="margin:5px 0 0;font-size:12px">Las carreras se asignan a un departamento.</p></div>
+        <button class="btn btn-primary" type="button" data-open-modal="create-career-modal" @disabled(($todosLosDepartamentos ?? $departamentos)->isEmpty())>＋ Nueva carrera</button>
     </div>
     <div class="table-wrap"><table class="table"><thead><tr><th>Carrera</th><th>Departamento</th><th>Horas de servicio</th><th>Estudiantes inscritos</th><th>Acciones</th></tr></thead><tbody>
         @forelse($carreras as $carrera)
@@ -60,6 +66,12 @@
             </tr>
         @empty<tr><td colspan="5" class="empty">Aún no hay carreras registradas.</td></tr>@endforelse
     </tbody></table></div>
+    @if($carreras->hasPages())
+        <div class="pagination">
+            <span>Mostrando {{ $carreras->firstItem() }}–{{ $carreras->lastItem() }} de {{ $carreras->total() }}</span>
+            {{ $carreras->onEachSide(1)->links() }}
+        </div>
+    @endif
 </section>
 
 <dialog class="catalog-modal" id="create-department-modal" aria-labelledby="create-department-title">
@@ -73,7 +85,7 @@
 <dialog class="catalog-modal" id="create-career-modal" aria-labelledby="create-career-title">
     <form method="POST" action="{{ route('admin.carreras.store', [], false) }}">@csrf
         <div class="catalog-modal-head"><h2 id="create-career-title">Nueva carrera</h2><p>Indica el nombre, departamento y las horas de servicio social requeridas.</p></div>
-        <div class="catalog-modal-body"><div class="field"><label for="new-career-name">Nombre de la carrera</label><input id="new-career-name" name="nombre" maxlength="150" required placeholder="Ej. Ingeniería de Sistemas"></div><div class="field"><label for="new-career-department">Departamento</label><select id="new-career-department" name="departamento" required><option value="">Selecciona un departamento</option>@foreach($departamentos as $departamento)<option value="{{ $departamento->id_departamento }}">{{ $departamento->nombre }}</option>@endforeach</select></div><div class="field"><label for="new-career-hours">Horas requeridas de servicio social *</label><input id="new-career-hours" name="horas_servicio_social" type="number" min="1" max="5000" required value="{{ old('horas_servicio_social', 500) }}" placeholder="Ej. 500"><small class="muted" style="font-size:11px;margin-top:2px">Horas requeridas para que un estudiante complete el servicio social en esta carrera.</small></div></div>
+        <div class="catalog-modal-body"><div class="field"><label for="new-career-name">Nombre de la carrera</label><input id="new-career-name" name="nombre" maxlength="150" required placeholder="Ej. Ingeniería de Sistemas"></div><div class="field"><label for="new-career-department">Departamento</label><select id="new-career-department" name="departamento" required><option value="">Selecciona un departamento</option>@foreach(($todosLosDepartamentos ?? $departamentos) as $departamento)<option value="{{ $departamento->id_departamento }}">{{ $departamento->nombre }}</option>@endforeach</select></div><div class="field"><label for="new-career-hours">Horas requeridas de servicio social *</label><input id="new-career-hours" name="horas_servicio_social" type="number" min="1" max="5000" required value="{{ old('horas_servicio_social', 500) }}" placeholder="Ej. 500"><small class="muted" style="font-size:11px;margin-top:2px">Horas requeridas para que un estudiante complete el servicio social en esta carrera.</small></div></div>
         <div class="catalog-modal-actions"><button class="btn" type="button" data-close-modal>Cancelar</button><button class="btn btn-primary" type="submit">Crear carrera</button></div>
     </form>
 </dialog>
@@ -89,7 +101,7 @@
 <dialog class="catalog-modal" id="edit-career-modal" aria-labelledby="edit-career-title">
     <form method="POST" id="edit-career-form">@csrf @method('PUT')
         <div class="catalog-modal-head"><h2 id="edit-career-title">Editar carrera</h2><p>Puedes actualizar su nombre, departamento o las horas necesarias.</p></div>
-        <div class="catalog-modal-body"><div class="field"><label for="edit-career-name">Nombre de la carrera</label><input id="edit-career-name" name="nombre" maxlength="150" required></div><div class="field"><label for="edit-career-department">Departamento</label><select id="edit-career-department" name="departamento" required>@foreach($departamentos as $departamento)<option value="{{ $departamento->id_departamento }}">{{ $departamento->nombre }}</option>@endforeach</select></div><div class="field"><label for="edit-career-hours">Horas requeridas de servicio social *</label><input id="edit-career-hours" name="horas_servicio_social" type="number" min="1" max="5000" required placeholder="Ej. 500"><small class="muted" style="font-size:11px;margin-top:2px">Horas requeridas para que un estudiante complete el servicio social en esta carrera.</small></div></div>
+        <div class="catalog-modal-body"><div class="field"><label for="edit-career-name">Nombre de la carrera</label><input id="edit-career-name" name="nombre" maxlength="150" required></div><div class="field"><label for="edit-career-department">Departamento</label><select id="edit-career-department" name="departamento" required>@foreach(($todosLosDepartamentos ?? $departamentos) as $departamento)<option value="{{ $departamento->id_departamento }}">{{ $departamento->nombre }}</option>@endforeach</select></div><div class="field"><label for="edit-career-hours">Horas requeridas de servicio social *</label><input id="edit-career-hours" name="horas_servicio_social" type="number" min="1" max="5000" required placeholder="Ej. 500"><small class="muted" style="font-size:11px;margin-top:2px">Horas requeridas para que un estudiante complete el servicio social en esta carrera.</small></div></div>
         <div class="catalog-modal-actions"><button class="btn" type="button" data-close-modal>Cancelar</button><button class="btn btn-primary" type="submit">Guardar cambios</button></div>
     </form>
 </dialog>

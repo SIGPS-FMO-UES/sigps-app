@@ -20,6 +20,7 @@ class UsuarioController extends Controller
     public function edit(string $id): View
     {
         $usuario = User::with('roles')->findOrFail($id);
+
         return view('admin.usuarios.edit', compact('usuario'));
     }
 
@@ -37,7 +38,7 @@ class UsuarioController extends Controller
                 ->orWhere('email', 'ilike', "%{$search}%")))
             ->when(isset($filtros['estado']), fn ($query) => $query->where('activo', $filtros['estado'] === 'activo'))
             ->when($filtros['rol'] ?? null, fn ($query, $rol) => $query->role($rol))
-            ->orderBy('nombre_completo')->paginate(12)->withQueryString();
+            ->orderBy('nombre_completo')->paginate(100)->withQueryString();
 
         return view('admin.usuarios.index', compact('usuarios', 'filtros'));
     }

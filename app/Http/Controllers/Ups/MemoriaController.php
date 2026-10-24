@@ -37,7 +37,7 @@ class MemoriaController extends Controller
             ->when($filtros['estado'] ?? null, fn ($query, $estado) => $query->where('estado', $estado))
             ->when($filtros['fecha'] ?? null, fn ($query, $fecha) => $query->whereDate('fecha_recibimiento', $fecha))
             ->latest('fecha_recibimiento')
-            ->paginate(12)
+            ->paginate(100)
             ->withQueryString();
 
         $disponiblesParaRevision = Memoria::query()
@@ -48,7 +48,7 @@ class MemoriaController extends Controller
             ->with(['areaConocimiento', 'estudiantes'])
             ->whereDoesntHave('memoria')
             ->orderBy('fecha_inicio')
-            ->paginate(8, ['*'], 'proyectos_page')
+            ->paginate(100, ['*'], 'proyectos_page')
             ->withQueryString();
 
         return view('ups.memorias.index', compact('memorias', 'filtros', 'disponiblesParaRevision', 'proyectosSinMemoria'));

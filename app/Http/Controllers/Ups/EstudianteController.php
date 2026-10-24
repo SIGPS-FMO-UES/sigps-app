@@ -93,7 +93,7 @@ class EstudianteController extends Controller
             default => $query->orderBy('nombre_completo'),
         };
 
-        $estudiantes = $query->paginate(12)->withQueryString();
+        $estudiantes = $query->paginate(100)->withQueryString();
 
         return view('ups.estudiantes.index', [
             'estudiantes' => $estudiantes,

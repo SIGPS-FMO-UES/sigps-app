@@ -42,6 +42,7 @@ class ProyectoController extends Controller
                 'areaConocimiento:id_area_conocimiento,nombre',
                 'estudiantes:id_estudiante,due,nombre_completo',
                 'memoria',
+                'procesosExtraordinarios',
             ]);
 
         // 1. Omnibúsqueda universal
@@ -139,7 +140,7 @@ class ProyectoController extends Controller
             $query->orderByDesc('numero_proyecto');
         }
 
-        $proyectos = $query->paginate(12)->withQueryString();
+        $proyectos = $query->paginate(100)->withQueryString();
 
         // 5. Conteos para chips de triaje superior
         $conteos = [
@@ -219,7 +220,7 @@ class ProyectoController extends Controller
     {
         $proyecto = Proyecto::query()->with([
             'areaConocimiento', 'estudiantes.carreras', 'memoria.revisiones.auditor', 'creador', 'documentos',
-            'historialFases',
+            'historialFases', 'procesosExtraordinarios',
         ])->findOrFail($id);
 
         return view('ups.proyectos.show', compact('proyecto'));

@@ -17,7 +17,15 @@ class DocumentoProyectoController extends Controller
 {
     public function index(string $id): View
     {
-        $proyecto = Proyecto::query()->with(['documentos.usuario', 'memoria'])->findOrFail($id);
+        $proyecto = Proyecto::query()
+            ->with([
+                'documentos' => fn ($query) => $query->latest(),
+                'documentos.usuario',
+                'memoria',
+                'areaConocimiento',
+                'estudiantes',
+            ])
+            ->findOrFail($id);
 
         return view('ups.proyectos.expediente', compact('proyecto'));
     }

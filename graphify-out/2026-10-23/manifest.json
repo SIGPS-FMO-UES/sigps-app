@@ -240,9 +240,9 @@
     "semantic_hash": ""
   },
   "app/Models/Estudiante.php": {
-    "mtime": 1792631581.4680595,
-    "seen": 1792631591.7108696,
-    "ast_hash": "81bf720c7daf41e7229174cdfd6a2e02",
+    "mtime": 1792805738.313003,
+    "seen": 1792805756.4008567,
+    "ast_hash": "5ac29b36738a5a50660811c63f6c9c66",
     "semantic_hash": ""
   },
   "app/Models/LogAccion.php": {
@@ -444,9 +444,9 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/EstudianteController.php": {
-    "mtime": 1792730103.2219477,
-    "seen": 1792730105.2535908,
-    "ast_hash": "c2622bfbb2e3a0587954d693aeeb844c",
+    "mtime": 1792805644.813186,
+    "seen": 1792805756.4008374,
+    "ast_hash": "b9e46ac00dfca6198e2bf474196723f3",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/GestionProrrogasController.php": {
@@ -648,9 +648,9 @@
     "semantic_hash": ""
   },
   "resources/views/ups/estudiantes/index.blade.php": {
-    "mtime": 1792631598.063916,
-    "seen": 1792632932.1837292,
-    "ast_hash": "2a551f833b3626077e0e5bcceb8525b6",
+    "mtime": 1792806933.0396955,
+    "seen": 1792806951.323834,
+    "ast_hash": "82bc59f1f8a08a4f59479007e0a0729b",
     "semantic_hash": ""
   },
   "resources/views/ups/estudiantes/show.blade.php": {

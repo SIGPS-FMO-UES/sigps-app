@@ -294,21 +294,21 @@
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000004_create_areas_de_conocimiento_table.php": {
-    "mtime": 1792631581.4693913,
-    "seen": 1792631591.7108915,
-    "ast_hash": "953a78f4636456b17d0a9e45b0656608",
+    "mtime": 1792769172.734178,
+    "seen": 1792769264.8794184,
+    "ast_hash": "8342ed67d82cfc2aa35fd49bb697e0ce",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000005_create_proyectos_tables.php": {
-    "mtime": 1792768836.3344657,
-    "seen": 1792768858.3046618,
-    "ast_hash": "079ce3a6e29b03b03869b513e2c32fcc",
+    "mtime": 1792769188.6869748,
+    "seen": 1792769264.8794196,
+    "ast_hash": "09ccfdaf73c3fe1801ce81de8bb9764b",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000006_create_memorias_table.php": {
-    "mtime": 1792730103.2222698,
-    "seen": 1792730105.2536337,
-    "ast_hash": "6eb8b98dac14739564a031c5e7402608",
+    "mtime": 1792769209.841705,
+    "seen": 1792769264.8794205,
+    "ast_hash": "49743070e63885ef04b6ca90a9095832",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000007_create_logs_acciones_table.php": {
@@ -515,46 +515,10 @@
     "ast_hash": "884424ac299f940dcce87aabeac2343e",
     "semantic_hash": ""
   },
-  "database/migrations/2026_10_21_000001_create_tutores_table.php": {
-    "mtime": 1792631598.0613205,
-    "seen": 1792632932.183695,
-    "ast_hash": "e9199f21388c0c62bcdd1d271a649823",
-    "semantic_hash": ""
-  },
-  "database/migrations/2026_10_21_000002_remove_tutors_from_sys01.php": {
-    "mtime": 1792730103.2222698,
-    "seen": 1792730105.2536366,
-    "ast_hash": "33a94b43e4d094d6a3d7938e9f9c0842",
-    "semantic_hash": ""
-  },
-  "database/migrations/2026_10_21_000003_create_revisiones_memorias_table.php": {
-    "mtime": 1792631598.0613205,
-    "seen": 1792632932.183697,
-    "ast_hash": "44fffa701026eae833aae92d8cc6fde4",
-    "semantic_hash": ""
-  },
-  "database/migrations/2026_10_21_000004_add_project_lifecycle_and_history.php": {
-    "mtime": 1792631598.0613205,
-    "seen": 1792632932.1836977,
-    "ast_hash": "c23c5e6519a19b62a901bba2ab517bc6",
-    "semantic_hash": ""
-  },
   "database/migrations/2026_10_21_000005_create_project_documents_and_extraordinary_processes.php": {
     "mtime": 1792631598.0613205,
     "seen": 1792632932.1836984,
     "ast_hash": "ec337dc1bea8ac6d0e3d3f2748eb06d8",
-    "semantic_hash": ""
-  },
-  "database/migrations/2026_10_21_224046_add_activa_to_areas_de_conocimiento_table.php": {
-    "mtime": 1792631598.0613205,
-    "seen": 1792632932.1836991,
-    "ast_hash": "66b86b6fca994853032f281a3e00b8e3",
-    "semantic_hash": ""
-  },
-  "database/migrations/2026_10_21_224046_add_remision_fields_to_proyectos_table.php": {
-    "mtime": 1792631598.0613205,
-    "seen": 1792632932.1837,
-    "ast_hash": "0c157942b7e1d7ea6672dadf337f7231",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_21_224046_create_certificaciones_table.php": {
@@ -885,18 +849,6 @@
     "mtime": 1792730109.3009465,
     "seen": 1792730439.853829,
     "ast_hash": "dc22247e65823ac40e445ebc419cfe5c",
-    "semantic_hash": ""
-  },
-  "database/migrations/2026_10_22_090000_merge_admin_role_into_jefe_ups.php": {
-    "mtime": 1792730109.3009465,
-    "seen": 1792730439.8538597,
-    "ast_hash": "85b047db59010f274d3acf095b7d7b8e",
-    "semantic_hash": ""
-  },
-  "database/migrations/2026_10_22_090100_normalize_user_permission_morph_type.php": {
-    "mtime": 1792730109.3009465,
-    "seen": 1792730439.8538604,
-    "ast_hash": "ecd8f5db3286f62266e9732071c9637a",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_22_100000_create_notifications_table.php": {

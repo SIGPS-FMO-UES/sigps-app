@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Ups;
 use App\Http\Controllers\Controller;
 use App\Models\AreaConocimiento;
 use App\Models\Carrera;
+use App\Models\Departamento;
 use App\Models\Estudiante;
 use App\Models\LogAccion;
 use Illuminate\Http\JsonResponse;
@@ -21,26 +22,87 @@ class EstudianteController extends Controller
         $filtros = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
             'carrera_id' => ['nullable', 'integer', 'exists:carreras,id_carrera'],
+            'departamento_id' => ['nullable', 'integer', 'exists:departamentos,id_departamento'],
             'area_id' => ['nullable', 'integer', 'exists:areas_de_conocimiento,id_area_conocimiento'],
+            'estado_proyecto' => ['nullable', 'string', 'in:todos,con_proyecto,sin_proyecto,concluidos'],
+            'orden' => ['nullable', 'string', 'in:nombre_asc,nombre_desc,carnet_asc,carnet_desc,recientes'],
             'fecha' => ['nullable', 'date'],
         ]);
 
-        $estudiantes = Estudiante::query()
+        $driver = DB::connection()->getDriverName();
+        $like = $driver === 'pgsql' ? 'ilike' : 'like';
+
+        $estadoProyecto = $filtros['estado_proyecto'] ?? 'todos';
+        $orden = $filtros['orden'] ?? 'nombre_asc';
+
+        // Conteos operativos para triaje y filtros visuales
+        $conteos = [
+            'todos' => Estudiante::query()->count(),
+            'con_proyecto' => Estudiante::query()->has('proyectos')->count(),
+            'sin_proyecto' => Estudiante::query()->doesntHave('proyectos')->count(),
+            'concluidos' => Estudiante::query()->whereHas('proyectos', function ($q): void {
+                $q->whereNotNull('fecha_finalizacion')
+                    ->orWhere('estado_expediente', 'finalizado');
+            })->count(),
+        ];
+
+        $query = Estudiante::query()
             ->with(['carreras.departamentoRel', 'proyectos.areaConocimiento', 'proyectos.memoria'])
-            ->when($filtros['search'] ?? null, fn ($query, $search) => $query->where(fn ($subquery) => $subquery->where('due', 'ilike', "%{$search}%")
-                ->orWhere('nombre_completo', 'ilike', "%{$search}%")))
-            ->when($filtros['carrera_id'] ?? null, fn ($query, $id) => $query->whereHas('carreras', fn ($carreras) => $carreras->where('carreras.id_carrera', $id)))
-            ->when($filtros['area_id'] ?? null, fn ($query, $id) => $query->whereHas('proyectos', fn ($proyectos) => $proyectos->where('area_de_conocimiento', $id)))
-            ->when($filtros['fecha'] ?? null, fn ($query, $fecha) => $query->whereDate('estudiantes.created_at', $fecha))
-            ->orderBy('nombre_completo')
-            ->paginate(12)
-            ->withQueryString();
+            ->withCount(['proyectos', 'carreras']);
+
+        if (! empty($filtros['search'])) {
+            $search = trim((string) $filtros['search']);
+            $query->where(function ($subquery) use ($search, $like): void {
+                $subquery->where('due', $like, "%{$search}%")
+                    ->orWhere('nombre_completo', $like, "%{$search}%");
+            });
+        }
+
+        if (! empty($filtros['carrera_id'])) {
+            $query->whereHas('carreras', fn ($q) => $q->where('carreras.id_carrera', $filtros['carrera_id']));
+        }
+
+        if (! empty($filtros['departamento_id'])) {
+            $query->whereHas('carreras', fn ($q) => $q->where('carreras.departamento', $filtros['departamento_id']));
+        }
+
+        if (! empty($filtros['area_id'])) {
+            $query->whereHas('proyectos', fn ($q) => $q->where('area_de_conocimiento', $filtros['area_id']));
+        }
+
+        if (! empty($filtros['fecha'])) {
+            $query->whereDate('estudiantes.created_at', $filtros['fecha']);
+        }
+
+        if ($estadoProyecto === 'con_proyecto') {
+            $query->has('proyectos');
+        } elseif ($estadoProyecto === 'sin_proyecto') {
+            $query->doesntHave('proyectos');
+        } elseif ($estadoProyecto === 'concluidos') {
+            $query->whereHas('proyectos', function ($q): void {
+                $q->whereNotNull('fecha_finalizacion')
+                    ->orWhere('estado_expediente', 'finalizado');
+            });
+        }
+
+        match ($orden) {
+            'nombre_desc' => $query->orderByDesc('nombre_completo'),
+            'carnet_asc' => $query->orderBy('due'),
+            'carnet_desc' => $query->orderByDesc('due'),
+            'recientes' => $query->orderByDesc('estudiantes.created_at'),
+            default => $query->orderBy('nombre_completo'),
+        };
+
+        $estudiantes = $query->paginate(12)->withQueryString();
 
         return view('ups.estudiantes.index', [
             'estudiantes' => $estudiantes,
             'carreras' => Carrera::query()->orderBy('nombre')->get(),
+            'departamentos' => Departamento::query()->orderBy('nombre')->get(),
             'areas' => AreaConocimiento::query()->orderBy('nombre')->get(),
             'filtros' => $filtros,
+            'conteos' => $conteos,
+            'estadoActivo' => $estadoProyecto,
         ]);
     }
 

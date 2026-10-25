@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-#[Fillable(['nombre', 'departamento', 'horas_servicio_social'])]
+#[Fillable(['codigo', 'nombre', 'departamento', 'horas_servicio_social'])]
 class Carrera extends Model
 {
     use HasFactory;

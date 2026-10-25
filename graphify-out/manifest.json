@@ -228,9 +228,9 @@
     "semantic_hash": ""
   },
   "app/Models/Carrera.php": {
-    "mtime": 1792731519.9257886,
-    "seen": 1792731670.272567,
-    "ast_hash": "c3bd9a4da207bcbce42c9cf5157f27d1",
+    "mtime": 1792858248.143912,
+    "seen": 1792858415.9336445,
+    "ast_hash": "2f83febd8793cd88d88970695ada4993",
     "semantic_hash": ""
   },
   "app/Models/Departamento.php": {
@@ -282,9 +282,9 @@
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000002_create_departamentos_and_carreras_tables.php": {
-    "mtime": 1792768828.5915647,
-    "seen": 1792768858.3046587,
-    "ast_hash": "06df0ea8bd91c4350af9e4174906f8d0",
+    "mtime": 1792858236.1900365,
+    "seen": 1792858415.9336782,
+    "ast_hash": "6e4ef88ef06f4b2356ac7d22543673b3",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000003_create_estudiantes_tables.php": {
@@ -438,9 +438,9 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/EstadisticasController.php": {
-    "mtime": 1792631598.0611074,
-    "seen": 1792632932.18364,
-    "ast_hash": "f9dda2761d3277e962d9099dc7a9ef5f",
+    "mtime": 1792901087.1953287,
+    "seen": 1792901534.6236477,
+    "ast_hash": "4aeaa0fc91a0c9423d209af5ad8005a8",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/EstudianteController.php": {
@@ -534,9 +534,9 @@
     "semantic_hash": ""
   },
   "database/seeders/EstudianteSeeder.php": {
-    "mtime": 1792731594.1379254,
-    "seen": 1792731670.27262,
-    "ast_hash": "ae132ae6165b5ba8d445d79a13b79ab4",
+    "mtime": 1792858331.2330225,
+    "seen": 1792858415.9336894,
+    "ast_hash": "8b128571b5353a4d5dcb749a57d4cca9",
     "semantic_hash": ""
   },
   "database/seeders/JefaturaSeeder.php": {
@@ -630,9 +630,9 @@
     "semantic_hash": ""
   },
   "resources/views/ups/estadisticas/index.blade.php": {
-    "mtime": 1792631598.0637755,
-    "seen": 1792632932.1837268,
-    "ast_hash": "34bb500c12c2e789ad4e5d1adceb5635",
+    "mtime": 1792901758.642692,
+    "seen": 1792901781.8989973,
+    "ast_hash": "bef8b96adf3aaf8ff9ed81f00244a644",
     "semantic_hash": ""
   },
   "resources/views/ups/estudiantes/create.blade.php": {
@@ -714,9 +714,9 @@
     "semantic_hash": ""
   },
   "resources/views/ups/proyectos/show.blade.php": {
-    "mtime": 1792844305.671644,
-    "seen": 1792844325.483207,
-    "ast_hash": "eeb3b2bcada1402a2a0e0dff0be6f853",
+    "mtime": 1792898038.945853,
+    "seen": 1792898064.4871764,
+    "ast_hash": "ecbc17adab68b1c7593ba997f6514c76",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Api/V1/AuditoriaApiController.php": {
@@ -834,9 +834,9 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Admin/CarreraDepartamentoController.php": {
-    "mtime": 1792846250.3793554,
-    "seen": 1792846426.59531,
-    "ast_hash": "409b6fe02f12c328f6bf756183c57902",
+    "mtime": 1792858262.7197607,
+    "seen": 1792858415.9335968,
+    "ast_hash": "347c1b00db3ad2ac8358c5dff54863b9",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/NotificacionController.php": {
@@ -858,15 +858,15 @@
     "semantic_hash": ""
   },
   "resources/views/admin/catalogos/index.blade.php": {
-    "mtime": 1792846339.2793179,
-    "seen": 1792846426.5954113,
-    "ast_hash": "81a4f0c6ef003574dced0b65f3ded7f2",
+    "mtime": 1792858314.350205,
+    "seen": 1792858415.9336987,
+    "ast_hash": "b0a794056ef8216218675aec1100703e",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Api/V1/CarreraApiController.php": {
-    "mtime": 1792732102.4980116,
-    "seen": 1792732145.4102502,
-    "ast_hash": "3222553051990a0849880bf25b26ba8c",
+    "mtime": 1792858356.6777027,
+    "seen": 1792858415.933603,
+    "ast_hash": "4b394f4769a03769cbf8f823421d1bba",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Api/V1/DepartamentoApiController.php": {
@@ -876,9 +876,9 @@
     "semantic_hash": ""
   },
   "app/Http/Resources/CarreraResource.php": {
-    "mtime": 1792732087.323188,
-    "seen": 1792732145.4102786,
-    "ast_hash": "25f81a4fa758e8bfc52ed264d19eab6f",
+    "mtime": 1792858340.9379015,
+    "seen": 1792858415.933638,
+    "ast_hash": "4406456fcff9e0778e5dab6a9b3a0688",
     "semantic_hash": ""
   },
   "app/Http/Resources/DepartamentoResource.php": {

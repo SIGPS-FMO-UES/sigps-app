@@ -32,7 +32,8 @@ Permite consultar dinámicamente la oferta académica de la facultad, los depart
 - **Nombre de ruta**: `api.v1.carreras.index`
 - **Parámetros de consulta (Query Params)**:
   - `departamento_id` *(opcional, int)*: Filtra carreras que pertenezcan al ID del departamento especificado.
-  - `search` *(opcional, string)*: Búsqueda por coincidencia en el nombre de la carrera o departamento.
+  - `codigo` *(opcional, string)*: Filtra por código institucional de carrera (ej. `I10515`).
+  - `search` *(opcional, string)*: Búsqueda por coincidencia en el código, nombre de la carrera o departamento.
   - `all` *(opcional, boolean)*: `true` o `1` para retornar todas las carreras sin paginación (por defecto retorna todas si no se especifica `page`).
   - `per_page` *(opcional, int)*: Cantidad de resultados por página al paginar (ej. `25`).
   - `page` *(opcional, int)*: Número de página solicitada.
@@ -49,6 +50,7 @@ curl -X GET "http://localhost:8000/api/v1/carreras" \
   "data": [
     {
       "id_carrera": 1,
+      "codigo": "I10515",
       "nombre": "Ingeniería de Sistemas Informáticos",
       "horas_servicio_social": 500,
       "horas_requeridas": 500,
@@ -62,6 +64,7 @@ curl -X GET "http://localhost:8000/api/v1/carreras" \
     },
     {
       "id_carrera": 2,
+      "codigo": "L10501",
       "nombre": "Licenciatura en Administración de Empresas",
       "horas_servicio_social": 500,
       "horas_requeridas": 500,
@@ -82,7 +85,7 @@ curl -X GET "http://localhost:8000/api/v1/carreras" \
 ### 2.2 Detalle de una Carrera
 
 - **Método**: `GET`
-- **URI**: `/api/v1/carreras/{id}`
+- **URI**: `/api/v1/carreras/{id}` *(donde `{id}` puede ser el identificador numérico o el código alfanumérico institucional, ej. `/api/v1/carreras/I10515`)*
 - **Nombre de ruta**: `api.v1.carreras.show`
 
 #### Ejemplo de Respuesta (`200 OK`):
@@ -91,6 +94,7 @@ curl -X GET "http://localhost:8000/api/v1/carreras" \
   "status": "success",
   "data": {
     "id_carrera": 1,
+    "codigo": "I10515",
     "nombre": "Ingeniería de Sistemas Informáticos",
     "horas_servicio_social": 500,
     "horas_requeridas": 500,
@@ -129,6 +133,7 @@ curl -X GET "http://localhost:8000/api/v1/carreras" \
       "carreras": [
         {
           "id_carrera": 1,
+          "codigo": "I10515",
           "nombre": "Ingeniería de Sistemas Informáticos",
           "horas_servicio_social": 500,
           "horas_requeridas": 500,
@@ -136,6 +141,7 @@ curl -X GET "http://localhost:8000/api/v1/carreras" \
         },
         {
           "id_carrera": 3,
+          "codigo": "I10502",
           "nombre": "Ingeniería Civil",
           "horas_servicio_social": 500,
           "horas_requeridas": 500,

@@ -25,12 +25,12 @@ class EstudianteSeeder extends Seeder
         ]);
 
         $carreras = collect([
-            'Ingeniería de Sistemas (Demo)' => 500,
-            'Administración de Empresas (Demo)' => 500,
-        ])->mapWithKeys(fn (int $horas, string $nombre): array => [
+            'Ingeniería de Sistemas (Demo)' => ['horas' => 500, 'codigo' => 'I10515'],
+            'Administración de Empresas (Demo)' => ['horas' => 500, 'codigo' => 'L10501'],
+        ])->mapWithKeys(fn (array $info, string $nombre): array => [
             $nombre => Carrera::firstOrCreate(
                 ['nombre' => $nombre],
-                ['departamento' => $departamento->id_departamento, 'horas_servicio_social' => $horas]
+                ['codigo' => $info['codigo'], 'departamento' => $departamento->id_departamento, 'horas_servicio_social' => $info['horas']]
             ),
         ]);
 

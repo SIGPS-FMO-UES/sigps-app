@@ -27,8 +27,10 @@ class CarreraApiController extends Controller
         $query = Carrera::query()
             ->with('departamentoRel')
             ->when($departamentoId, fn ($q) => $q->where('departamento', $departamentoId))
+            ->when($request->query('codigo'), fn ($q, $codigo) => $q->where('codigo', strtoupper((string) $codigo)))
             ->when($request->query('search'), fn ($q, $search) => $q->where(fn ($sub) => $sub
-                ->where('nombre', $likeOp, "%{$search}%")
+                ->where('codigo', $likeOp, "%{$search}%")
+                ->orWhere('nombre', $likeOp, "%{$search}%")
                 ->orWhereHas('departamentoRel', fn ($dept) => $dept->where('nombre', $likeOp, "%{$search}%"))
             ))
             ->orderBy('nombre');
@@ -41,13 +43,14 @@ class CarreraApiController extends Controller
     }
 
     /**
-     * Detalle público de una carrera específica por ID.
+     * Detalle público de una carrera específica por ID o código.
      */
     public function show(string $id): JsonResponse
     {
         $carrera = Carrera::query()
             ->with('departamentoRel')
-            ->findOrFail($id);
+            ->where(fn ($q) => $q->where('id_carrera', $id)->orWhere('codigo', strtoupper($id)))
+            ->firstOrFail();
 
         return response()->json([
             'status' => 'success',

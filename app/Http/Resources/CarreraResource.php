@@ -20,6 +20,7 @@ class CarreraResource extends JsonResource
     {
         return [
             'id_carrera' => $this->id_carrera,
+            'codigo' => $this->codigo,
             'nombre' => $this->nombre,
             'horas_servicio_social' => (int) ($this->horas_servicio_social ?? 500),
             'horas_requeridas' => (int) ($this->horas_servicio_social ?? 500),

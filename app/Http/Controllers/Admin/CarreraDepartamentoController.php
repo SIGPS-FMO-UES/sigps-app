@@ -59,10 +59,13 @@ class CarreraDepartamentoController extends Controller
     public function storeCarrera(Request $request): RedirectResponse
     {
         $data = $request->validate([
+            'codigo' => ['required', 'string', 'max:50', Rule::unique('carreras', 'codigo')],
             'nombre' => ['required', 'string', 'max:150', Rule::unique('carreras', 'nombre')->where(fn ($query) => $query->where('departamento', $request->input('departamento')))],
             'departamento' => ['required', 'integer', 'exists:departamentos,id_departamento'],
             'horas_servicio_social' => ['required', 'integer', 'min:1', 'max:5000'],
         ]);
+
+        $data['codigo'] = strtoupper(trim($data['codigo']));
 
         Carrera::query()->create($data);
 
@@ -73,10 +76,13 @@ class CarreraDepartamentoController extends Controller
     {
         $carrera = Carrera::query()->findOrFail($id);
         $data = $request->validate([
+            'codigo' => ['required', 'string', 'max:50', Rule::unique('carreras', 'codigo')->ignore($carrera->id_carrera, 'id_carrera')],
             'nombre' => ['required', 'string', 'max:150', Rule::unique('carreras', 'nombre')->where(fn ($query) => $query->where('departamento', $request->input('departamento')))->ignore($carrera->id_carrera, 'id_carrera')],
             'departamento' => ['required', 'integer', 'exists:departamentos,id_departamento'],
             'horas_servicio_social' => ['required', 'integer', 'min:1', 'max:5000'],
         ]);
+
+        $data['codigo'] = strtoupper(trim($data['codigo']));
 
         $carrera->update($data);
 

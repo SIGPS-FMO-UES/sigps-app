@@ -93,7 +93,12 @@
                 @endphp
                 <div style="margin-bottom: 20px; padding: 14px 18px; background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 9px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
                     <div style="display: flex; align-items: flex-start; gap: 12px; min-width: 260px; flex: 1;">
-                        <div style="font-size: 20px; line-height: 1;" aria-hidden="true">⏱</div>
+                        <div style="color: #b45309; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; background: #fef3c7; border: 1px solid #fde68a; flex-shrink: 0;" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
                         <div>
                             <strong style="color: #92400e; font-size: 13.5px; display: block; margin-bottom: 2px;">
                                 {{ $tituloBanner }}
@@ -223,7 +228,15 @@
                             @if($docFaseActual)
                                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
                                     <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
-                                        <span style="font-size: 20px;" aria-hidden="true">📄</span>
+                                        <div style="width: 34px; height: 34px; border-radius: 6px; background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; display: flex; align-items: center; justify-content: center; flex-shrink: 0;" aria-hidden="true">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                <polyline points="14 2 14 8 20 8"></polyline>
+                                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                                <line x1="10" y1="9" x2="8" y2="9"></line>
+                                            </svg>
+                                        </div>
                                         <div style="min-width: 0;">
                                             <a href="{{ route('ups.documentos-proyecto.descargar', $docFaseActual->id_documento_proyecto) }}" target="_blank" rel="noopener" style="font-weight: 700; font-size: 13.5px; color: #0f172a; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 340px;">
                                                 {{ $docFaseActual->nombre_original }}
@@ -235,8 +248,9 @@
                                     </div>
 
                                     <div style="display: flex; align-items: center; gap: 8px;">
-                                        <a href="{{ route('ups.documentos-proyecto.descargar', $docFaseActual->id_documento_proyecto) }}" target="_blank" rel="noopener" class="btn btn-small" style="background: #ffffff;">
-                                            Ver PDF ↗
+                                        <a href="{{ route('ups.documentos-proyecto.descargar', $docFaseActual->id_documento_proyecto) }}" target="_blank" rel="noopener" class="btn btn-small" style="background: #ffffff; display: inline-flex; align-items: center; gap: 5px;">
+                                            <span>Ver PDF</span>
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                                         </a>
 
                                         @if($proyecto->estado_expediente === 'en_tramite')
@@ -248,7 +262,10 @@
                                                         <input type="hidden" name="fase" value="{{ $proyecto->fase_actual }}">
                                                         <label for="subir-otro-pdf" style="display: block; font-size: 11px; font-weight: 600; margin-bottom: 6px;">Cargar nuevo PDF (máx. 15 MB)</label>
                                                         <input id="subir-otro-pdf" name="archivo" type="file" accept="application/pdf,.pdf" required style="font-size: 12px; margin-bottom: 8px; width: 100%;">
-                                                        <button type="submit" class="btn btn-primary btn-small" style="width: 100%;">Guardar documento</button>
+                                                        <button type="submit" class="btn btn-primary btn-small" style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                                            <span>Guardar documento</span>
+                                                        </button>
                                                     </form>
                                                 </div>
                                             </details>
@@ -264,8 +281,9 @@
                                             <div style="flex: 1; min-width: 220px;">
                                                 <input name="archivo" type="file" accept="application/pdf,.pdf" required style="font-size: 12px; width: 100%; padding: 7px 10px; border: 1px solid #94a3b8; border-radius: 6px; background: #ffffff; color: #1e293b;">
                                             </div>
-                                            <button type="submit" class="btn btn-primary btn-small" style="white-space: nowrap;">
-                                                Subir PDF de {{ $infoFase['actual'] }}
+                                            <button type="submit" class="btn btn-primary btn-small" style="white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                                <span>Subir PDF de {{ $infoFase['actual'] }}</span>
                                             </button>
                                         </div>
                                     </form>

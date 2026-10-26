@@ -236,10 +236,15 @@ class Proyecto extends Model
     {
         $fechaInicio = $this->fecha_inicio;
         $memoria = $this->memoria;
+        $estadoMemoria = $memoria?->estado;
         $ahora = now();
 
+        if (is_string($estadoMemoria)) {
+            $estadoMemoria = EstadoMemoria::tryFrom($estadoMemoria);
+        }
+
         // 1. Concluido formalmente
-        if ($this->estado_expediente === 'finalizado' || $memoria?->estado === EstadoMemoria::Entregada->value) {
+        if ($this->estado_expediente === 'finalizado' || $estadoMemoria === EstadoMemoria::Entregada) {
             return [
                 'nivel' => 'concluido',
                 'badge_class' => 'badge-info',
@@ -294,7 +299,7 @@ class Proyecto extends Model
         }
 
         // 4. Memoria registrada con observaciones pendientes de subsanar
-        if ($memoria->estado === EstadoMemoria::Observada->value) {
+        if ($estadoMemoria === EstadoMemoria::Observada) {
             return [
                 'nivel' => 'urgente',
                 'badge_class' => 'badge-danger',
@@ -306,7 +311,7 @@ class Proyecto extends Model
         }
 
         // 5. Memoria en trámite administrativo dentro de la oficina UPS
-        if (in_array($memoria->estado, [EstadoMemoria::Recibido->value, EstadoMemoria::EnRevision->value], true)) {
+        if (in_array($estadoMemoria, [EstadoMemoria::Recibido, EstadoMemoria::EnRevision], true)) {
             return [
                 'nivel' => 'tramite',
                 'badge_class' => 'badge-warning',
@@ -317,7 +322,7 @@ class Proyecto extends Model
             ];
         }
 
-        if ($memoria->estado === EstadoMemoria::EsperandoFirmas->value) {
+        if ($estadoMemoria === EstadoMemoria::EsperandoFirmas) {
             return [
                 'nivel' => 'tramite',
                 'badge_class' => 'badge-warning',
@@ -328,7 +333,7 @@ class Proyecto extends Model
             ];
         }
 
-        if ($memoria->estado === EstadoMemoria::Lista->value) {
+        if ($estadoMemoria === EstadoMemoria::Lista) {
             return [
                 'nivel' => 'tramite',
                 'badge_class' => 'badge-info',

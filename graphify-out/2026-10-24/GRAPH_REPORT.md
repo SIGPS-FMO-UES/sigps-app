@@ -1,7 +1,7 @@
 # Graph Report - sigps-app  (2026-10-24)
 
 ## Corpus Check
-- 148 files · ~57,575 words
+- 148 files · ~59,563 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 31 file(s) not represented in the graph (top: (none) 19, .conf 4, .example 2)
 

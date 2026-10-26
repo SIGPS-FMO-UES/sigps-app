@@ -27,6 +27,7 @@ class ProyectoApiController extends Controller
                 ->where('titulo', 'ilike', "%{$search}%")
                 ->when(is_numeric($search), fn ($numQ) => $numQ->orWhere('numero_proyecto', (int) $search))
                 ->orWhere('tutor', 'ilike', "%{$search}%")
+                ->orWhere('ubicacion', 'ilike', "%{$search}%")
                 ->orWhereHas('estudiantes', fn ($estudiantes) => $estudiantes->where('due', 'ilike', "%{$search}%")
                     ->orWhere('nombre_completo', 'ilike', "%{$search}%"))))
             ->when($request->query('fase'), fn ($query, $fase) => $query->where('fase_actual', $fase))
@@ -66,6 +67,7 @@ class ProyectoApiController extends Controller
             'tutor' => ['required', 'string', 'max:255'],
             'subcoordinador' => ['required', 'string', 'max:255'],
             'correo_coordinador' => ['nullable', 'email', 'max:255'],
+            'ubicacion' => ['required', 'string', 'max:500'],
             'fecha_inicio' => ['required', 'date'],
             'fecha_final' => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
             'estudiantes' => ['required', 'array', 'min:1'],
@@ -81,6 +83,7 @@ class ProyectoApiController extends Controller
                 'tutor' => $datos['tutor'],
                 'subcoordinador' => $datos['subcoordinador'],
                 'correo_coordinador' => $datos['correo_coordinador'] ?? null,
+                'ubicacion' => $datos['ubicacion'],
                 'fecha_inicio' => $datos['fecha_inicio'],
                 'fecha_final' => $datos['fecha_final'] ?? null,
                 'fase_actual' => 'inscripcion',
@@ -128,6 +131,7 @@ class ProyectoApiController extends Controller
             'tutor' => ['sometimes', 'required', 'string', 'max:255'],
             'subcoordinador' => ['sometimes', 'required', 'string', 'max:255'],
             'correo_coordinador' => ['nullable', 'email', 'max:255'],
+            'ubicacion' => ['sometimes', 'required', 'string', 'max:500'],
             'fecha_final' => ['nullable', 'date'],
             'area_de_conocimiento' => ['sometimes', 'required', 'integer', 'exists:areas_de_conocimiento,id_area_conocimiento'],
         ]);

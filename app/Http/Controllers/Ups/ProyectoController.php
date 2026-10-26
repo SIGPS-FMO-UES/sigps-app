@@ -56,6 +56,7 @@ class ProyectoController extends Controller
                 $subquery->where('titulo', $like, "%{$search}%")
                     ->orWhere('tutor', $like, "%{$search}%")
                     ->orWhere('subcoordinador', $like, "%{$search}%")
+                    ->orWhere('ubicacion', $like, "%{$search}%")
                     ->orWhere('documento', $like, "%{$search}%")
                     ->orWhereHas('estudiantes', fn ($estudiantes) => $estudiantes
                         ->where('due', $like, "%{$search}%")
@@ -352,6 +353,7 @@ class ProyectoController extends Controller
             'tutor' => ['required', 'string', 'max:255'],
             'subcoordinador' => ['required', 'string', 'max:255'],
             'correo_coordinador' => ['nullable', 'email', 'max:255'],
+            'ubicacion' => ['required', 'string', 'max:500'],
             'documento' => ['nullable', 'string', 'max:255'],
             'archivo_documento' => ['nullable', 'file', 'mimes:pdf', 'max:15360'],
             'estudiantes' => ['required', 'array', 'min:1'],

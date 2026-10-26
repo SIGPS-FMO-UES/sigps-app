@@ -8,6 +8,7 @@ use App\Models\Carrera;
 use App\Models\Certificacion;
 use App\Models\Departamento;
 use App\Models\Proyecto;
+use App\Services\EstadisticasExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -26,6 +27,8 @@ class EstadisticasController extends Controller
         $carreras = Carrera::query()->with('departamentoRel')->orderBy('nombre')->get();
         $areas = AreaConocimiento::query()->orderBy('nombre')->get();
 
+        $plantillasExportacion = EstadisticasExportService::plantillasDisponibles();
+
         // Si la pestaña activa es MINED
         if ($filtros['tab'] === 'mined') {
             $datosMined = $this->calcularEstadisticasMined($filtros);
@@ -35,6 +38,7 @@ class EstadisticasController extends Controller
                 'departamentos' => $departamentos,
                 'carreras' => $carreras,
                 'areas' => $areas,
+                'plantillasExportacion' => $plantillasExportacion,
             ], $datosMined));
         }
 
@@ -46,69 +50,26 @@ class EstadisticasController extends Controller
             'departamentos' => $departamentos,
             'carreras' => $carreras,
             'areas' => $areas,
+            'plantillasExportacion' => $plantillasExportacion,
         ], $datosProyectos));
     }
 
     /**
-     * Exporta el conjunto de datos actual filtrado en formato CSV compatible con Excel.
+     * Exporta los datos estadísticos seleccionados en formato Excel oficial (.xlsx) a partir de plantilla o en CSV.
      */
-    public function exportar(Request $request): StreamedResponse
+    public function exportar(Request $request, EstadisticasExportService $exportService): StreamedResponse
     {
         $filtros = $this->obtenerFiltros($request);
+        $tipo = $request->input('tipo', $request->input('formato', 'alumnos_departamento'));
+        $departamentoId = $request->filled('departamento_id') && $request->input('departamento_id') !== 'todos'
+            ? (int) $request->input('departamento_id')
+            : null;
 
-        $query = Certificacion::query()
-            ->with(['estudiante.carreras.departamentoRel', 'proyecto.areaConocimiento', 'emisor', 'receptorRegistradoPor'])
-            ->whereHas('proyecto')
-            ->when($filtros['area_id'], fn ($q, $id) => $q->whereHas('proyecto', fn ($p) => $p->where('area_de_conocimiento', $id)))
-            ->when($filtros['carrera_id'], fn ($q, $id) => $q->whereHas('estudiante.carreras', fn ($c) => $c->where('carreras.id_carrera', $id)))
-            ->when($filtros['departamento_id'], fn ($q, $id) => $q->whereHas('estudiante.carreras', fn ($c) => $c->where('carreras.departamento', $id)))
-            ->when($filtros['desde'], fn ($q, $date) => $q->whereDate('fecha_emision', '>=', $date))
-            ->when($filtros['hasta'], fn ($q, $date) => $q->whereDate('fecha_emision', '<=', $date))
-            ->when($filtros['estado_mined'] === 'entregadas', fn ($q) => $q->whereNotNull('fecha_entrega'))
-            ->when($filtros['estado_mined'] === 'sin_entregar', fn ($q) => $q->whereNull('fecha_entrega'))
-            ->orderBy('fecha_emision');
+        if ($tipo === 'certificaciones_csv' || $tipo === 'csv') {
+            return $exportService->exportarCertificacionesCsv($filtros);
+        }
 
-        $rows = $query->get();
-
-        $nombreArchivo = 'reporte-estadistico-'.($filtros['tab'] === 'mined' ? 'mined' : 'certificaciones').'-'.now()->format('Ymd_His').'.csv';
-
-        return response()->streamDownload(function () use ($rows): void {
-            $out = fopen('php://output', 'w');
-            fprintf($out, "\xEF\xBB\xBF"); // UTF-8 BOM para Excel
-            fputcsv($out, [
-                'Folio',
-                'Estado Entrega',
-                'Fecha Emisión',
-                'Fecha Entrega',
-                'Carnet / DUE',
-                'Estudiante',
-                'Carrera',
-                'Departamento',
-                'N° Proyecto',
-                'Proyecto',
-                'Área de Conocimiento',
-                'Firma / Persona que Recibió',
-            ]);
-
-            foreach ($rows as $cert) {
-                $carrera = $cert->estudiante?->carreras?->first();
-                fputcsv($out, [
-                    $cert->folio ?? 'S/F',
-                    $cert->fecha_entrega ? 'Entregada' : 'Sin entregar',
-                    $cert->fecha_emision?->format('d/m/Y') ?? '—',
-                    $cert->fecha_entrega?->format('d/m/Y') ?? 'Pendiente',
-                    $cert->estudiante?->due ?? '—',
-                    $cert->estudiante?->nombre_completo ?? '—',
-                    $carrera?->nombre ?? '—',
-                    $carrera?->departamentoRel?->nombre ?? '—',
-                    $cert->proyecto?->numero_proyecto ? '#'.$cert->proyecto->numero_proyecto : '—',
-                    $cert->proyecto?->titulo ?? '—',
-                    $cert->proyecto?->areaConocimiento?->nombre ?? '—',
-                    $cert->firma_receptor ?? '—',
-                ]);
-            }
-            fclose($out);
-        }, $nombreArchivo, ['Content-Type' => 'text/csv; charset=UTF-8']);
+        return $exportService->exportarListaAlumnosPorDepartamento($departamentoId, $filtros);
     }
 
     /**

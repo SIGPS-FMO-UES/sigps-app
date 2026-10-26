@@ -163,6 +163,7 @@ Table proyectos {
   tutor varchar [not null, note: 'Nombre completo del docente tutor']
   subcoordinador varchar [not null]
   correo_coordinador varchar [null, note: 'Correo electrónico de contacto del coordinador']
+  ubicacion text [not null, note: 'Dirección del lugar donde se lleva a cabo el proyecto']
   area_de_conocimiento bigint [not null]
   documento varchar [null]
   fase_actual varchar(30) [default: 'inscripcion', not null]

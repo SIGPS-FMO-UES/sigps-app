@@ -499,6 +499,14 @@
                             @enderror
                         </div>
 
+                        <div class="field" style="grid-column: 1 / -1;">
+                            <label for="ubicacion">Ubicación del proyecto (dirección donde se lleva a cabo) *</label>
+                            <input id="ubicacion" name="ubicacion" required maxlength="500" value="{{ old('ubicacion', $proyecto->ubicacion) }}" placeholder="Ej. Centro Comunitario Cantón El Amate, Municipio de San Miguel Centro, San Miguel">
+                            @error('ubicacion')
+                                <small style="color:var(--danger, #dc2626)">{{ $message }}</small>
+                            @enderror
+                        </div>
+
                         <div class="field">
                             <label for="documento">Referencia documental (opcional)</label>
                             <input id="documento" name="documento" maxlength="255" value="{{ old('documento', $proyecto->documento) }}" placeholder="Ej. Oficio UPS-2026-089 o referencia de solicitud">
@@ -642,6 +650,10 @@
                             <div class="summary-item">
                                 <small>Correo del Coordinador</small>
                                 <span id="resumen-correo-coordinador">—</span>
+                            </div>
+                            <div class="summary-item" style="grid-column: 1 / -1;">
+                                <small>Ubicación / Dirección de Ejecución</small>
+                                <span id="resumen-ubicacion">—</span>
                             </div>
                             <div class="summary-item">
                                 <small>Referencia Documental</small>
@@ -836,7 +848,8 @@
                 document.getElementById('area_de_conocimiento'),
                 document.getElementById('fecha_inicio'),
                 document.getElementById('tutor'),
-                document.getElementById('subcoordinador')
+                document.getElementById('subcoordinador'),
+                document.getElementById('ubicacion')
             ];
 
             for (const input of inputs) {
@@ -887,6 +900,7 @@
             document.getElementById('resumen-tutor').textContent = getVal('tutor') || '—';
             document.getElementById('resumen-subcoordinador').textContent = getVal('subcoordinador') || '—';
             document.getElementById('resumen-correo-coordinador').textContent = getVal('correo_coordinador') || 'No registrado';
+            document.getElementById('resumen-ubicacion').textContent = getVal('ubicacion') || '—';
             document.getElementById('resumen-documento').textContent = getVal('documento') || 'Sin referencia';
 
             const arch = document.getElementById('archivo_documento');

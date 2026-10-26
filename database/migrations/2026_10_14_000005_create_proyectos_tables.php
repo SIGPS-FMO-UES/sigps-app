@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('tutor');
             $table->string('subcoordinador');
             $table->string('correo_coordinador')->nullable();
+            $table->text('ubicacion');
             $table->foreignId('area_de_conocimiento')->constrained('areas_de_conocimiento', 'id_area_conocimiento')->restrictOnDelete();
             $table->string('documento')->nullable();
             $table->string('fase_actual', 30)->default('inscripcion');

@@ -375,6 +375,7 @@
                         @endif
                     @endif
                 </div>
+                <div class="detail" style="grid-column: 1 / -1;"><small>Ubicación / Dirección de ejecución</small><strong>{{ $proyecto->ubicacion ?: 'No especificada' }}</strong></div>
                 <div class="detail"><small>Docente tutor</small><strong>{{ $proyecto->tutor ?: '—' }}</strong></div>
                 <div class="detail"><small>Subcoordinador</small><strong>{{ $proyecto->subcoordinador }}</strong></div>
                 <div class="detail"><small>Correo coordinador</small><strong>{{ $proyecto->correo_coordinador ?: 'No registrado' }}</strong></div>

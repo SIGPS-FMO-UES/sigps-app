@@ -23,6 +23,7 @@ use Illuminate\Support\Carbon;
     'tutor',
     'subcoordinador',
     'correo_coordinador',
+    'ubicacion',
     'area_de_conocimiento',
     'documento',
     'fase_actual',

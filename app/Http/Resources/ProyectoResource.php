@@ -23,6 +23,7 @@ class ProyectoResource extends JsonResource
             'tutor' => $this->tutor,
             'subcoordinador' => $this->subcoordinador,
             'correo_coordinador' => $this->correo_coordinador,
+            'ubicacion' => $this->ubicacion,
             'fecha_inicio' => $this->fecha_inicio?->toDateString(),
             'fecha_final' => $this->fecha_final?->toDateString(),
             'fecha_radicado' => $this->fecha_radicado?->toIso8601String(),

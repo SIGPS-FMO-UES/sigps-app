@@ -6,14 +6,14 @@
 
 @section('page-actions')
     <div style="display:flex;align-items:center;gap:10px;">
-        <a class="btn btn-primary" href="{{ route('ups.estadisticas.exportar', request()->query()) }}" title="Descargar datos actuales en formato CSV para Excel">
+        <button type="button" class="btn btn-primary" onclick="modalExportar.open()" title="Exportar estadísticas y reportes oficiales en Excel (.xlsx) o CSV">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="7 10 12 15 17 10"/>
                 <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
-            <span>Exportar CSV para Excel</span>
-        </a>
+            <span>Exportar Información</span>
+        </button>
     </div>
 @endsection
 
@@ -1846,5 +1846,231 @@
         setupTableInteractivity('table-carreras-proy', 'search-carreras-proy');
         setupTableInteractivity('table-carreras-mined', 'search-mined-carreras');
     });
+
+    window.modalExportar = {
+        open: function() {
+            const modal = document.getElementById('modal-exportar-estadisticas');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        },
+        close: function() {
+            const modal = document.getElementById('modal-exportar-estadisticas');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        },
+        selectType: function(type) {
+            const cardAlumnos = document.getElementById('card-opt-alumnos');
+            const cardCsv = document.getElementById('card-opt-csv');
+            const radioAlumnos = document.getElementById('radio-tipo-alumnos');
+            const radioCsv = document.getElementById('radio-tipo-csv');
+            const deptGroup = document.getElementById('grupo-selector-departamento');
+
+            if (type === 'alumnos_departamento') {
+                if (cardAlumnos) cardAlumnos.classList.add('selected');
+                if (cardCsv) cardCsv.classList.remove('selected');
+                if (radioAlumnos) radioAlumnos.checked = true;
+                if (deptGroup) deptGroup.style.display = 'block';
+            } else {
+                if (cardCsv) cardCsv.classList.add('selected');
+                if (cardAlumnos) cardAlumnos.classList.remove('selected');
+                if (radioCsv) radioCsv.checked = true;
+                if (deptGroup) deptGroup.style.display = 'none';
+            }
+        },
+        submit: function(event) {
+            setTimeout(() => {
+                modalExportar.close();
+            }, 600);
+        }
+    };
 </script>
+
+<!-- Modal de Exportación de Estadísticas -->
+<div id="modal-exportar-estadisticas" class="modal-overlay" style="display:none" role="dialog" aria-modal="true" aria-labelledby="modal-exportar-titulo">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3 id="modal-exportar-titulo">Exportar Información Estadística</h3>
+            <button type="button" class="modal-close-btn" onclick="modalExportar.close()" aria-label="Cerrar ventana">&times;</button>
+        </div>
+        <form id="form-modal-exportar" method="GET" action="{{ route('ups.estadisticas.exportar') }}" onsubmit="modalExportar.submit(event)">
+            <!-- Parámetros de filtros heredados de la vista -->
+            <input type="hidden" name="periodo" value="{{ $filtros['periodo'] ?? 'todos' }}">
+            <input type="hidden" name="desde" value="{{ $filtros['desde'] ?? '' }}">
+            <input type="hidden" name="hasta" value="{{ $filtros['hasta'] ?? '' }}">
+            <input type="hidden" name="fase_proyecto" value="{{ $filtros['fase_proyecto'] ?? 'todas' }}">
+            <input type="hidden" name="area_id" value="{{ $filtros['area_id'] ?? '' }}">
+            <input type="hidden" name="carrera_id" value="{{ $filtros['carrera_id'] ?? '' }}">
+            <input type="hidden" name="estado_mined" value="{{ $filtros['estado_mined'] ?? 'todos' }}">
+            <input type="hidden" name="tab" value="{{ $filtros['tab'] ?? 'proyectos' }}">
+
+            <div class="modal-body">
+                <div>
+                    <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;color:#475569;margin-bottom:8px;">
+                        Selecciona el Formato o Plantilla a Exportar
+                    </label>
+                    <div style="display:flex;flex-direction:column;gap:10px;">
+                        <label class="export-option-card selected" id="card-opt-alumnos" onclick="modalExportar.selectType('alumnos_departamento')">
+                            <input type="radio" id="radio-tipo-alumnos" name="tipo" value="alumnos_departamento" checked onchange="modalExportar.selectType(this.value)">
+                            <div>
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <strong style="font-size:13px;color:#0f172a;">Lista de Estudiantes por Departamento</strong>
+                                    <span style="font-size:10px;background:#dcfce7;color:#166534;font-weight:700;padding:2px 6px;border-radius:4px;">Excel .xlsx</span>
+                                </div>
+                                <p style="font-size:12px;color:#64748b;margin:4px 0 0 0;line-height:1.4;">
+                                    Rellena la plantilla oficial institucional con alumnos, carreras, correos y proyectos de servicio social organizados por departamento.
+                                </p>
+                            </div>
+                        </label>
+
+                        <label class="export-option-card" id="card-opt-csv" onclick="modalExportar.selectType('certificaciones_csv')">
+                            <input type="radio" id="radio-tipo-csv" name="tipo" value="certificaciones_csv" onchange="modalExportar.selectType(this.value)">
+                            <div>
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <strong style="font-size:13px;color:#0f172a;">Reporte de Certificaciones y MINED</strong>
+                                    <span style="font-size:10px;background:#f1f5f9;color:#475569;font-weight:700;padding:2px 6px;border-radius:4px;">CSV Tabular</span>
+                                </div>
+                                <p style="font-size:12px;color:#64748b;margin:4px 0 0 0;line-height:1.4;">
+                                    Conjunto de datos tabular de folios emitidos, entregas y firmas receptoras compatible con Excel.
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="grupo-selector-departamento">
+                    <label for="export-departamento-id" style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;color:#475569;margin-bottom:6px;">
+                        Departamento Académico
+                    </label>
+                    <select id="export-departamento-id" name="departamento_id" style="width:100%;padding:9px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:13px;background:#fff;color:#0f172a;">
+                        <option value="todos">Todos los departamentos (una pestaña por departamento)</option>
+                        @foreach($departamentos as $depto)
+                            <option value="{{ $depto->id_departamento }}" @selected(($filtros['departamento_id'] ?? null) == $depto->id_departamento)>
+                                {{ $depto->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <small style="display:block;color:#64748b;font-size:11px;margin-top:4px;">
+                        Si seleccionas "Todos los departamentos", se creará una pestaña en el archivo Excel por cada departamento con estudiantes activos.
+                    </small>
+                </div>
+
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-size:12px;color:#475569;display:flex;align-items:center;gap:8px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    <span>
+                        Período activo: <strong>{{ $filtros['desde'] ? ($filtros['desde'] . ' a ' . $filtros['hasta']) : 'Histórico completo' }}</strong>
+                    </span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="modalExportar.close()">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="btn-modal-descargar">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span>Descargar Archivo</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 16px;
+        animation: fadeInOverlay 0.2s ease;
+    }
+    .modal-card {
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 24px 48px rgba(15, 23, 42, 0.25);
+        width: 100%;
+        max-width: 540px;
+        overflow: hidden;
+        animation: slideDownModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid #e2e8f0;
+    }
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 24px;
+        border-bottom: 1px solid #edf1f6;
+        background: #f8fafc;
+    }
+    .modal-header h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+    .modal-close-btn {
+        background: transparent;
+        border: none;
+        color: #64748b;
+        font-size: 22px;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 6px;
+        line-height: 1;
+        transition: background 0.15s ease;
+    }
+    .modal-close-btn:hover {
+        color: #0f172a;
+        background: #e2e8f0;
+    }
+    .modal-body {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+    .modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 16px 24px;
+        border-top: 1px solid #edf1f6;
+        background: #f8fafc;
+    }
+    .export-option-card {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 14px 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        background: #ffffff;
+    }
+    .export-option-card:hover {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+    }
+    .export-option-card.selected {
+        border-color: #1b365d;
+        background: #f0f4f9;
+        box-shadow: 0 0 0 1px #1b365d;
+    }
+    .export-option-card input[type="radio"] {
+        margin-top: 3px;
+        accent-color: #1b365d;
+    }
+</style>
 @endsection

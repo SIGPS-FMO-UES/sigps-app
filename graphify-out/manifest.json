@@ -42,9 +42,9 @@
     "semantic_hash": "888c810b5a4720916f07aa05dd2c2dd3"
   },
   "composer.json": {
-    "mtime": 1792730092.9655275,
-    "seen": 1792730105.253617,
-    "ast_hash": "a3f78119f5226602d8d92a1923c4d1a3",
+    "mtime": 1792962497.311464,
+    "seen": 1792962529.766947,
+    "ast_hash": "ad19dd4132f44832727ff6f999bc561a",
     "semantic_hash": ""
   },
   "config/app.php": {
@@ -138,10 +138,10 @@
     "semantic_hash": ""
   },
   "docker/dev/entrypoint.sh": {
-    "mtime": 1790351511.9797478,
-    "seen": 1791988031.6328788,
+    "mtime": 1792993783.8824143,
+    "seen": 1792993949.2333431,
     "ast_hash": "416dca60ec2620ee696ae55067ab2848",
-    "semantic_hash": "416dca60ec2620ee696ae55067ab2848"
+    "semantic_hash": ""
   },
   "docker/entrypoint.sh": {
     "mtime": 1783295946.8327906,
@@ -264,9 +264,9 @@
     "semantic_hash": ""
   },
   "app/Models/Proyecto.php": {
-    "mtime": 1792845016.1831818,
-    "seen": 1792845023.6222324,
-    "ast_hash": "d7b00c3f1fee0f462ec786c61df9a112",
+    "mtime": 1792993210.3197753,
+    "seen": 1792993368.61886,
+    "ast_hash": "21db20669cba564deaa3a7892ac5f9f1",
     "semantic_hash": ""
   },
   "app/Models/Usuario.php": {
@@ -300,9 +300,9 @@
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000005_create_proyectos_tables.php": {
-    "mtime": 1792769188.6869748,
-    "seen": 1792769264.8794196,
-    "ast_hash": "09ccfdaf73c3fe1801ce81de8bb9764b",
+    "mtime": 1792993195.6149452,
+    "seen": 1792993368.6188905,
+    "ast_hash": "208958ad8bada097ca637cff6e73050d",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_14_000006_create_memorias_table.php": {
@@ -438,9 +438,9 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/EstadisticasController.php": {
-    "mtime": 1792901087.1953287,
-    "seen": 1792901534.6236477,
-    "ast_hash": "4aeaa0fc91a0c9423d209af5ad8005a8",
+    "mtime": 1792963684.770027,
+    "seen": 1792963697.6959834,
+    "ast_hash": "31f0acd2cd0271b644830fa9f90ee6ea",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/EstudianteController.php": {
@@ -468,9 +468,9 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/ProyectoController.php": {
-    "mtime": 1792846155.1544635,
-    "seen": 1792846426.59534,
-    "ast_hash": "2e7ac568e4c1feeccad150742b778817",
+    "mtime": 1792993258.611217,
+    "seen": 1792993368.6188397,
+    "ast_hash": "121c1d237d0497e9d1b9e91034f44f29",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Ups/UpsDashboardController.php": {
@@ -546,9 +546,9 @@
     "semantic_hash": ""
   },
   "database/seeders/ProyectoSeeder.php": {
-    "mtime": 1792730103.2222698,
-    "seen": 1792730105.253646,
-    "ast_hash": "bbbc84101d0c1a7122013aa38cc2d62d",
+    "mtime": 1792993243.1383958,
+    "seen": 1792993368.6189003,
+    "ast_hash": "efd5ced13fd30ab3b6c4e1ea73a341f0",
     "semantic_hash": ""
   },
   "resources/views/admin/areas/index.blade.php": {
@@ -630,9 +630,9 @@
     "semantic_hash": ""
   },
   "resources/views/ups/estadisticas/index.blade.php": {
-    "mtime": 1792901758.642692,
-    "seen": 1792901781.8989973,
-    "ast_hash": "bef8b96adf3aaf8ff9ed81f00244a644",
+    "mtime": 1792963487.4218516,
+    "seen": 1792963697.696065,
+    "ast_hash": "09de6ca79613aef726da34d200b85584",
     "semantic_hash": ""
   },
   "resources/views/ups/estudiantes/create.blade.php": {
@@ -696,9 +696,9 @@
     "semantic_hash": ""
   },
   "resources/views/ups/proyectos/form.blade.php": {
-    "mtime": 1792768549.6011205,
-    "seen": 1792768677.8058684,
-    "ast_hash": "3a954c20fc51e6617f44844b45bdcfd7",
+    "mtime": 1792993318.3535264,
+    "seen": 1792993368.6189277,
+    "ast_hash": "881818db3fa7e9fd9c46c947ceb17185",
     "semantic_hash": ""
   },
   "resources/views/ups/proyectos/historial.blade.php": {
@@ -708,15 +708,15 @@
     "semantic_hash": ""
   },
   "resources/views/ups/proyectos/index.blade.php": {
-    "mtime": 1792845000.0773356,
-    "seen": 1792845023.6223013,
-    "ast_hash": "721d8691c1d5beedc2c192a84afb0b22",
+    "mtime": 1792993339.9092772,
+    "seen": 1792993368.6189291,
+    "ast_hash": "efa6ba6c33dbbd21dec9cd7df512cfe7",
     "semantic_hash": ""
   },
   "resources/views/ups/proyectos/show.blade.php": {
-    "mtime": 1792898038.945853,
-    "seen": 1792898064.4871764,
-    "ast_hash": "ecbc17adab68b1c7593ba997f6514c76",
+    "mtime": 1792993330.591385,
+    "seen": 1792993368.6189296,
+    "ast_hash": "5a75fad77460b7d6d47bdbdd7233b3b6",
     "semantic_hash": ""
   },
   "app/Http/Controllers/Api/V1/AuditoriaApiController.php": {
@@ -768,9 +768,9 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/Api/V1/ProyectoApiController.php": {
-    "mtime": 1792768509.2666347,
-    "seen": 1792768677.8057625,
-    "ast_hash": "c7b76e5a4ef3e828bf2efd7a9b9b8cf7",
+    "mtime": 1792993285.6119049,
+    "seen": 1792993368.6188264,
+    "ast_hash": "626b96a4a8192fbd3efd64af132aa56e",
     "semantic_hash": ""
   },
   "app/Http/Middleware/EnsureCarreraServiceToken.php": {
@@ -798,9 +798,9 @@
     "semantic_hash": ""
   },
   "app/Http/Resources/ProyectoResource.php": {
-    "mtime": 1792768522.2994685,
-    "seen": 1792768677.8057852,
-    "ast_hash": "ef18ee4d72fac637a0aa14eb5708d2cf",
+    "mtime": 1792993295.192794,
+    "seen": 1792993368.61885,
+    "ast_hash": "3b9c0906d2e000b66ec9a86e7b61a51e",
     "semantic_hash": ""
   },
   "config/sanctum.php": {
@@ -846,9 +846,9 @@
     "semantic_hash": ""
   },
   "app/Notifications/ExpedienteRecibidoNotification.php": {
-    "mtime": 1792730109.3009465,
-    "seen": 1792730439.853829,
-    "ast_hash": "dc22247e65823ac40e445ebc419cfe5c",
+    "mtime": 1792993360.2525191,
+    "seen": 1792993368.618864,
+    "ast_hash": "83e53016c3a49ae005f47ecbb7bf2da0",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_22_100000_create_notifications_table.php": {
@@ -885,6 +885,12 @@
     "mtime": 1792732092.9851222,
     "seen": 1792732145.4102807,
     "ast_hash": "19a602cabc8a0764e40a3acdbd3a0434",
+    "semantic_hash": ""
+  },
+  "app/Services/EstadisticasExportService.php": {
+    "mtime": 1792993631.6609044,
+    "seen": 1792993737.4214904,
+    "ast_hash": "17eeeb312d23163ea7cf32d3d15df414",
     "semantic_hash": ""
   }
 }

@@ -14,8 +14,7 @@ class ExpedienteRecibidoNotification extends Notification
         public readonly string $proyecto,
         public readonly string $fase,
         public readonly string $codigoAval,
-    ) {
-    }
+    ) {}
 
     /**
      * Store the notification for the authenticated UPS staff member.

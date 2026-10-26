@@ -433,7 +433,7 @@
                 <!-- Caja de Omnibúsqueda -->
                 <div class="omnibar-input-wrap">
                     <svg class="omnibar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
-                    <input type="search" name="search" value="{{ $filtros['search'] ?? '' }}" maxlength="100" placeholder="Escribe carnet (DUE), nombre del estudiante, título, tutor o # correlativo...">
+                    <input type="search" name="search" value="{{ $filtros['search'] ?? '' }}" maxlength="100" placeholder="Escribe carnet (DUE), estudiante, título, ubicación, tutor o # correlativo...">
                 </div>
 
                 <!-- Selector de Ordenamiento -->

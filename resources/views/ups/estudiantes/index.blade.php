@@ -15,78 +15,57 @@
        TARJETAS DE TRIAJE / FILTROS VISUALES POR ESTADO
        ========================================================= */
     .triaje-chips-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-        gap: 12px;
-        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 12px;
     }
     .triaje-chip {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 14px 18px;
+        gap: 7px;
+        padding: 8px 12px;
         background: #ffffff;
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 999px;
         text-decoration: none;
         color: #243347;
-        box-shadow: 0 2px 6px rgba(24, 40, 58, 0.04);
-        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        box-shadow: none;
+        transition: background-color 0.15s ease, border-color 0.15s ease;
         position: relative;
         overflow: hidden;
     }
     .triaje-chip:hover {
         border-color: #cbd5e1;
         background: #fafbfd;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(24, 40, 58, 0.08);
+        transform: none;
+        box-shadow: none;
     }
     .triaje-chip.active {
         border-color: var(--navy);
         background: #f8fafc;
-        box-shadow: 0 0 0 2px var(--navy);
+        box-shadow: none;
     }
     .triaje-chip-info {
         display: flex;
         flex-direction: column;
-        gap: 3px;
-    }
-    .triaje-chip-title {
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: var(--muted);
+        gap: 0;
     }
     .triaje-chip-count {
-        font-size: 22px;
-        font-weight: 800;
-        line-height: 1.1;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
         color: #1e293b;
     }
-    .triaje-chip-subtitle {
-        font-size: 11px;
-        color: #64748b;
-        margin-top: 2px;
+    .triaje-chip-label { font-size: 12px; font-weight: 600; }
+    .triaje-chip.active { background: #1e293b; color: #fff; }
+    .triaje-chip.active .triaje-chip-count { color: #fff !important; }
+    .triaje-chip:focus-visible, .carrera-pill:focus-visible,
+    .filter-tag-remove:focus-visible, .clear-all-link:focus-visible {
+        outline: 3px solid #2563eb;
+        outline-offset: 2px;
     }
-    .triaje-chip-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-    .icon-todos { background: #eef2f6; color: #1e293b; }
-    .icon-con-proyecto { background: #ecfdf5; color: #059669; }
-    .icon-sin-proyecto { background: #fffbeb; color: #d97706; }
-    .icon-concluidos { background: #eef2ff; color: #4f46e5; }
-
-    .triaje-chip.active.chip-todos { border-color: #1e293b; box-shadow: 0 0 0 2px #1e293b; }
-    .triaje-chip.active.chip-con-proyecto { border-color: #059669; box-shadow: 0 0 0 2px #059669; }
-    .triaje-chip.active.chip-sin-proyecto { border-color: #d97706; box-shadow: 0 0 0 2px #d97706; }
-    .triaje-chip.active.chip-concluidos { border-color: #4f46e5; box-shadow: 0 0 0 2px #4f46e5; }
 
     /* =========================================================
        BARRA DE ACCESO RÁPIDO POR CARRERAS (PÍLDORAS)
@@ -95,10 +74,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        overflow-x: auto;
-        padding-bottom: 8px;
-        margin-bottom: 16px;
-        scrollbar-width: thin;
+        display: none;
     }
     .carreras-quick-filter::-webkit-scrollbar {
         height: 4px;
@@ -143,29 +119,29 @@
        OMNIBAR Y CONTROLES DE BÚSQUEDA
        ========================================================= */
     .omnibar-card {
-        margin-bottom: 16px;
+        margin-bottom: 12px;
         border: 1px solid var(--border);
         border-radius: 11px;
         background: #ffffff;
     }
     .omnibar-body {
-        padding: 16px 18px;
+        padding: 12px 14px;
     }
     .omnibar-form {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 8px;
     }
     .omnibar-primary-row {
         display: flex;
         align-items: center;
         gap: 12px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
     }
     .search-input-wrapper {
         position: relative;
         flex: 1;
-        min-width: 270px;
+        min-width: 0;
         display: flex;
         align-items: center;
     }
@@ -240,7 +216,7 @@
     }
     .order-select {
         height: 42px;
-        min-width: 180px;
+        min-width: 160px;
         border: 1px solid #d0d7e2;
         border-radius: 8px;
         padding: 0 10px;
@@ -502,6 +478,18 @@
         white-space: nowrap;
         margin-top: 3px;
     }
+    .carnet-inline { display: flex; align-items: center; gap: 5px; margin-top: 2px; color: #64748b; font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .carnet-inline .copy-carnet-btn { padding: 2px; }
+    .row-more { margin-top: 4px; font-size: 11px; color: #64748b; }
+    .row-more summary { cursor: pointer; width: fit-content; }
+    .row-more-content { padding: 5px 0 0 8px; line-height: 1.5; color: #475569; overflow-wrap: anywhere; }
+    .row-more-content > div + div { margin-top: 4px; }
+    .table-wrap { overflow-x: hidden; }
+    #tabla-estudiantes { width: 100%; min-width: 0; table-layout: fixed; }
+    #tabla-estudiantes th, #tabla-estudiantes td { overflow-wrap: anywhere; }
+    #tabla-estudiantes td { vertical-align: middle; }
+    #tabla-estudiantes .student-name-block { gap: 9px; }
+    #tabla-estudiantes .student-link { font-size: 12.5px; }
 
     /* ACCIONES DE TABLA */
     .actions-group {
@@ -602,25 +590,61 @@
         opacity: 1;
         transform: translateY(0);
     }
+    .student-pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 16px;
+        color: #64748b;
+        font-size: 12px;
+    }
+    .student-pagination-nav { display: flex; align-items: center; gap: 6px; }
+    .student-pagination-link, .student-pagination-current {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 34px; min-height: 34px; padding: 0 10px;
+        border: 1px solid #d8dee8; border-radius: 7px;
+        color: #334155; background: #fff; text-decoration: none;
+    }
+    .student-pagination-current { background: #1e293b; border-color: #1e293b; color: #fff; }
+    .student-pagination-link[aria-disabled="true"] { color: #94a3b8; background: #f8fafc; }
+    @media (max-width: 760px) {
+        .omnibar-primary-row { flex-wrap: wrap; }
+        .search-input-wrapper { flex-basis: 100%; }
+        .omnibar-primary-row > .btn { flex: 1; justify-content: center; }
+        #tabla-estudiantes thead { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+        #tabla-estudiantes, #tabla-estudiantes tbody { display: block; }
+        #tabla-estudiantes tbody tr.estudiante-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 6px 12px; padding: 12px 14px; border-bottom: 1px solid #e7ebf0; }
+        #tabla-estudiantes tbody tr.estudiante-row > td { display: block; min-width: 0; padding: 2px 0; border: 0; }
+        #tabla-estudiantes tbody tr.estudiante-row > td:first-child { grid-column: 1 / -1; }
+        #tabla-estudiantes tbody tr.estudiante-row > td:nth-child(2)::before,
+        #tabla-estudiantes tbody tr.estudiante-row > td:nth-child(3)::before { display: block; margin-bottom: 4px; color: #718096; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+        #tabla-estudiantes tbody tr.estudiante-row > td:nth-child(2)::before { content: 'Carrera'; }
+        #tabla-estudiantes tbody tr.estudiante-row > td:nth-child(3)::before { content: 'Servicio social'; }
+        #tabla-estudiantes tbody tr.estudiante-row > td:nth-child(4) { grid-column: 1 / -1; text-align: left !important; padding-top: 6px; border-top: 1px solid #eef1f4; }
+        #tabla-estudiantes .actions-group { justify-content: flex-start !important; }
+        .student-pagination { align-items: flex-start; flex-direction: column; }
+    }
+    @media (max-width: 420px) {
+        .triaje-chips-container { gap: 5px; }
+        .triaje-chip { padding: 7px 9px; }
+        .triaje-chip-label { font-size: 11px; }
+        .triaje-chip-count { font-size: 11px; }
+        .omnibar-body { padding: 10px; }
+        .order-select-container { flex-wrap: wrap; }
+    }
 </style>
 
 <!-- ============================================================== -->
 <!-- 1. PESTAÑAS / TARJETAS DE TRIAJE OPERATIVO (FILTRO VISUAL RÁPIDO) -->
 <!-- ============================================================== -->
 <div class="triaje-chips-container" role="tablist" aria-label="Filtro rápido por estado de servicio social">
-    <!-- Todos -->
     <a href="{{ route('ups.estudiantes.index', array_merge(request()->except(['page', 'estado_proyecto']), ['estado_proyecto' => 'todos'])) }}"
        class="triaje-chip chip-todos {{ ($estadoActivo ?? 'todos') === 'todos' ? 'active' : '' }}"
        role="tab"
        aria-selected="{{ ($estadoActivo ?? 'todos') === 'todos' ? 'true' : 'false' }}">
-        <div class="triaje-chip-info">
-            <span class="triaje-chip-title">Total General</span>
-            <span class="triaje-chip-count">{{ number_format($conteos['todos'] ?? 0) }}</span>
-            <span class="triaje-chip-subtitle">Directorio de estudiantes</span>
-        </div>
-        <div class="triaje-chip-icon icon-todos">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-        </div>
+        <span class="triaje-chip-label">Todos</span>
+        <span class="triaje-chip-count">{{ number_format($conteos['todos'] ?? 0) }}</span>
     </a>
 
     <!-- Con Proyecto -->
@@ -628,14 +652,8 @@
        class="triaje-chip chip-con-proyecto {{ ($estadoActivo ?? '') === 'con_proyecto' ? 'active' : '' }}"
        role="tab"
        aria-selected="{{ ($estadoActivo ?? '') === 'con_proyecto' ? 'true' : 'false' }}">
-        <div class="triaje-chip-info">
-            <span class="triaje-chip-title" style="color:#059669">En Servicio Social</span>
-            <span class="triaje-chip-count" style="color:#047857">{{ number_format($conteos['con_proyecto'] ?? 0) }}</span>
-            <span class="triaje-chip-subtitle">Con proyectos asignados</span>
-        </div>
-        <div class="triaje-chip-icon icon-con-proyecto">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-        </div>
+        <span class="triaje-chip-label">En servicio</span>
+        <span class="triaje-chip-count">{{ number_format($conteos['con_proyecto'] ?? 0) }}</span>
     </a>
 
     <!-- Sin Proyecto -->
@@ -643,14 +661,8 @@
        class="triaje-chip chip-sin-proyecto {{ ($estadoActivo ?? '') === 'sin_proyecto' ? 'active' : '' }}"
        role="tab"
        aria-selected="{{ ($estadoActivo ?? '') === 'sin_proyecto' ? 'true' : 'false' }}">
-        <div class="triaje-chip-info">
-            <span class="triaje-chip-title" style="color:#d97706">Sin Proyecto</span>
-            <span class="triaje-chip-count" style="color:#b45309">{{ number_format($conteos['sin_proyecto'] ?? 0) }}</span>
-            <span class="triaje-chip-subtitle">Disponibles para asignación</span>
-        </div>
-        <div class="triaje-chip-icon icon-sin-proyecto">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
-        </div>
+        <span class="triaje-chip-label">Sin proyecto</span>
+        <span class="triaje-chip-count">{{ number_format($conteos['sin_proyecto'] ?? 0) }}</span>
     </a>
 
     <!-- Concluidos / Con Certificación -->
@@ -658,42 +670,14 @@
        class="triaje-chip chip-concluidos {{ ($estadoActivo ?? '') === 'concluidos' ? 'active' : '' }}"
        role="tab"
        aria-selected="{{ ($estadoActivo ?? '') === 'concluidos' ? 'true' : 'false' }}">
-        <div class="triaje-chip-info">
-            <span class="triaje-chip-title" style="color:#4f46e5">Servicio Concluido</span>
-            <span class="triaje-chip-count" style="color:#4338ca">{{ number_format($conteos['concluidos'] ?? 0) }}</span>
-            <span class="triaje-chip-subtitle">Proyectos finalizados</span>
-        </div>
-        <div class="triaje-chip-icon icon-concluidos">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
-        </div>
+        <span class="triaje-chip-label">Concluido</span>
+        <span class="triaje-chip-count">{{ number_format($conteos['concluidos'] ?? 0) }}</span>
     </a>
 </div>
 
 <!-- ============================================================== -->
 <!-- 2. PÍLDORAS DE ACCESO RÁPIDO POR CARRERA                       -->
 <!-- ============================================================== -->
-@if($carreras->isNotEmpty())
-<div class="carreras-quick-filter" aria-label="Filtro rápido por carrera">
-    <a href="{{ route('ups.estudiantes.index', request()->except(['page', 'carrera_id'])) }}"
-       class="carrera-pill {{ empty($filtros['carrera_id']) ? 'active' : '' }}">
-        <span>Todas las carreras</span>
-    </a>
-    @foreach($carreras as $carrera)
-        @php
-            $isCurrentCarrera = (string) ($filtros['carrera_id'] ?? '') === (string) $carrera->id_carrera;
-        @endphp
-        <a href="{{ $isCurrentCarrera ? route('ups.estudiantes.index', request()->except(['page', 'carrera_id'])) : route('ups.estudiantes.index', array_merge(request()->except('page'), ['carrera_id' => $carrera->id_carrera])) }}"
-           class="carrera-pill {{ $isCurrentCarrera ? 'active' : '' }}"
-           title="{{ $carrera->nombre }}">
-            <span>{{ $carrera->nombre }}</span>
-            @if($isCurrentCarrera)
-                <span class="pill-close" aria-hidden="true">&times;</span>
-            @endif
-        </a>
-    @endforeach
-</div>
-@endif
-
 <!-- ============================================================== -->
 <!-- 3. BARRA DE OMNIBÚSQUEDA Y CONTROLES SIMPLIFICADOS             -->
 <!-- ============================================================== -->
@@ -716,22 +700,11 @@
                            class="search-input"
                            value="{{ $filtros['search'] ?? '' }}"
                            maxlength="100"
-                           placeholder="Buscar por carnet (ej. 20240001, SM19001) o nombre completo del estudiante..."
+                           placeholder="Buscar por nombre o carnet"
+                           aria-label="Buscar por nombre o carnet"
                            autocomplete="off">
                     <button type="button" id="search-clear" class="search-clear-btn" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">&times;</button>
                     <span class="search-shortcut-badge" title="Presiona '/' para buscar">/</span>
-                </div>
-
-                <!-- Ordenación de resultados -->
-                <div class="order-select-container">
-                    <label for="orden-select">Ordenar por:</label>
-                    <select id="orden-select" name="orden" class="order-select" onchange="this.form.requestSubmit()">
-                        <option value="nombre_asc" @selected(($filtros['orden'] ?? 'nombre_asc') === 'nombre_asc')>Nombre (A → Z)</option>
-                        <option value="nombre_desc" @selected(($filtros['orden'] ?? '') === 'nombre_desc')>Nombre (Z → A)</option>
-                        <option value="carnet_asc" @selected(($filtros['orden'] ?? '') === 'carnet_asc')>Carnet (Menor a mayor)</option>
-                        <option value="carnet_desc" @selected(($filtros['orden'] ?? '') === 'carnet_desc')>Carnet (Mayor a menor)</option>
-                        <option value="recientes" @selected(($filtros['orden'] ?? '') === 'recientes')>Registro más reciente</option>
-                    </select>
                 </div>
 
                 <!-- Botón Buscar -->
@@ -752,13 +725,23 @@
             <details class="advanced-filters-details" @if($secondaryCount > 0) open @endif>
                 <summary class="advanced-filters-summary">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-                    <span>Filtros avanzados por catálogo</span>
+                    <span>Más filtros y orden</span>
                     @if($secondaryCount > 0)
                         <span class="active-filters-badge">{{ $secondaryCount }}</span>
                     @endif
                 </summary>
 
                 <div class="advanced-grid">
+                    <div class="field">
+                        <label for="orden-select">Ordenar por</label>
+                        <select id="orden-select" name="orden" onchange="this.form.requestSubmit()">
+                            <option value="nombre_asc" @selected(($filtros['orden'] ?? 'nombre_asc') === 'nombre_asc')>Nombre (A → Z)</option>
+                            <option value="nombre_desc" @selected(($filtros['orden'] ?? '') === 'nombre_desc')>Nombre (Z → A)</option>
+                            <option value="carnet_asc" @selected(($filtros['orden'] ?? '') === 'carnet_asc')>Carnet (menor a mayor)</option>
+                            <option value="carnet_desc" @selected(($filtros['orden'] ?? '') === 'carnet_desc')>Carnet (mayor a menor)</option>
+                            <option value="recientes" @selected(($filtros['orden'] ?? '') === 'recientes')>Registro más reciente</option>
+                        </select>
+                    </div>
                     <!-- Carrera -->
                     <div class="field">
                         <label for="carrera_id">Carrera Académica</label>
@@ -878,26 +861,18 @@
     <div class="card-head">
         <div>
             <h2>Directorio de estudiantes</h2>
-            <p class="muted" style="margin: 4px 0 0; font-size: 12px;">
-                @if(($estadoActivo ?? 'todos') === 'con_proyecto') Mostrando estudiantes con vinculación activa a proyectos.
-                @elseif(($estadoActivo ?? 'todos') === 'sin_proyecto') Mostrando estudiantes sin proyecto asignado (disponibles).
-                @elseif(($estadoActivo ?? 'todos') === 'concluidos') Mostrando estudiantes con servicio concluido o certificado.
-                @else Mostrando todos los estudiantes registrados en la facultad.
-                @endif
-            </p>
+            <p class="muted" style="margin: 3px 0 0; font-size: 12px;">{{ number_format($estudiantes->total()) }} {{ $estudiantes->total() === 1 ? 'resultado' : 'resultados' }}</p>
         </div>
-        <span class="badge" style="font-size: 11px; padding: 6px 12px;">{{ $estudiantes->total() }} {{ $estudiantes->total() === 1 ? 'estudiante' : 'estudiantes' }}</span>
     </div>
 
     <div class="table-wrap">
         <table class="table" id="tabla-estudiantes">
             <thead>
                 <tr>
-                    <th style="min-width: 240px;">Estudiante</th>
-                    <th style="width: 140px;">Carnet (DUE)</th>
-                    <th style="min-width: 220px;">Carrera(s) / Departamento</th>
-                    <th style="min-width: 200px;">Servicio Social</th>
-                    <th style="text-align: right; width: 140px;">Acciones</th>
+                    <th style="width: 34%;">Estudiante</th>
+                    <th style="width: 28%;">Carrera</th>
+                    <th style="width: 23%;">Servicio social</th>
+                    <th style="text-align: right; width: 15%;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -905,6 +880,7 @@
                 @php
                     $proyectosCount = $estudiante->proyectos_count ?? $estudiante->proyectos->count();
                     $hasConcluido = $estudiante->proyectos->contains(fn($p) => !empty($p->fecha_finalizacion) || $p->estado_expediente === 'finalizado');
+                    $carreraPrincipal = $estudiante->carreras->first();
                 @endphp
                 <tr class="estudiante-row" data-due="{{ strtolower($estudiante->due) }}" data-nombre="{{ strtolower($estudiante->nombre_completo) }}">
                     <!-- Estudiante con Avatar -->
@@ -917,36 +893,32 @@
                                 <a href="{{ route('ups.estudiantes.show', $estudiante->id_estudiante) }}" class="student-link">
                                     {{ $estudiante->nombre_completo }}
                                 </a>
-                                <span class="student-date">
-                                    Registrado: {{ $estudiante->created_at?->format('d/m/Y') ?? '—' }}
-                                </span>
+                                <span class="student-date">Registrado {{ $estudiante->created_at?->format('d/m/Y') ?? '—' }}</span>
                             </div>
                         </div>
-                    </td>
-
-                    <!-- Carnet con botón de copiado -->
-                    <td>
-                        <div class="carnet-badge-wrap">
-                            <span class="carnet-badge">{{ $estudiante->due }}</span>
-                            <button type="button" class="copy-carnet-btn" data-due="{{ $estudiante->due }}" title="Copiar carnet al portapapeles" aria-label="Copiar carnet {{ $estudiante->due }}">
+                        <div class="carnet-inline">
+                            <span>{{ $estudiante->due }}</span>
+                            <button type="button" class="copy-carnet-btn" data-due="{{ $estudiante->due }}" title="Copiar carnet" aria-label="Copiar carnet {{ $estudiante->due }}">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                             </button>
                         </div>
                     </td>
 
-                    <!-- Carrera y Departamento -->
                     <td>
                         @if($estudiante->carreras->isNotEmpty())
-                            @foreach($estudiante->carreras as $c)
-                                <div>
-                                    <span class="career-tag">
-                                        {{ $c->nombre }}
-                                    </span>
-                                    @if($c->departamentoRel)
-                                        <span class="career-dept">{{ $c->departamentoRel->nombre }}</span>
-                                    @endif
-                                </div>
-                            @endforeach
+                            <span class="career-tag">{{ $carreraPrincipal->nombre }}</span>
+                            @if($estudiante->carreras->count() > 1)
+                                <details class="row-more">
+                                    <summary>+{{ $estudiante->carreras->count() - 1 }} más</summary>
+                                    <div class="row-more-content">
+                                        @foreach($estudiante->carreras as $carrera)
+                                            <div>{{ $carrera->nombre }}@if($carrera->departamentoRel) <span class="career-dept">{{ $carrera->departamentoRel->nombre }}</span>@endif</div>
+                                        @endforeach
+                                    </div>
+                                </details>
+                            @elseif($carreraPrincipal->departamentoRel)
+                                <span class="career-dept">{{ $carreraPrincipal->departamentoRel->nombre }}</span>
+                            @endif
                         @else
                             <span class="muted" style="font-size: 11px;">Sin carrera registrada</span>
                         @endif
@@ -966,9 +938,10 @@
                                     <span>{{ $proyectosCount }} {{ $proyectosCount === 1 ? 'proyecto activo' : 'proyectos activos' }}</span>
                                 </span>
                             @endif
-                            <div class="project-titles-preview" title="{{ $estudiante->proyectos->pluck('titulo')->join(', ') }}">
-                                {{ $estudiante->proyectos->pluck('titulo')->join(', ') }}
-                            </div>
+                            <details class="row-more">
+                                <summary>Ver proyectos</summary>
+                                <div class="row-more-content">{{ $estudiante->proyectos->pluck('titulo')->join(', ') }}</div>
+                            </details>
                         @else
                             <span class="project-status-pill project-pill-none">
                                 <span class="status-dot-sm dot-amber"></span>
@@ -992,7 +965,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="empty">
+                    <td colspan="4" class="empty">
                         <div class="empty-state-box">
                             <div class="empty-state-icon">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
@@ -1020,9 +993,21 @@
     </div>
 
     @if($estudiantes->hasPages())
-        <div class="pagination">
-            <span>Mostrando {{ $estudiantes->firstItem() }}–{{ $estudiantes->lastItem() }} de {{ $estudiantes->total() }} estudiantes</span>
-            {{ $estudiantes->onEachSide(1)->links() }}
+        <div class="student-pagination" aria-label="Paginación de estudiantes">
+            <span>{{ $estudiantes->firstItem() }}–{{ $estudiantes->lastItem() }} de {{ number_format($estudiantes->total()) }}</span>
+            <nav class="student-pagination-nav" aria-label="Páginas">
+                @if($estudiantes->onFirstPage())
+                    <span class="student-pagination-link" aria-disabled="true">Anterior</span>
+                @else
+                    <a class="student-pagination-link" href="{{ $estudiantes->previousPageUrl() }}">Anterior</a>
+                @endif
+                <span class="student-pagination-current" aria-current="page">{{ $estudiantes->currentPage() }} / {{ $estudiantes->lastPage() }}</span>
+                @if($estudiantes->hasMorePages())
+                    <a class="student-pagination-link" href="{{ $estudiantes->nextPageUrl() }}">Siguiente</a>
+                @else
+                    <span class="student-pagination-link" aria-disabled="true">Siguiente</span>
+                @endif
+            </nav>
         </div>
     @endif
 </section>

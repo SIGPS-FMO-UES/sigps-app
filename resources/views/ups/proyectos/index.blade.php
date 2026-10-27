@@ -188,25 +188,42 @@
         color: var(--red);
         text-decoration: underline;
     }
-    .project-students-summary {
+    .student-subline {
         display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-        margin-top: 6px;
+        align-items: center;
+        gap: 6px;
+        margin-top: 5px;
+        font-size: 11.5px;
+        color: #475569;
     }
-    .student-pill {
+    .student-due {
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: 0.02em;
+    }
+    .student-name {
+        color: #475569;
+    }
+    .student-more {
         display: inline-flex;
         align-items: center;
-        gap: 4px;
-        padding: 2px 7px;
+        padding: 1px 6px;
         background: #f1f5f9;
-        border: 1px solid #e2e8f0;
         border-radius: 4px;
-        font-size: 11px;
-        color: #334155;
+        font-size: 10.5px;
+        font-weight: 600;
+        color: #64748b;
     }
-    .student-pill strong {
-        color: #0f172a;
+    .area-badge-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    .area-title {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 12px;
+        line-height: 1.35;
     }
     .subtext-item {
         display: flex;
@@ -552,11 +569,10 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th style="min-width:300px">Expediente y Estudiantes</th>
-                    <th style="min-width:200px">Área y Tutor</th>
-                    <th style="min-width:170px">Prioridad y Plazo</th>
-                    <th style="min-width:140px">Estado Operativo</th>
-                    <th style="width:130px;text-align:right">Siguiente Acción</th>
+                    <th style="min-width:320px">Expediente y Estudiantes</th>
+                    <th style="min-width:190px">Área y Memoria</th>
+                    <th style="min-width:180px">Prioridad y Plazo</th>
+                    <th style="width:140px;text-align:right">Siguiente Acción</th>
                 </tr>
             </thead>
             <tbody>
@@ -578,41 +594,39 @@
                             </div>
 
                             @if($proyecto->estudiantes->isNotEmpty())
-                                <div class="project-students-summary">
-                                    @foreach($proyecto->estudiantes->take(3) as $est)
-                                        <span class="student-pill" title="{{ $est->nombre_completo }}">
-                                            <strong>{{ $est->due }}</strong> · {{ \Illuminate\Support\Str::limit($est->nombre_completo, 18) }}
-                                        </span>
-                                    @endforeach
-                                    @if($proyecto->estudiantes->count() > 3)
-                                        <span class="student-pill muted" title="{{ $proyecto->estudiantes->pluck('nombre_completo')->implode(', ') }}">
-                                            +{{ $proyecto->estudiantes->count() - 3 }} más
-                                        </span>
+                                @php($primerEst = $proyecto->estudiantes->first())
+                                <div class="student-subline" title="{{ $proyecto->estudiantes->pluck('nombre_completo')->implode(', ') }}">
+                                    <span class="student-due">{{ $primerEst->due }}</span>
+                                    <span>·</span>
+                                    <span class="student-name">{{ $primerEst->nombre_completo }}</span>
+                                    @if($proyecto->estudiantes->count() > 1)
+                                        <span class="student-more">+{{ $proyecto->estudiantes->count() - 1 }} más</span>
                                     @endif
                                 </div>
                             @else
-                                <div class="subtext-item" style="font-style:italic">
+                                <div class="student-subline" style="font-style:italic;color:#94a3b8;">
                                     <span>Sin estudiantes vinculados</span>
                                 </div>
                             @endif
                         </td>
 
-                        <!-- Columna 2: Área y Tutor -->
+                        <!-- Columna 2: Área y Memoria -->
                         <td>
-                            <strong style="color:#1e293b;font-size:12px;">{{ $proyecto->areaConocimiento?->nombre ?? 'Sin área asignada' }}</strong>
-                            <div class="subtext-item">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                <span>Tutor: {{ $proyecto->tutor ?? 'No asignado' }}</span>
-                            </div>
-                            @if($proyecto->subcoordinador)
-                                <div class="subtext-item">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                                    <span>Subcoord: {{ $proyecto->subcoordinador }}</span>
+                            <div class="area-badge-wrap">
+                                <span class="area-title">{{ $proyecto->areaConocimiento?->nombre ?? 'Sin área asignada' }}</span>
+                                <div>
+                                    @if($proyecto->memoria)
+                                        <span class="badge {{ $proyecto->memoria->estado === 'observada' ? 'badge-danger' : ($proyecto->memoria->estado === 'aprobada' ? 'badge-success' : 'badge-info') }}">
+                                            {{ $proyecto->memoria->estado instanceof \App\Enums\EstadoMemoria ? $proyecto->memoria->estado->label() : ucfirst((string) $proyecto->memoria->estado) }}
+                                        </span>
+                                    @else
+                                        <span class="badge" style="background:#f1f5f9;color:#64748b;">Sin memoria</span>
+                                    @endif
                                 </div>
-                            @endif
+                            </div>
                         </td>
 
-                        <!-- Columna 3: Semáforo y Plazo Humano -->
+                        <!-- Columna 3: Prioridad y Plazo -->
                         <td>
                             <div class="priority-badge-wrap">
                                 <div>
@@ -632,51 +646,16 @@
                                 <span class="priority-plazo {{ $semaforo['nivel'] === 'urgente' ? 'urgente' : ($semaforo['nivel'] === 'tramite' ? 'tramite' : ($semaforo['nivel'] === 'al_dia' ? 'al-dia' : 'concluido')) }}">
                                     {{ $semaforo['plazo_humano'] }}
                                 </span>
-                                @if(!empty($semaforo['fecha_referencia']))
-                                    <div class="subtext-item" style="margin-top: 1px; font-size: 11px;">
+                                @if($proyecto->fecha_inicio)
+                                    <div class="subtext-item">
                                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                        <span>
-                                            @if($semaforo['etiqueta'] === 'Memoria pendiente')
-                                                Límite: <strong>{{ $semaforo['fecha_referencia']->format('d/m/Y') }}</strong>
-                                            @elseif($semaforo['etiqueta'] === 'Remisión a Junta')
-                                                Límite 18m: <strong>{{ $semaforo['fecha_referencia']->format('d/m/Y') }}</strong>
-                                            @else
-                                                Plazo: {{ $semaforo['fecha_referencia']->format('d/m/Y') }}
-                                            @endif
-                                        </span>
+                                        <span>Inicio: {{ $proyecto->fecha_inicio->format('d/m/Y') }}</span>
                                     </div>
                                 @endif
                             </div>
                         </td>
 
-                        <!-- Columna 4: Estado Operativo -->
-                        <td>
-                            @if($proyecto->memoria)
-                                <span class="badge {{ $proyecto->memoria->estado === 'observada' ? 'badge-danger' : ($proyecto->memoria->estado === 'aprobada' ? 'badge-success' : 'badge-info') }}">
-                                    {{ $proyecto->memoria->estado instanceof \App\Enums\EstadoMemoria ? $proyecto->memoria->estado->label() : ucfirst((string) $proyecto->memoria->estado) }}
-                                </span>
-                            @else
-                                <span class="badge" style="background:#f1f5f9;color:#64748b;">Sin memoria</span>
-                            @endif
-                            <div class="subtext-item">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                <span>Inicio: {{ $proyecto->fecha_inicio?->format('d/m/Y') ?? '—' }}</span>
-                            </div>
-                            @if($proyecto->fecha_final)
-                                @php($extVigente = $proyecto->extensionPlazoVigente())
-                                <div class="subtext-item" @if($extVigente) style="color:#92400e; font-weight:600;" @endif>
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                                    <span>Fin: {{ $proyecto->fecha_final->format('d/m/Y') }}</span>
-                                    @if($extVigente)
-                                        <span class="badge badge-warning" style="font-size: 9.5px; padding: 0 4px; line-height: 1.4;">
-                                            {{ $extVigente->tipo === 'ampliacion_plazo' ? 'Ampliación' : 'Prórroga' }}
-                                        </span>
-                                    @endif
-                                </div>
-                            @endif
-                        </td>
-
-                        <!-- Columna 5: Acción Directa con Alto Contraste -->
+                        <!-- Columna 4: Acción Directa con Alto Contraste -->
                         <td style="text-align:right">
                             @if($semaforo['nivel'] === 'urgente')
                                 <a class="btn-action-urgente" href="{{ route('ups.proyectos.show', $proyecto->id_proyecto) }}">
@@ -698,7 +677,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" style="padding:0;">
+                        <td colspan="4" style="padding:0;">
                             <div class="empty-state-box">
                                 <div class="empty-state-icon">
                                     @if($triajeActivo === 'urgentes')

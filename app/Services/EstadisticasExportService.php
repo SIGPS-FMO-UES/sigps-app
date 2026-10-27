@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AreaConocimiento;
 use App\Models\Certificacion;
 use App\Models\Departamento;
 use Illuminate\Support\Collection;
@@ -28,6 +29,13 @@ class EstadisticasExportService
                 'id' => 'alumnos_departamento',
                 'nombre' => 'Lista de Estudiantes y Proyectos por Departamento',
                 'descripcion' => 'Exporta el listado detallado de estudiantes y sus proyectos de servicio social en formato Excel (.xlsx), organizados por departamento sobre la plantilla oficial.',
+                'formato' => 'xlsx',
+                'archivo_plantilla' => 'plantilla_estudiantes_proyectos.xlsx',
+            ],
+            'alumnos_area' => [
+                'id' => 'alumnos_area',
+                'nombre' => 'Lista de Estudiantes y Proyectos por Área de Conocimiento',
+                'descripcion' => 'Exporta el listado detallado de estudiantes y sus proyectos de servicio social en formato Excel (.xlsx), organizados por área de conocimiento sobre la plantilla oficial.',
                 'formato' => 'xlsx',
                 'archivo_plantilla' => 'plantilla_estudiantes_proyectos.xlsx',
             ],
@@ -134,6 +142,91 @@ class EstadisticasExportService
             }
 
             $nombreArchivo = 'reporte-alumnos-por-departamento-'.now()->format('Ymd_His').'.xlsx';
+        }
+
+        return response()->streamDownload(function () use ($spreadsheet): void {
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, $nombreArchivo, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Cache-Control' => 'max-age=0',
+        ]);
+    }
+
+    /**
+     * Exporta la lista de estudiantes y sus proyectos rellenando la plantilla oficial de Excel, organizados por área de conocimiento.
+     * Si no se especifica un área, genera una pestaña por cada área de conocimiento con estudiantes activos.
+     *
+     * @param  array<string, mixed>  $filtros
+     */
+    public function exportarListaAlumnosPorAreaConocimiento(?int $areaId = null, array $filtros = []): StreamedResponse
+    {
+        $rutaPlantilla = $this->obtenerRutaPlantilla('plantilla_estudiantes_proyectos.xlsx');
+        $spreadsheet = IOFactory::load($rutaPlantilla);
+        $plantillaHoja = $spreadsheet->getSheet(0);
+
+        $query = DB::table('proyectos_estudiantes')
+            ->join('proyectos', 'proyectos_estudiantes.id_proyecto', '=', 'proyectos.id_proyecto')
+            ->join('estudiantes', 'proyectos_estudiantes.id_estudiante', '=', 'estudiantes.id_estudiante')
+            ->leftJoin('carreras_estudiante', 'estudiantes.id_estudiante', '=', 'carreras_estudiante.id_estudiante')
+            ->leftJoin('carreras', 'carreras_estudiante.id_carrera', '=', 'carreras.id_carrera')
+            ->leftJoin('areas_de_conocimiento', 'proyectos.area_de_conocimiento', '=', 'areas_de_conocimiento.id_area_conocimiento')
+            ->whereNull('proyectos.deleted_at')
+            ->when($areaId, fn ($q, $id) => $q->where('proyectos.area_de_conocimiento', $id))
+            ->when($filtros['carrera_id'] ?? null, fn ($q, $id) => $q->where('carreras.id_carrera', $id))
+            ->when($filtros['departamento_id'] ?? null, fn ($q, $id) => $q->where('carreras.departamento', $id))
+            ->when($filtros['desde'] ?? null, fn ($q, $date) => $q->whereDate('proyectos.fecha_inicio', '>=', $date))
+            ->when($filtros['hasta'] ?? null, fn ($q, $date) => $q->whereDate('proyectos.fecha_inicio', '<=', $date))
+            ->when(($filtros['fase_proyecto'] ?? 'todas') !== 'todas', fn ($q) => $q->where('proyectos.fase_actual', $filtros['fase_proyecto']))
+            ->select([
+                'areas_de_conocimiento.id_area_conocimiento',
+                'areas_de_conocimiento.nombre as area_nombre',
+                'estudiantes.id_estudiante',
+                'estudiantes.due',
+                'estudiantes.nombre_completo as estudiante_nombre',
+                'carreras.nombre as carrera_nombre',
+                'proyectos.id_proyecto',
+                'proyectos.titulo as proyecto_titulo',
+                'proyectos.ubicacion as proyecto_ubicacion',
+                'proyectos.tutor as proyecto_tutor',
+                'proyectos.subcoordinador as proyecto_subcoordinador',
+            ])
+            ->distinct()
+            ->orderBy('areas_de_conocimiento.nombre')
+            ->orderBy('carreras.nombre')
+            ->orderBy('estudiantes.nombre_completo');
+
+        $registros = $query->get();
+
+        if ($areaId) {
+            $area = AreaConocimiento::find($areaId);
+            $nombreArea = $area?->nombre ?? 'Área de Conocimiento';
+            $tituloLimpio = $this->sanitizarNombreHoja($nombreArea, []);
+            $plantillaHoja->setTitle($tituloLimpio);
+            $this->rellenarHojaEstudiantes($plantillaHoja, $registros);
+            $nombreArchivo = 'reporte-alumnos-area-'.str($nombreArea)->slug().'-'.now()->format('Ymd_His').'.xlsx';
+        } else {
+            $agrupados = $registros->groupBy(fn ($item) => $item->area_nombre ?: 'Sin Área Asignada');
+
+            if ($agrupados->isEmpty()) {
+                $plantillaHoja->setTitle('Estudiantes');
+                $this->rellenarHojaEstudiantes($plantillaHoja, collect());
+            } else {
+                $hojasCreadas = [];
+                foreach ($agrupados as $nombreArea => $items) {
+                    $nuevaHoja = clone $plantillaHoja;
+                    $tituloLimpio = $this->sanitizarNombreHoja((string) $nombreArea, $hojasCreadas);
+                    $nuevaHoja->setTitle($tituloLimpio);
+                    $hojasCreadas[] = $tituloLimpio;
+                    $spreadsheet->addSheet($nuevaHoja);
+                    $this->rellenarHojaEstudiantes($nuevaHoja, $items);
+                }
+
+                $spreadsheet->removeSheetByIndex(0);
+                $spreadsheet->setActiveSheetIndex(0);
+            }
+
+            $nombreArchivo = 'reporte-alumnos-por-area-'.now()->format('Ymd_His').'.xlsx';
         }
 
         return response()->streamDownload(function () use ($spreadsheet): void {
@@ -286,12 +379,12 @@ class EstadisticasExportService
      *
      * @param  array<int, string>  $hojasExistentes
      */
-    private function sanitizarNombreHoja(string $nombre, array $hojasExistentes): string
+    private function sanitizarNombreHoja(string $nombre, array $hojasExistentes, string $default = 'General'): string
     {
         $limpio = preg_replace('/[\\\\\\/\\?\\*\\:\\[\\]]/', '-', $nombre) ?? $nombre;
         $limpio = trim(mb_substr($limpio, 0, 28));
         if ($limpio === '') {
-            $limpio = 'Departamento';
+            $limpio = $default;
         }
 
         $candidato = $limpio;

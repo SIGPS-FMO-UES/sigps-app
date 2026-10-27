@@ -61,13 +61,18 @@ class EstadisticasController extends Controller
     {
         $filtros = $this->obtenerFiltros($request);
         $tipo = $request->input('tipo', $request->input('formato', 'alumnos_departamento'));
-        $departamentoId = $request->filled('departamento_id') && $request->input('departamento_id') !== 'todos'
-            ? (int) $request->input('departamento_id')
-            : null;
 
         if ($tipo === 'certificaciones_csv' || $tipo === 'csv') {
             return $exportService->exportarCertificacionesCsv($filtros);
         }
+
+        if ($tipo === 'alumnos_area' || $tipo === 'alumnos_area_conocimiento') {
+            $areaId = $filtros['area_id'];
+
+            return $exportService->exportarListaAlumnosPorAreaConocimiento($areaId, $filtros);
+        }
+
+        $departamentoId = $filtros['departamento_id'];
 
         return $exportService->exportarListaAlumnosPorDepartamento($departamentoId, $filtros);
     }
@@ -106,11 +111,23 @@ class EstadisticasController extends Controller
             $hasta = null;
         }
 
+        $departamentoId = $request->filled('departamento_id') && $request->input('departamento_id') !== 'todos'
+            ? (int) $request->input('departamento_id')
+            : null;
+
+        $carreraId = $request->filled('carrera_id') && $request->input('carrera_id') !== 'todas'
+            ? (int) $request->input('carrera_id')
+            : null;
+
+        $areaId = $request->filled('area_id') && $request->input('area_id') !== 'todas'
+            ? (int) $request->input('area_id')
+            : null;
+
         return [
             'tab' => $tab,
-            'departamento_id' => $request->filled('departamento_id') ? (int) $request->input('departamento_id') : null,
-            'carrera_id' => $request->filled('carrera_id') ? (int) $request->input('carrera_id') : null,
-            'area_id' => $request->filled('area_id') ? (int) $request->input('area_id') : null,
+            'departamento_id' => $departamentoId,
+            'carrera_id' => $carreraId,
+            'area_id' => $areaId,
             'periodo' => $periodo,
             'desde' => $desde,
             'hasta' => $hasta,

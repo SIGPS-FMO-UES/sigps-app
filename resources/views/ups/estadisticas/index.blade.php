@@ -19,11 +19,6 @@
 
 @section('content')
 <style>
-    /* =========================================================================
-       SISTEMA DE ESCALA Y TIPOGRAFÍA FLUIDA — ESTILO SOBRIO INSTITUCIONAL
-       Unidad de Proyección Social (UPS — SYS-01)
-       Adaptado para monitores de 24" (1080p/1440p) y mini laptops (<=800px h)
-       ========================================================================= */
     :root {
         --stats-ink: #202b39;
         --stats-muted: #6a7481;
@@ -1950,21 +1945,39 @@
         },
         selectType: function(type) {
             const cardAlumnos = document.getElementById('card-opt-alumnos');
+            const cardArea = document.getElementById('card-opt-area');
             const cardCsv = document.getElementById('card-opt-csv');
             const radioAlumnos = document.getElementById('radio-tipo-alumnos');
+            const radioArea = document.getElementById('radio-tipo-area');
             const radioCsv = document.getElementById('radio-tipo-csv');
             const deptGroup = document.getElementById('grupo-selector-departamento');
+            const areaGroup = document.getElementById('grupo-selector-area');
+            const deptSelect = document.getElementById('export-departamento-id');
+            const areaSelect = document.getElementById('export-area-id');
+
+            [cardAlumnos, cardArea, cardCsv].forEach(c => c?.classList.remove('selected'));
 
             if (type === 'alumnos_departamento') {
-                if (cardAlumnos) cardAlumnos.classList.add('selected');
-                if (cardCsv) cardCsv.classList.remove('selected');
+                cardAlumnos?.classList.add('selected');
                 if (radioAlumnos) radioAlumnos.checked = true;
                 if (deptGroup) deptGroup.style.display = 'block';
+                if (areaGroup) areaGroup.style.display = 'none';
+                if (deptSelect) deptSelect.disabled = false;
+                if (areaSelect) areaSelect.disabled = true;
+            } else if (type === 'alumnos_area') {
+                cardArea?.classList.add('selected');
+                if (radioArea) radioArea.checked = true;
+                if (deptGroup) deptGroup.style.display = 'none';
+                if (areaGroup) areaGroup.style.display = 'block';
+                if (deptSelect) deptSelect.disabled = true;
+                if (areaSelect) areaSelect.disabled = false;
             } else {
-                if (cardCsv) cardCsv.classList.add('selected');
-                if (cardAlumnos) cardAlumnos.classList.remove('selected');
+                cardCsv?.classList.add('selected');
                 if (radioCsv) radioCsv.checked = true;
                 if (deptGroup) deptGroup.style.display = 'none';
+                if (areaGroup) areaGroup.style.display = 'none';
+                if (deptSelect) deptSelect.disabled = true;
+                if (areaSelect) areaSelect.disabled = true;
             }
         },
         submit: function(event) {
@@ -1988,7 +2001,6 @@
             <input type="hidden" name="desde" value="{{ $filtros['desde'] ?? '' }}">
             <input type="hidden" name="hasta" value="{{ $filtros['hasta'] ?? '' }}">
             <input type="hidden" name="fase_proyecto" value="{{ $filtros['fase_proyecto'] ?? 'todas' }}">
-            <input type="hidden" name="area_id" value="{{ $filtros['area_id'] ?? '' }}">
             <input type="hidden" name="carrera_id" value="{{ $filtros['carrera_id'] ?? '' }}">
             <input type="hidden" name="estado_mined" value="{{ $filtros['estado_mined'] ?? 'todos' }}">
             <input type="hidden" name="tab" value="{{ $filtros['tab'] ?? 'proyectos' }}">
@@ -2008,6 +2020,19 @@
                                 </div>
                                 <p style="font-size:12px;color:#64748b;margin:4px 0 0 0;line-height:1.4;">
                                     Rellena la plantilla oficial institucional con alumnos, carreras, correos y proyectos de servicio social organizados por departamento.
+                                </p>
+                            </div>
+                        </label>
+
+                        <label class="export-option-card" id="card-opt-area" onclick="modalExportar.selectType('alumnos_area')">
+                            <input type="radio" id="radio-tipo-area" name="tipo" value="alumnos_area" onchange="modalExportar.selectType(this.value)">
+                            <div>
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <strong style="font-size:13px;color:#0f172a;">Lista de Estudiantes por Área de Conocimiento</strong>
+                                    <span style="font-size:10px;background:#dcfce7;color:#166534;font-weight:700;padding:2px 6px;border-radius:4px;">Excel .xlsx</span>
+                                </div>
+                                <p style="font-size:12px;color:#64748b;margin:4px 0 0 0;line-height:1.4;">
+                                    Rellena la plantilla oficial institucional con alumnos, carreras, correos y proyectos de servicio social organizados por área de conocimiento.
                                 </p>
                             </div>
                         </label>
@@ -2041,6 +2066,23 @@
                     </select>
                     <small style="display:block;color:#64748b;font-size:11px;margin-top:4px;">
                         Si seleccionas "Todos los departamentos", se creará una pestaña en el archivo Excel por cada departamento con estudiantes activos.
+                    </small>
+                </div>
+
+                <div id="grupo-selector-area" style="display:none;">
+                    <label for="export-area-id" style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;color:#475569;margin-bottom:6px;">
+                        Área de Conocimiento
+                    </label>
+                    <select id="export-area-id" name="area_id" style="width:100%;padding:9px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:13px;background:#fff;color:#0f172a;" disabled>
+                        <option value="todas">Todas las áreas (una pestaña por área)</option>
+                        @foreach($areas as $area)
+                            <option value="{{ $area->id_area_conocimiento }}" @selected(($filtros['area_id'] ?? null) == $area->id_area_conocimiento)>
+                                {{ $area->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <small style="display:block;color:#64748b;font-size:11px;margin-top:4px;">
+                        Si seleccionas "Todas las áreas", se creará una pestaña en el archivo Excel por cada área de conocimiento con estudiantes activos.
                     </small>
                 </div>
 

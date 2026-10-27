@@ -630,9 +630,9 @@
     "semantic_hash": ""
   },
   "resources/views/ups/estadisticas/index.blade.php": {
-    "mtime": 1793074659.6621559,
-    "seen": 1793074661.826748,
-    "ast_hash": "09de6ca79613aef726da34d200b85584",
+    "mtime": 1793075024.5299304,
+    "seen": 1793075057.7990367,
+    "ast_hash": "87e3798b6be60fd130bdfd9b7a1a2132",
     "semantic_hash": ""
   },
   "resources/views/ups/estudiantes/create.blade.php": {

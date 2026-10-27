@@ -1,7 +1,7 @@
 # Graph Report - sigps-app  (2026-10-26)
 
 ## Corpus Check
-- 150 files · ~61,689 words
+- 150 files · ~62,589 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7cc3ef76`
+- Built from commit: `6d28af1d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -20,6 +20,7 @@
 - ExpedienteRecibidoNotification
 - Illuminate\Database\Migrations\Migration
 - package.json
+- Illuminate\View\View
 - AppServiceProvider
 - User
 - logging.php
@@ -32,7 +33,6 @@
 - Proyecto.php
 - bootstrap/app.php
 - AreaConocimiento
-- Illuminate\View\View
 - Illuminate\Database\Eloquent\Relations\HasMany
 - Illuminate\Database\Eloquent\Model
 - Illuminate\Http\Request
@@ -95,6 +95,10 @@ Nodes (3): Illuminate\Database\Migrations\Migration, Illuminate\Database\Schema\
 Cohesion: 0.10
 Nodes (20): concurrently, @laravel/multiplex, laravel-vite-plugin, devDependencies, concurrently, laravel-vite-plugin, tailwindcss, @tailwindcss/vite (+12 more)
 
+### Community 8 - "Illuminate\View\View"
+Cohesion: 0.07
+Nodes (18): CarreraDepartamentoController, CarreraApiController, DepartamentoApiController, EstudianteApiController, EstudianteController, CarreraResource, CertificacionResource, DepartamentoResource (+10 more)
+
 ### Community 10 - "User"
 Cohesion: 0.10
 Nodes (13): UsuarioController, User, AdminSeeder, DatabaseSeeder, JefaturaSeeder, ProyectoSeeder, RoleAndPermissionSeeder, Illuminate\Database\Console\Seeds\WithoutModelEvents (+5 more)
@@ -110,10 +114,6 @@ Nodes (4): Illuminate\Database\Eloquent\Relations\BelongsToMany, Illuminate\Data
 ### Community 36 - "bootstrap/app.php"
 Cohesion: 0.18
 Nodes (9): EnsureCarreraServiceToken, Closure, Illuminate\Foundation\Application, Illuminate\Foundation\Configuration\Exceptions, Illuminate\Foundation\Configuration\Middleware, Spatie\Permission\Middleware\PermissionMiddleware, Spatie\Permission\Middleware\RoleMiddleware, Spatie\Permission\Middleware\RoleOrPermissionMiddleware (+1 more)
-
-### Community 44 - "Illuminate\View\View"
-Cohesion: 0.07
-Nodes (18): CarreraDepartamentoController, CarreraApiController, DepartamentoApiController, EstudianteApiController, EstudianteController, CarreraResource, CertificacionResource, DepartamentoResource (+10 more)
 
 ### Community 45 - "Illuminate\Database\Eloquent\Relations\HasMany"
 Cohesion: 0.12
@@ -163,9 +163,9 @@ Nodes (3): Illuminate\Foundation\Testing\TestCase, ExampleTest, TestCase
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Proyecto` connect `Illuminate\Http\Request` to `Proyecto.php`, `User`, `Illuminate\View\View`, `Illuminate\Database\Eloquent\Relations\HasMany`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `Illuminate\Database\Eloquent\Model`, `Memoria`, `Plantilla`, `ProcesoExtraordinario`, `ProyectoController`?**
+- **Why does `Proyecto` connect `Illuminate\Http\Request` to `Proyecto.php`, `Illuminate\View\View`, `User`, `Illuminate\Database\Eloquent\Relations\HasMany`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `Illuminate\Database\Eloquent\Model`, `Memoria`, `Plantilla`, `ProcesoExtraordinario`, `ProyectoController`?**
   _High betweenness centrality (0.076) - this node is a cross-community bridge._
-- **Why does `Controller` connect `Illuminate\Http\Request` to `AreaConocimiento`, `User`, `Illuminate\View\View`, `Memoria`, `Plantilla`, `LoginRequest`, `ProyectoController`?**
+- **Why does `Controller` connect `Illuminate\Http\Request` to `AreaConocimiento`, `Illuminate\View\View`, `User`, `Memoria`, `Plantilla`, `LoginRequest`, `ProyectoController`?**
   _High betweenness centrality (0.059) - this node is a cross-community bridge._
 - **Why does `User` connect `User` to `UserFactory.php`, `Illuminate\Database\Eloquent\Relations\HasMany`, `Illuminate\Http\Request`?**
   _High betweenness centrality (0.031) - this node is a cross-community bridge._

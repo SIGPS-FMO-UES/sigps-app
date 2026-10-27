@@ -9,6 +9,8 @@ use App\Models\Certificacion;
 use App\Models\Departamento;
 use App\Models\Proyecto;
 use App\Services\EstadisticasExportService;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -131,6 +133,7 @@ class EstadisticasController extends Controller
             'periodo' => $periodo,
             'desde' => $desde,
             'hasta' => $hasta,
+            'buscar' => mb_substr(trim((string) $request->input('buscar', '')), 0, 100),
             'fase_proyecto' => $request->input('fase_proyecto', 'todas'),
             'estado_mined' => $request->input('estado_mined', 'todos'),
         ];
@@ -155,6 +158,10 @@ class EstadisticasController extends Controller
             ->when($filtros['desde'], fn ($q, $date) => $q->whereDate('fecha_inicio', '>=', $date))
             ->when($filtros['hasta'], fn ($q, $date) => $q->whereDate('fecha_inicio', '<=', $date))
             ->when($filtros['fase_proyecto'] !== 'todas', fn ($q) => $q->where('fase_actual', $filtros['fase_proyecto']));
+
+        if ($filtros['buscar'] !== '') {
+            $this->aplicarBusquedaProyecto($query, $filtros['buscar']);
+        }
 
         $totalProyectos = (clone $query)->count();
 
@@ -292,6 +299,10 @@ class EstadisticasController extends Controller
             ->when($filtros['desde'], fn ($q, $date) => $q->whereDate('fecha_emision', '>=', $date))
             ->when($filtros['hasta'], fn ($q, $date) => $q->whereDate('fecha_emision', '<=', $date));
 
+        if ($filtros['buscar'] !== '') {
+            $this->aplicarBusquedaCertificacion($baseQuery, $filtros['buscar']);
+        }
+
         // Las 3 métricas oficiales requeridas por MINED:
         $minedHicieron = (clone $baseQuery)->count();
         $minedEntregaron = (clone $baseQuery)->whereNotNull('fecha_entrega')->count();
@@ -381,5 +392,58 @@ class EstadisticasController extends Controller
             'carreraMayorRezago' => $carreraMayorRezago,
             'certificaciones' => $certificaciones,
         ];
+    }
+
+    /**
+     * Applies the statistics-page project search across the project, its number and participants.
+     */
+    private function aplicarBusquedaProyecto(Builder $query, string $search): Builder
+    {
+        $needle = '%'.mb_strtolower($search).'%';
+        $numero = ltrim($search, '#');
+
+        return $query->where(function (Builder $matches) use ($needle, $numero): void {
+            $matches
+                ->whereRaw('LOWER(proyectos.titulo) LIKE ?', [$needle])
+                ->orWhereIn('proyectos.id_proyecto', DB::table('proyectos_estudiantes')
+                    ->join('estudiantes', 'proyectos_estudiantes.id_estudiante', '=', 'estudiantes.id_estudiante')
+                    ->select('proyectos_estudiantes.id_proyecto')
+                    ->where(function (QueryBuilder $students) use ($needle): void {
+                        $students
+                            ->whereRaw('LOWER(estudiantes.due) LIKE ?', [$needle])
+                            ->orWhereRaw('LOWER(estudiantes.nombre_completo) LIKE ?', [$needle]);
+                    }));
+
+            if ($numero !== '' && ctype_digit($numero)) {
+                $matches->orWhere('proyectos.numero_proyecto', (int) $numero);
+            }
+        });
+    }
+
+    /**
+     * Applies the MINED search across folio, student and project details.
+     */
+    private function aplicarBusquedaCertificacion(Builder $query, string $search): Builder
+    {
+        $needle = '%'.mb_strtolower($search).'%';
+        $numero = ltrim($search, '#');
+
+        return $query->where(function (Builder $matches) use ($needle, $numero): void {
+            $matches
+                ->whereRaw('LOWER(certificaciones.folio) LIKE ?', [$needle])
+                ->orWhereIn('certificaciones.estudiante_id', DB::table('estudiantes')
+                    ->select('id_estudiante')
+                    ->whereRaw('LOWER(due) LIKE ?', [$needle])
+                    ->orWhereRaw('LOWER(nombre_completo) LIKE ?', [$needle]))
+                ->orWhereIn('certificaciones.proyecto_id', DB::table('proyectos')
+                    ->select('id_proyecto')
+                    ->whereRaw('LOWER(titulo) LIKE ?', [$needle]));
+
+            if ($numero !== '' && ctype_digit($numero)) {
+                $matches->orWhereIn('certificaciones.proyecto_id', DB::table('proyectos')
+                    ->select('id_proyecto')
+                    ->where('numero_proyecto', (int) $numero));
+            }
+        });
     }
 }

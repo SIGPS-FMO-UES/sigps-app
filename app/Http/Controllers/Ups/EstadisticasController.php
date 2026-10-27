@@ -9,6 +9,8 @@ use App\Models\Certificacion;
 use App\Models\Departamento;
 use App\Models\Proyecto;
 use App\Services\EstadisticasExportService;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -114,6 +116,7 @@ class EstadisticasController extends Controller
             'periodo' => $periodo,
             'desde' => $desde,
             'hasta' => $hasta,
+            'buscar' => mb_substr(trim((string) $request->input('buscar', '')), 0, 100),
             'fase_proyecto' => $request->input('fase_proyecto', 'todas'),
             'estado_mined' => $request->input('estado_mined', 'todos'),
         ];
@@ -138,6 +141,10 @@ class EstadisticasController extends Controller
             ->when($filtros['desde'], fn ($q, $date) => $q->whereDate('fecha_inicio', '>=', $date))
             ->when($filtros['hasta'], fn ($q, $date) => $q->whereDate('fecha_inicio', '<=', $date))
             ->when($filtros['fase_proyecto'] !== 'todas', fn ($q) => $q->where('fase_actual', $filtros['fase_proyecto']));
+
+        if ($filtros['buscar'] !== '') {
+            $this->aplicarBusquedaProyecto($query, $filtros['buscar']);
+        }
 
         $totalProyectos = (clone $query)->count();
 
@@ -172,23 +179,7 @@ class EstadisticasController extends Controller
         $totalEstudiantes = DB::table('proyectos_estudiantes')
             ->join('proyectos', 'proyectos_estudiantes.id_proyecto', '=', 'proyectos.id_proyecto')
             ->whereNull('proyectos.deleted_at')
-            ->when($filtros['area_id'], fn ($q, $id) => $q->where('proyectos.area_de_conocimiento', $id))
-            ->when($filtros['carrera_id'], fn ($q, $id) => $q->whereExists(function ($sub) use ($id) {
-                $sub->select(DB::raw(1))
-                    ->from('carreras_estudiante')
-                    ->whereColumn('carreras_estudiante.id_estudiante', 'proyectos_estudiantes.id_estudiante')
-                    ->where('carreras_estudiante.id_carrera', $id);
-            }))
-            ->when($filtros['departamento_id'], fn ($q, $id) => $q->whereExists(function ($sub) use ($id) {
-                $sub->select(DB::raw(1))
-                    ->from('carreras_estudiante')
-                    ->join('carreras', 'carreras_estudiante.id_carrera', '=', 'carreras.id_carrera')
-                    ->whereColumn('carreras_estudiante.id_estudiante', 'proyectos_estudiantes.id_estudiante')
-                    ->where('carreras.departamento', $id);
-            }))
-            ->when($filtros['desde'], fn ($q, $date) => $q->whereDate('proyectos.fecha_inicio', '>=', $date))
-            ->when($filtros['hasta'], fn ($q, $date) => $q->whereDate('proyectos.fecha_inicio', '<=', $date))
-            ->when($filtros['fase_proyecto'] !== 'todas', fn ($q) => $q->where('proyectos.fase_actual', $filtros['fase_proyecto']))
+            ->whereIn('proyectos.id_proyecto', (clone $query)->select('proyectos.id_proyecto')->reorder())
             ->distinct('proyectos_estudiantes.id_estudiante')
             ->count('proyectos_estudiantes.id_estudiante');
 
@@ -219,6 +210,7 @@ class EstadisticasController extends Controller
             ->when($filtros['desde'], fn ($q, $date) => $q->whereDate('proyectos.fecha_inicio', '>=', $date))
             ->when($filtros['hasta'], fn ($q, $date) => $q->whereDate('proyectos.fecha_inicio', '<=', $date))
             ->when($filtros['fase_proyecto'] !== 'todas', fn ($q) => $q->where('proyectos.fase_actual', $filtros['fase_proyecto']))
+            ->whereIn('proyectos.id_proyecto', (clone $query)->select('proyectos.id_proyecto')->reorder())
             ->selectRaw('
                 carreras.id_carrera,
                 carreras.nombre,
@@ -275,6 +267,10 @@ class EstadisticasController extends Controller
             ->when($filtros['desde'], fn ($q, $date) => $q->whereDate('fecha_emision', '>=', $date))
             ->when($filtros['hasta'], fn ($q, $date) => $q->whereDate('fecha_emision', '<=', $date));
 
+        if ($filtros['buscar'] !== '') {
+            $this->aplicarBusquedaCertificacion($baseQuery, $filtros['buscar']);
+        }
+
         // Las 3 métricas oficiales requeridas por MINED:
         $minedHicieron = (clone $baseQuery)->count();
         $minedEntregaron = (clone $baseQuery)->whereNotNull('fecha_entrega')->count();
@@ -295,6 +291,7 @@ class EstadisticasController extends Controller
             ->when($filtros['departamento_id'], fn ($q, $id) => $q->where('carreras.departamento', $id))
             ->when($filtros['desde'], fn ($q, $date) => $q->whereDate('certificaciones.fecha_emision', '>=', $date))
             ->when($filtros['hasta'], fn ($q, $date) => $q->whereDate('certificaciones.fecha_emision', '<=', $date))
+            ->whereIn('certificaciones.id_certificacion', (clone $baseQuery)->select('certificaciones.id_certificacion')->reorder())
             ->selectRaw('
                 carreras.id_carrera,
                 carreras.nombre,
@@ -325,6 +322,7 @@ class EstadisticasController extends Controller
             ->when($filtros['departamento_id'], fn ($q, $id) => $q->where('carreras.departamento', $id))
             ->when($filtros['desde'], fn ($q, $date) => $q->whereDate('certificaciones.fecha_emision', '>=', $date))
             ->when($filtros['hasta'], fn ($q, $date) => $q->whereDate('certificaciones.fecha_emision', '<=', $date))
+            ->whereIn('certificaciones.id_certificacion', (clone $baseQuery)->select('certificaciones.id_certificacion')->reorder())
             ->selectRaw('
                 departamentos.id_departamento,
                 departamentos.nombre,
@@ -364,5 +362,58 @@ class EstadisticasController extends Controller
             'carreraMayorRezago' => $carreraMayorRezago,
             'certificaciones' => $certificaciones,
         ];
+    }
+
+    /**
+     * Applies the statistics-page project search across the project, its number and participants.
+     */
+    private function aplicarBusquedaProyecto(Builder $query, string $search): Builder
+    {
+        $needle = '%'.mb_strtolower($search).'%';
+        $numero = ltrim($search, '#');
+
+        return $query->where(function (Builder $matches) use ($needle, $numero): void {
+            $matches
+                ->whereRaw('LOWER(proyectos.titulo) LIKE ?', [$needle])
+                ->orWhereIn('proyectos.id_proyecto', DB::table('proyectos_estudiantes')
+                    ->join('estudiantes', 'proyectos_estudiantes.id_estudiante', '=', 'estudiantes.id_estudiante')
+                    ->select('proyectos_estudiantes.id_proyecto')
+                    ->where(function (QueryBuilder $students) use ($needle): void {
+                        $students
+                            ->whereRaw('LOWER(estudiantes.due) LIKE ?', [$needle])
+                            ->orWhereRaw('LOWER(estudiantes.nombre_completo) LIKE ?', [$needle]);
+                    }));
+
+            if ($numero !== '' && ctype_digit($numero)) {
+                $matches->orWhere('proyectos.numero_proyecto', (int) $numero);
+            }
+        });
+    }
+
+    /**
+     * Applies the MINED search across folio, student and project details.
+     */
+    private function aplicarBusquedaCertificacion(Builder $query, string $search): Builder
+    {
+        $needle = '%'.mb_strtolower($search).'%';
+        $numero = ltrim($search, '#');
+
+        return $query->where(function (Builder $matches) use ($needle, $numero): void {
+            $matches
+                ->whereRaw('LOWER(certificaciones.folio) LIKE ?', [$needle])
+                ->orWhereIn('certificaciones.estudiante_id', DB::table('estudiantes')
+                    ->select('id_estudiante')
+                    ->whereRaw('LOWER(due) LIKE ?', [$needle])
+                    ->orWhereRaw('LOWER(nombre_completo) LIKE ?', [$needle]))
+                ->orWhereIn('certificaciones.proyecto_id', DB::table('proyectos')
+                    ->select('id_proyecto')
+                    ->whereRaw('LOWER(titulo) LIKE ?', [$needle]));
+
+            if ($numero !== '' && ctype_digit($numero)) {
+                $matches->orWhereIn('certificaciones.proyecto_id', DB::table('proyectos')
+                    ->select('id_proyecto')
+                    ->where('numero_proyecto', (int) $numero));
+            }
+        });
     }
 }

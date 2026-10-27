@@ -1,8 +1,8 @@
 @extends('layouts.portal')
 
 @section('title', 'Estadísticas y Reportes MINED')
-@section('heading', 'Panel de Analítica y Estadísticas Operativas')
-@section('subtitle', 'Métricas gerenciales de Proyección Social UPS e indicadores oficiales para el Ministerio de Educación (MINED).')
+@section('heading', 'Estadísticas UPS')
+@section('subtitle', 'Proyectos, estudiantes y certificaciones de Proyección Social.')
 
 @section('page-actions')
     <div style="display:flex;align-items:center;gap:10px;">
@@ -625,10 +625,454 @@
     .rank-2 { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
     .rank-3 { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
     .rank-n { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
+
+    /* Visual language shared with the UPS dashboard. */
+    .stats-hub {
+        --stats-ink: #202b39;
+        --stats-muted: #6a7481;
+        --stats-line: #e2e5e9;
+        --stats-wine: #8e2037;
+        display: grid;
+        gap: 14px;
+        color: var(--stats-ink);
+    }
+    .stats-hub > .tab-switcher { order: 0; }
+    .stats-hub > .mined-official-banner { order: 1; }
+    .stats-hub > .kpi-row { order: 2; }
+    .stats-hub > .filter-card { order: 3; }
+    .stats-hub > .charts-grid { order: 4; }
+    .stats-hub > .insights-strip { order: 5; }
+    .stats-hub > .card { order: 6; }
+    .stats-hub > .stats-more { order: 5; }
+    .stats-more {
+        overflow: hidden;
+        border: 1px solid var(--stats-line);
+        border-radius: 8px;
+        background: #fff;
+    }
+    .stats-more > summary {
+        display: flex;
+        min-height: 48px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 11px 15px;
+        color: var(--stats-ink);
+        cursor: pointer;
+        list-style: none;
+        font-size: 12px;
+        font-weight: 700;
+    }
+    .stats-more > summary::-webkit-details-marker { display: none; }
+    .stats-more > summary::after {
+        content: '+';
+        color: var(--stats-wine);
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 1;
+    }
+    .stats-more[open] > summary::after { content: '−'; }
+    .stats-more > summary:hover { background: #fafafa; }
+    .stats-more-content {
+        display: grid;
+        gap: 14px;
+        padding: 0 12px 12px;
+    }
+    .stats-more-content > .card { margin: 0; }
+    .filter-disclosure { padding: 0; }
+    .filter-disclosure > summary {
+        cursor: pointer;
+        list-style: none;
+    }
+    .filter-disclosure > summary::-webkit-details-marker { display: none; }
+    .filter-disclosure > summary::after {
+        content: '+';
+        margin-left: auto;
+        color: var(--stats-wine);
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 1;
+    }
+    .filter-disclosure[open] > summary::after { content: '−'; }
+    .filter-disclosure > summary:hover { background: #fafafa; }
+    .filter-disclosure > form { padding: 0 15px 12px; }
+    .stats-hub :focus-visible {
+        outline: 3px solid #8e2037;
+        outline-offset: 2px;
+    }
+    .tab-switcher {
+        display: flex;
+        width: 100%;
+        gap: 5px;
+        margin: 0;
+        padding: 0 0 8px;
+        border: 0;
+        border-bottom: 1px solid var(--stats-line);
+        border-radius: 0;
+        background: transparent;
+    }
+    .tab-btn, .tab-btn.active, .tab-btn.active-mined {
+        min-height: 36px;
+        padding: 0 12px;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        box-shadow: none;
+        color: #56616d;
+        font-size: 11px;
+        font-weight: 700;
+        transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+    }
+    .tab-btn svg { display: none; }
+    .tab-btn:hover { color: var(--stats-ink); background: #f1f3f5; }
+    .tab-btn.active, .tab-btn.active-mined {
+        border-color: var(--stats-line);
+        color: var(--stats-wine);
+        background: #fff;
+    }
+    .tab-btn .tab-badge, .tab-btn.active-mined .tab-badge {
+        padding: 3px 7px;
+        border-radius: 4px;
+        color: #596473;
+        background: #f1f3f5;
+        font-size: 9px;
+        font-weight: 700;
+    }
+    .filter-card, .stats-hub .card, .visual-card {
+        border: 1px solid var(--stats-line);
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: none;
+    }
+    .filter-card { padding: 12px 15px; }
+    .filter-header { margin-bottom: 9px; padding-bottom: 8px; border-color: #eef0f2; }
+    .filter-title { gap: 0; color: var(--stats-ink); font-size: 13px; }
+    .filter-title svg { display: none; }
+    .filter-title > span:last-child { margin-left: 10px; color: var(--stats-muted) !important; font-size: 10px !important; }
+    .filter-grid { grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 8px 11px; }
+    .filter-field { gap: 5px; }
+    .filter-field label { color: #727c88; font-size: 9px; letter-spacing: .06em; }
+    .filter-field select, .filter-field input {
+        min-height: 36px;
+        padding: 7px 10px;
+        border-color: #dfe3e8;
+        border-radius: 6px;
+        color: #303b49;
+        font-size: 11px;
+    }
+    .filter-field select:focus, .filter-field input:focus { border-color: var(--stats-wine); box-shadow: 0 0 0 2px #8e20371a; }
+    .filter-actions { margin-top: 8px; padding-top: 8px; border-color: #eef0f2; }
+    .chip { border-color: #e3e6e9; border-radius: 4px; color: #596473; background: #f5f6f7; font-size: 9px; }
+    .kpi-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0;
+        overflow: hidden;
+        border: 1px solid var(--stats-line);
+        border-radius: 8px;
+        background: #fff;
+    }
+    .kpi-card, .kpi-card:hover {
+        min-height: 86px;
+        padding: 12px 15px;
+        border: 0 !important;
+        border-radius: 0;
+        background: #fff !important;
+        box-shadow: none;
+        transform: none;
+        transition: none;
+    }
+    .kpi-card + .kpi-card { border-left: 1px solid var(--stats-line) !important; }
+    .kpi-top { margin-bottom: 5px; }
+    .kpi-icon-wrap { display: none; }
+    .kpi-label { color: var(--stats-muted); font-size: 10px; font-weight: 650; letter-spacing: 0; text-transform: none; }
+    .kpi-number { margin: 0 0 3px; color: var(--stats-ink) !important; font-size: 27px; font-weight: 760; letter-spacing: -.045em; }
+    .kpi-subtext { display: block; color: var(--stats-muted); font-size: 9px; line-height: 1.4; }
+    .kpi-subtext .badge { margin-right: 4px; }
+    .charts-grid { gap: 14px; }
+    .visual-card { gap: 13px; padding: 16px; }
+    .visual-card-head h3 { color: var(--stats-ink); font-size: 13px; font-weight: 700; }
+    .visual-card-head small { color: var(--stats-muted); font-size: 9px; }
+    .visual-card .badge { font-size: 9px; }
+    .segmented-progress { height: 14px; border-radius: 4px; background: #eef0f2; box-shadow: none; }
+    .seg-slice.fase-inscripcion { background: #aab2bc; }
+    .seg-slice.fase-ejecucion { background: #536273; }
+    .seg-slice.fase-memoria { background: #a55762; }
+    .seg-slice.fase-finalizado { background: #687c70; }
+    .phase-legend-grid { gap: 7px; }
+    .phase-item { padding: 8px 10px; border-color: #e8eaed; border-radius: 6px; background: #fff; }
+    .phase-dot { width: 8px; height: 8px; border-radius: 2px; }
+    .phase-item:nth-child(1) .phase-dot { background: #aab2bc !important; }
+    .phase-item:nth-child(2) .phase-dot { background: #536273 !important; }
+    .phase-item:nth-child(3) .phase-dot { background: #a55762 !important; }
+    .phase-item:nth-child(4) .phase-dot { background: #687c70 !important; }
+    .phase-title { color: #4c5866; font-size: 10px; font-weight: 650; }
+    .area-bar-row { gap: 5px; margin-bottom: 10px; }
+    .area-bar-info { font-size: 10px; }
+    .area-bar-track { height: 7px; border-radius: 4px; background: #eef0f2; }
+    .area-bar-fill { border-radius: 4px; background: var(--stats-wine); }
+    .insights-strip {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0;
+        margin: 0;
+        overflow: hidden;
+        border: 1px solid var(--stats-line);
+        border-radius: 8px;
+        background: #fff;
+    }
+    .insight-card, .insight-card:hover {
+        min-width: 0;
+        padding: 12px 15px;
+        border: 0 !important;
+        border-radius: 0;
+        box-shadow: none;
+        transform: none;
+        transition: none;
+    }
+    .insight-card + .insight-card { border-left: 1px solid var(--stats-line) !important; }
+    .insight-icon { display: none; }
+    .insight-label { margin-bottom: 3px; color: var(--stats-muted); font-size: 9px; font-weight: 650; letter-spacing: 0; text-transform: none; }
+    .insight-val { color: var(--stats-ink); font-size: 13px; font-weight: 700; }
+    .insight-desc { margin-top: 3px; color: var(--stats-muted); font-size: 9px; }
+    .stats-hub .card-head { padding: 13px 15px !important; border-bottom: 1px solid #eef0f2; }
+    .stats-hub .card-head h2 { color: var(--stats-ink); font-size: 13px; font-weight: 700; }
+    .stats-hub .card-head small { color: var(--stats-muted) !important; font-size: 9px; }
+    .table-controls { padding: 9px 13px; border-color: var(--stats-line); background: #fafafa; }
+    .table-search-input { min-height: 34px; border-color: #dfe3e8; border-radius: 6px; font-size: 10px; }
+    .density-switcher { border: 1px solid var(--stats-line); border-radius: 6px; background: #f1f3f5; }
+    .density-btn { border-radius: 4px; color: #596473; font-size: 9px; }
+    .density-btn.active { color: var(--stats-wine); box-shadow: none; }
+    .density-btn[data-mode="top10"] svg { display: none; }
+    .scrollable-table-wrap { max-height: min(50vh, 430px); }
+    .sticky-header-table thead th, .stats-hub .table thead th { background: #f5f6f7; box-shadow: 0 1px 0 var(--stats-line); }
+    .stats-hub .table th { color: #737d89; font-size: 8px; letter-spacing: .06em; }
+    .stats-hub .table td { color: #4d5865; font-size: 10px; }
+    .stats-hub .table tbody tr:hover td { background: #fafafa; }
+    .stats-hub .badge, .rank-badge { border-color: #e2e5e9; border-radius: 4px; color: #596473; background: #f1f3f5; box-shadow: none; }
+    .stats-hub .badge-success { border-color: #dce6df; color: #50685a; background: #eff4f0; }
+    .stats-hub .badge-info { border-color: #dce2e8; color: #4c5d70; background: #f0f3f6; }
+    .stats-hub .badge-warning { border-color: #e8e0d5; color: #755f43; background: #f5f2ed; }
+    .rank-1, .rank-2, .rank-3, .rank-n { border-color: #e2e5e9; color: #596473; background: #f1f3f5; }
+    .rank-badge svg { display: none; }
+    .mined-official-banner { padding: 15px 17px; border: 0; border-radius: 8px; background: #263648; box-shadow: none; }
+    .mined-banner-text h2 { font-size: 14px; font-weight: 700; }
+    .mined-banner-text p { color: #d3d9df; font-size: 10px; }
+    .status-entregada, .status-sin-entregar { border: 1px solid #e2e5e9; border-radius: 4px; color: #596473; background: #f1f3f5; font-size: 9px; }
+
+    @media (max-width: 900px) {
+        .kpi-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .kpi-card + .kpi-card { border-left: 0 !important; }
+        .kpi-card:nth-child(even) { border-left: 1px solid var(--stats-line) !important; }
+        .kpi-card:nth-child(n + 3) { border-top: 1px solid var(--stats-line) !important; }
+    }
+    @media (max-width: 620px) {
+        .tab-switcher { overflow-x: auto; }
+        .tab-btn, .tab-btn.active, .tab-btn.active-mined { flex: 0 0 auto; padding: 0 9px; }
+        .filter-header { align-items: flex-start; }
+        .filter-title { flex-wrap: wrap; gap: 3px 0; }
+        .filter-title > span:last-child { width: 100%; margin: 2px 0 0; }
+        .filter-grid { grid-template-columns: 1fr; }
+        .kpi-row, .insights-strip { grid-template-columns: 1fr; }
+        .kpi-card:nth-child(n), .insight-card + .insight-card { border: 0 !important; }
+        .kpi-card + .kpi-card, .insight-card + .insight-card { border-top: 1px solid var(--stats-line) !important; }
+        .mined-official-banner { align-items: flex-start; flex-direction: column; }
+        .mined-gauge-box { align-items: flex-start; flex-direction: column; gap: 12px; }
+        .table-controls { align-items: stretch; }
+        .table-search-box { max-width: none; }
+    }
+
+    /* Statistics overview: a compact control bar and four clear, separate KPIs. */
+    .stats-hub { gap: 16px; }
+    .stats-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        position: relative;
+        z-index: 5;
+    }
+    .stats-hub .tab-switcher {
+        width: fit-content;
+        flex: 1 1 auto;
+        align-items: center;
+        gap: 4px;
+        padding: 4px;
+        border: 1px solid #e1e4e8;
+        border-radius: 9px;
+        background: #f0f2f4;
+    }
+    .stats-hub .tab-btn, .stats-hub .tab-btn.active, .stats-hub .tab-btn.active-mined {
+        min-height: 36px;
+        padding: 0 14px;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        color: #56616d;
+        font-size: 12px;
+        font-weight: 650;
+    }
+    .stats-hub .tab-btn svg { display: inline-block; width: 15px; height: 15px; }
+    .stats-hub .tab-btn:hover { color: var(--stats-ink); background: #fff; }
+    .stats-hub .tab-btn.active, .stats-hub .tab-btn.active-mined {
+        border-color: #e4e6e9;
+        color: var(--stats-wine);
+        background: #fff;
+        box-shadow: 0 1px 2px #202b3910;
+    }
+    .stats-hub .tab-btn .tab-badge {
+        color: #596473;
+        background: #f1f3f5;
+        font-size: 10px;
+    }
+    .stats-hub .filter-disclosure {
+        flex: 0 0 auto;
+        width: auto;
+        border: 0;
+        background: transparent;
+    }
+    .stats-hub .filter-disclosure > summary {
+        display: flex;
+        min-height: 42px;
+        align-items: center;
+        gap: 9px;
+        padding: 0 13px;
+        border: 1px solid #dfe3e8;
+        border-radius: 8px;
+        background: #fff;
+        color: #354152;
+        font-size: 12px;
+        font-weight: 650;
+        white-space: nowrap;
+    }
+    .stats-hub .filter-disclosure > summary::after { margin-left: 4px; font-size: 16px; }
+    .stats-hub .filter-disclosure > summary:hover { border-color: #cbd1d8; background: #fff; }
+    .stats-hub .filter-disclosure[open] > summary { border-color: #c9a4ac; color: var(--stats-wine); }
+    .stats-hub .filter-title { gap: 8px; font-size: 12px; }
+    .stats-hub .filter-title svg { display: inline-block; color: var(--stats-wine); }
+    .stats-hub .filter-title > span:last-child { display: none; }
+    .stats-hub .filter-disclosure > form {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        width: min(720px, calc(100vw - 300px));
+        padding: 16px;
+        border: 1px solid #e1e4e8;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 14px 36px #202b3926;
+    }
+    .stats-hub .filter-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .stats-hub .filter-field label { font-size: 10px; }
+    .stats-hub .filter-field select, .stats-hub .filter-field input { min-height: 40px; font-size: 12px; }
+    .stats-hub .filter-actions { gap: 12px; }
+    .stats-hub .kpi-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+    }
+    .stats-hub .kpi-card, .stats-hub .kpi-card:hover {
+        min-height: 112px;
+        padding: 15px 16px;
+        border: 1px solid var(--stats-line) !important;
+        border-top: 3px solid var(--stats-wine) !important;
+        border-radius: 9px;
+        background: #fff !important;
+        box-shadow: 0 2px 8px #202b3908;
+    }
+    .stats-hub .kpi-card + .kpi-card { border-left: 1px solid var(--stats-line) !important; border-top: 3px solid var(--stats-wine) !important; }
+    .stats-hub .kpi-label { color: #687382; font-size: 11px; font-weight: 650; }
+    .stats-hub .kpi-number { margin: 5px 0 5px; color: #202b39 !important; font-size: 31px; font-weight: 760; }
+    .stats-hub .kpi-subtext { color: #77818d; font-size: 10px; }
+    .stats-hub .charts-grid { gap: 12px; }
+    .stats-hub .visual-card { min-width: 0; padding: 17px 18px; border-radius: 9px; }
+    .stats-hub .visual-card-head { align-items: flex-start; }
+    .stats-hub .visual-card-head h3 { font-size: 14px; }
+    .stats-hub .visual-card-head small { font-size: 10px; }
+    .stats-hub .phase-item { min-height: 38px; padding: 8px 10px; }
+    .stats-hub .phase-title, .stats-hub .phase-item strong { font-size: 11px; }
+    .stats-hub .phase-item small { font-size: 10px; }
+    .stats-hub .area-bar-info { font-size: 11px; }
+    .stats-hub .area-bar-row { margin-bottom: 11px; }
+    .stats-hub .stats-more {
+        width: 100%;
+        min-width: 0;
+        border-radius: 9px;
+        transition: border-color .15s ease;
+    }
+    .stats-hub .stats-more > summary {
+        display: flex;
+        min-height: 54px;
+        min-width: 0;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px 12px;
+        padding: 12px 16px;
+        font-size: 13px;
+        white-space: normal;
+    }
+    .stats-hub .stats-more > summary span:first-child {
+        flex: 1 1 12rem;
+        min-width: 0;
+        overflow-wrap: anywhere;
+        line-height: 1.35;
+    }
+    .stats-hub .stats-more > summary span:nth-child(2) {
+        min-width: 0;
+        overflow-wrap: anywhere;
+        text-align: right;
+    }
+    .stats-hub .stats-more > summary::after { flex: 0 0 auto; }
+    .stats-hub .stats-more > summary:hover { color: var(--stats-wine); }
+    .cert-metadata {
+        display: block;
+        margin-top: 4px;
+        color: #77818d;
+        font-size: 10px;
+        line-height: 1.4;
+    }
+    .cert-extra-details { margin-top: 5px; }
+    .cert-extra-details > summary {
+        color: var(--stats-wine);
+        cursor: pointer;
+        font-size: 10px;
+        font-weight: 650;
+    }
+    .cert-extra-details > div { margin-top: 4px; color: #687382; font-size: 10px; }
+
+    @media (max-width: 760px) {
+        .stats-toolbar { align-items: stretch; flex-wrap: wrap; }
+        .stats-hub .tab-switcher { flex: 1 1 100%; width: 100%; }
+        .stats-hub .filter-disclosure { margin-left: auto; }
+        .stats-hub .filter-disclosure > form { width: min(620px, calc(100vw - 36px)); }
+        .stats-hub .stats-more > summary { flex-wrap: wrap; }
+        .stats-hub .stats-more > summary span:first-child { flex: 1 1 auto; }
+        .stats-hub .stats-more > summary span:nth-child(2) { flex: 1 1 100%; margin-right: 22px; }
+    }
+    @media (max-width: 620px) {
+        .stats-hub .tab-switcher { overflow-x: auto; }
+        .stats-hub .tab-btn, .stats-hub .tab-btn.active, .stats-hub .tab-btn.active-mined { flex: 0 0 auto; }
+        .stats-hub .filter-disclosure[open] { flex: 1 1 100%; width: 100%; }
+        .stats-hub .filter-disclosure > form { position: static; width: 100%; margin-top: 8px; box-shadow: 0 6px 16px #202b3917; }
+        .stats-hub .filter-grid { grid-template-columns: 1fr; }
+        .stats-hub .kpi-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .stats-hub .kpi-card:nth-child(even) { border-left: 1px solid var(--stats-line) !important; }
+        .stats-hub .kpi-card:nth-child(n + 3) { border-top: 3px solid var(--stats-wine) !important; }
+        .stats-hub .kpi-card + .kpi-card { border-top: 3px solid var(--stats-wine) !important; }
+        .stats-hub .filter-actions { align-items: flex-start; }
+        .stats-hub .stats-more { width: 100%; }
+        .stats-hub .stats-more > summary {
+            min-height: 48px;
+            flex-wrap: wrap;
+            padding: 12px 14px;
+        }
+        .stats-hub .stats-more > summary span:first-child { flex: 1 1 calc(100% - 36px); }
+        .stats-hub .stats-more > summary span:nth-child(2) { display: none; }
+    }
 </style>
 
 <div class="stats-hub">
 
+    <div class="stats-toolbar">
     {{-- SWITCHER PRINCIPAL DE MODOS (Analítica de Proyectos vs Reporte Oficial MINED) --}}
     <nav class="tab-switcher" aria-label="Selección de módulo estadístico">
         <a href="{{ route('ups.estadisticas.index', array_merge(request()->except('tab'), ['tab' => 'proyectos'])) }}" 
@@ -639,7 +1083,7 @@
                 <path d="M13 17V5"/>
                 <path d="M8 17v-3"/>
             </svg>
-            <span>Analítica de Proyectos</span>
+                <span>Proyectos</span>
             @if(($filtros['tab'] ?? 'proyectos') === 'proyectos')
                 <span class="tab-badge">{{ $totalProyectos ?? 0 }} registros</span>
             @endif
@@ -656,7 +1100,7 @@
                 <path d="M14 12v6"/>
                 <path d="M18 12v6"/>
             </svg>
-            <span>Reporte Oficial MINED</span>
+            <span>Reporte MINED</span>
             @if(($filtros['tab'] ?? '') === 'mined')
                 <span class="tab-badge">{{ $minedHicieron ?? 0 }} hechas</span>
             @endif
@@ -664,28 +1108,30 @@
     </nav>
 
     {{-- PANEL DE FILTROS MULTIDIMENSIONAL --}}
-    <section class="filter-card">
-        <div class="filter-header">
+    <details class="filter-card filter-disclosure" @if($filtros['buscar'] || $filtros['carrera_id'] || $filtros['departamento_id'] || $filtros['area_id'] || ($filtros['periodo'] !== 'todos') || $filtros['desde'] || $filtros['hasta'] || ($filtros['tab'] === 'proyectos' && ($filtros['fase_proyecto'] ?? 'todas') !== 'todas') || ($filtros['tab'] === 'mined' && ($filtros['estado_mined'] ?? 'todos') !== 'todos')) open @endif>
+        <summary class="filter-header">
             <div class="filter-title">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
                 </svg>
-                <span>Filtros Multidimensionales</span>
+                <span>Filtros</span>
                 <span style="font-size:11px;font-weight:normal;color:#64748b;">
-                    Segmenta por carrera, departamento, área temática y período normativo
+                    Carrera, área, período y fase
                 </span>
             </div>
-            @if($filtros['carrera_id'] || $filtros['departamento_id'] || $filtros['area_id'] || ($filtros['periodo'] !== 'todos') || $filtros['desde'] || $filtros['hasta'])
-                <a href="{{ route('ups.estadisticas.index', ['tab' => $filtros['tab']]) }}" class="btn btn-small" title="Restablecer todos los filtros a su estado inicial">
-                    Restablecer
-                </a>
-            @endif
-        </div>
+        </summary>
 
         <form method="GET" action="{{ route('ups.estadisticas.index') }}" id="stats-filter-form">
             <input type="hidden" name="tab" value="{{ $filtros['tab'] }}">
 
             <div class="filter-grid">
+                <div class="filter-field">
+                    <label for="buscar">Buscar en {{ $filtros['tab'] === 'proyectos' ? 'proyectos' : 'certificaciones' }}</label>
+                    <input type="search" name="buscar" id="buscar" value="{{ $filtros['buscar'] }}"
+                           placeholder="{{ $filtros['tab'] === 'proyectos' ? 'Título, número, estudiante o carnet' : 'Folio, proyecto, estudiante o carnet' }}"
+                           maxlength="100">
+                </div>
+
                 {{-- 1. Departamento Académico --}}
                 <div class="filter-field">
                     <label for="departamento_id">Departamento</label>
@@ -818,6 +1264,10 @@
                         </span>
                     @endif
 
+                    @if($filtros['buscar'])
+                        <span class="chip">Búsqueda: {{ \Illuminate\Support\Str::limit($filtros['buscar'], 32) }}</span>
+                    @endif
+
                     @if(($filtros['periodo'] ?? 'todos') !== 'todos')
                         <span class="chip">
                             Período: {{ ucfirst(str_replace('_', ' ', $filtros['periodo'])) }}
@@ -829,6 +1279,11 @@
                 </div>
 
                 <div style="display:flex;gap:8px;">
+                    @if($filtros['buscar'] || $filtros['carrera_id'] || $filtros['departamento_id'] || $filtros['area_id'] || ($filtros['periodo'] !== 'todos') || $filtros['desde'] || $filtros['hasta'] || ($filtros['tab'] === 'proyectos' && ($filtros['fase_proyecto'] ?? 'todas') !== 'todas') || ($filtros['tab'] === 'mined' && ($filtros['estado_mined'] ?? 'todos') !== 'todos'))
+                        <a href="{{ route('ups.estadisticas.index', ['tab' => $filtros['tab']]) }}" class="btn btn-small" title="Restablecer todos los filtros a su estado inicial">
+                            Restablecer
+                        </a>
+                    @endif
                     <button type="submit" class="btn btn-primary" id="btn-submit-filters">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <circle cx="11" cy="11" r="8"/>
@@ -839,7 +1294,8 @@
                 </div>
             </div>
         </form>
-    </section>
+    </details>
+    </div>
 
     {{-- ========================================================================= --}}
     {{-- VISTA 1: ANALÍTICA DE PROYECTOS --}}
@@ -849,7 +1305,7 @@
         <section class="kpi-row" aria-label="Indicadores clave de proyectos">
             <div class="kpi-card kpi-primary">
                 <div class="kpi-top">
-                    <span class="kpi-label">Total Proyectos</span>
+                    <span class="kpi-label">Proyectos</span>
                     <div class="kpi-icon-wrap">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
@@ -859,13 +1315,13 @@
                 </div>
                 <div class="kpi-number">{{ number_format($totalProyectos) }}</div>
                 <div class="kpi-subtext">
-                    <span>Proyectos registrados en este segmento</span>
+                    <span>En los filtros actuales</span>
                 </div>
             </div>
 
             <div class="kpi-card" style="border-left:4px solid #6366f1;">
                 <div class="kpi-top">
-                    <span class="kpi-label">En Trámite / Activos</span>
+                    <span class="kpi-label">En trámite</span>
                     <div class="kpi-icon-wrap" style="background:#e0e7ff;color:#4338ca;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <circle cx="12" cy="12" r="10"/>
@@ -875,13 +1331,13 @@
                 </div>
                 <div class="kpi-number" style="color:#4338ca;">{{ number_format($estados['en_tramite'] ?? 0) }}</div>
                 <div class="kpi-subtext">
-                    <span>En fases de ejecución y revisión documental</span>
+                    <span>En ejecución o revisión</span>
                 </div>
             </div>
 
             <div class="kpi-card" style="border-left:4px solid #10b981;">
                 <div class="kpi-top">
-                    <span class="kpi-label">Finalizados Con Éxito</span>
+                    <span class="kpi-label">Finalizados</span>
                     <div class="kpi-icon-wrap" style="background:#d1fae5;color:#047857;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
@@ -891,13 +1347,13 @@
                 </div>
                 <div class="kpi-number" style="color:#047857;">{{ number_format($estados['finalizado'] ?? 0) }}</div>
                 <div class="kpi-subtext">
-                    <span>Expedientes con servicio social concluido</span>
+                    <span>Servicio social concluido</span>
                 </div>
             </div>
 
             <div class="kpi-card" style="border-left:4px solid var(--red);">
                 <div class="kpi-top">
-                    <span class="kpi-label">Estudiantes Vinculados</span>
+                    <span class="kpi-label">Estudiantes</span>
                     <div class="kpi-icon-wrap" style="background:var(--pale);color:var(--red);">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
@@ -909,7 +1365,7 @@
                 </div>
                 <div class="kpi-number" style="color:var(--red);">{{ number_format($totalEstudiantes) }}</div>
                 <div class="kpi-subtext">
-                    <span>Estudiantes únicos participando activamente</span>
+                    <span>Participantes únicos</span>
                 </div>
             </div>
         </section>
@@ -920,8 +1376,8 @@
             <div class="visual-card">
                 <div class="visual-card-head">
                     <div>
-                        <h3>Distribución de Proyectos por Fase</h3>
-                        <small>Progreso operativo según la normativa de Proyección Social UES</small>
+                        <h3>Proyectos por fase</h3>
+                        <small>Estado actual de los expedientes</small>
                     </div>
                     <span class="badge">{{ $totalProyectos }} proyectos</span>
                 </div>
@@ -994,8 +1450,8 @@
             <div class="visual-card">
                 <div class="visual-card-head">
                     <div>
-                        <h3>Proyectos por Área de Conocimiento</h3>
-                        <small>Impacto temático en el período y filtros actuales</small>
+                        <h3>Proyectos por área</h3>
+                        <small>Distribución según los filtros actuales</small>
                     </div>
                     <span class="badge badge-info">{{ $desgloseAreas->count() }} áreas activas</span>
                 </div>
@@ -1022,6 +1478,12 @@
         </section>
 
         {{-- Resumen Ejecutivo de Escala (Proyectos) --}}
+        <details class="stats-more" {{ request()->query('detalle') === 'proyectos' || $proyectos->currentPage() > 1 ? 'open' : '' }}>
+            <summary>
+                <span>Ver desglose y lista completa</span>
+                <span style="color:var(--stats-muted);font-size:10px;font-weight:500;">{{ $desgloseCarreras->count() }} carreras · {{ number_format($totalProyectos) }} proyectos</span>
+            </summary>
+            <div class="stats-more-content">
         @if($totalProyectos > 0)
             <section class="insights-strip" aria-label="Métricas ejecutivas de escala">
                 <div class="insight-card">
@@ -1036,7 +1498,7 @@
                         </svg>
                     </div>
                     <div class="insight-content">
-                        <div class="insight-label">Carrera Líder en Proyección</div>
+                        <div class="insight-label">Carrera con más proyectos</div>
                         <div class="insight-val" title="{{ $carreraLider?->nombre ?? 'N/A' }}">
                             {{ $carreraLider?->nombre ? \Illuminate\Support\Str::limit($carreraLider->nombre, 28) : 'Sin datos' }}
                         </div>
@@ -1060,7 +1522,7 @@
                         </svg>
                     </div>
                     <div class="insight-content">
-                        <div class="insight-label">Promedio de Proyectos / Carrera</div>
+                        <div class="insight-label">Promedio por carrera</div>
                         <div class="insight-val">{{ $promedioProyectosPorCarrera }}</div>
                         <div class="insight-desc">
                             Entre <strong>{{ $desgloseCarreras->count() }} carreras activas</strong> con proyectos
@@ -1076,7 +1538,7 @@
                         </svg>
                     </div>
                     <div class="insight-content">
-                        <div class="insight-label">Cobertura Institucional</div>
+                        <div class="insight-label">Carreras con proyectos</div>
                         <div class="insight-val">
                             {{ round(($desgloseCarreras->count() / max(1, $carreras->count())) * 100) }}%
                         </div>
@@ -1093,8 +1555,8 @@
             <section class="card" style="padding:0; overflow:hidden;">
                 <div class="card-head" style="padding:16px 20px; border-bottom:none;">
                     <div>
-                        <h2 style="margin:0 0 2px;">Desglose por Carreras Académicas</h2>
-                        <small style="color:#64748b;">Rendimiento y participación estudiantil por carrera universitaria</small>
+                        <h2 style="margin:0 0 2px;">Proyectos por carrera</h2>
+                        <small style="color:#64748b;">Participación de estudiantes por carrera</small>
                     </div>
                     <span class="badge">{{ $desgloseCarreras->count() }} carreras con proyectos</span>
                 </div>
@@ -1117,7 +1579,7 @@
                                 <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
                                 <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
                             </svg>
-                            <span>Top 10 Más Activas</span>
+                            <span>Top 10 carreras</span>
                         </button>
                         <button type="button" class="density-btn" data-target="table-carreras-proy" data-mode="all">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1205,49 +1667,37 @@
         <section class="card">
             <div class="card-head">
                 <div>
-                    <h2>Catálogo Detallado de Proyectos</h2>
-                    <small style="color:#64748b;">Expedientes correspondientes a los parámetros de búsqueda aplicados</small>
+                    <h2>Proyectos</h2>
                 </div>
-                <span class="badge">{{ $proyectos->total() }} encontrados</span>
+                <span class="badge">{{ number_format($proyectos->total()) }} registros</span>
             </div>
             <div class="table-wrap">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th style="min-width:240px;">Proyecto</th>
-                            <th>Estudiantes</th>
-                            <th>Área de Conocimiento</th>
-                            <th>Fase Actual</th>
-                            <th>Período</th>
-                            <th style="text-align:right;">Expediente</th>
+                            <th style="min-width:260px;">Proyecto</th>
+                            <th style="min-width:115px;">Participantes</th>
+                            <th style="min-width:150px;">Área</th>
+                            <th style="min-width:105px;">Fase</th>
+                            <th style="min-width:100px;">Inicio</th>
+                            <th style="width:90px;text-align:right;">Abrir</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($proyectos as $proy)
-                            @php $primerEst = $proy->estudiantes->first(); @endphp
                             <tr>
                                 <td>
-                                    <div>
+                                    <div style="display:flex;align-items:center;gap:7px;min-width:0;">
                                         <span class="badge" style="background:#1e293b;color:#fff;font-size:9px;">#{{ $proy->numero_proyecto ?? $proy->id_proyecto }}</span>
-                                        <strong>{{ \Illuminate\Support\Str::limit($proy->titulo, 55) }}</strong>
+                                        <strong title="{{ $proy->titulo }}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ \Illuminate\Support\Str::limit($proy->titulo, 48) }}</strong>
                                     </div>
-                                    <small style="color:#64748b;">Tutor: {{ $proy->tutor ?? 'No asignado' }}</small>
                                 </td>
                                 <td>
-                                    @if($primerEst)
-                                        <div>
-                                            <strong>{{ $primerEst->due }}</strong>
-                                            <div style="font-size:11px;color:#475569;">{{ \Illuminate\Support\Str::limit($primerEst->nombre_completo, 26) }}</div>
-                                            @if($proy->estudiantes->count() > 1)
-                                                <small style="color:var(--muted);">(+{{ $proy->estudiantes->count() - 1 }} más)</small>
-                                            @endif
-                                        </div>
-                                    @else
-                                        <span class="muted">Sin estudiantes</span>
-                                    @endif
+                                    <span class="badge">{{ $proy->estudiantes->count() }}</span>
+                                    <span style="font-size:11px;color:#687382;">{{ $proy->estudiantes->count() === 1 ? 'estudiante' : 'estudiantes' }}</span>
                                 </td>
                                 <td>
-                                    <span style="font-weight:600;color:#334155;">{{ $proy->areaConocimiento?->nombre ?? 'Sin área' }}</span>
+                                    <span title="{{ $proy->areaConocimiento?->nombre ?? 'Sin área' }}" style="font-size:11px;color:#4d5865;">{{ \Illuminate\Support\Str::limit($proy->areaConocimiento?->nombre ?? 'Sin área', 26) }}</span>
                                 </td>
                                 <td>
                                     @if($proy->fase_actual === 'finalizado')
@@ -1261,16 +1711,11 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div style="font-size:11px;">
-                                        <span>Inicio: {{ $proy->fecha_inicio?->format('d/m/Y') ?? '—' }}</span>
-                                        @if($proy->fecha_final)
-                                            <div style="color:#64748b;">Fin: {{ $proy->fecha_final->format('d/m/Y') }}</div>
-                                        @endif
-                                    </div>
+                                    <span style="font-size:11px;color:#4d5865;">{{ $proy->fecha_inicio?->format('d/m/Y') ?? '—' }}</span>
                                 </td>
                                 <td style="text-align:right;">
-                                    <a class="btn btn-small" href="{{ route('ups.proyectos.show', $proy->id_proyecto) }}" title="Abrir expediente completo del proyecto">
-                                        Ver →
+                                    <a class="btn btn-small" href="{{ route('ups.proyectos.show', $proy->id_proyecto) }}" title="Abrir expediente completo del proyecto {{ $proy->numero_proyecto ?? $proy->id_proyecto }}" aria-label="Abrir expediente del proyecto {{ $proy->numero_proyecto ?? $proy->id_proyecto }}">
+                                        Abrir →
                                     </a>
                                 </td>
                             </tr>
@@ -1290,6 +1735,8 @@
                 </div>
             @endif
         </section>
+            </div>
+        </details>
 
     {{-- ========================================================================= --}}
     {{-- VISTA 2: REPORTE OFICIAL MINED (Certificaciones de Servicio Social)      --}}
@@ -1298,12 +1745,12 @@
         {{-- Banner Oficial MINED --}}
         <section class="mined-official-banner">
             <div class="mined-banner-text">
-                <h2>Ministerio de Educación, Ciencia y Tecnología (MINED) · Informe de Servicio Social</h2>
-                <p>Estadísticas oficiales de certificaciones emitidas para trámites de graduación y cumplimiento legal de servicio social.</p>
+                <h2>Certificaciones de servicio social</h2>
+                <p>Elaboradas, entregadas y en resguardo en la UPS.</p>
             </div>
             <div style="display:flex;gap:8px;">
                 <span class="badge" style="background:#ffffff;color:var(--navy);font-weight:750;padding:6px 12px;font-size:11px;">
-                    Auditoría UPS Oficial
+                    Reporte MINED
                 </span>
             </div>
         </section>
@@ -1316,7 +1763,7 @@
             {{-- 1. Cuánto se hicieron --}}
             <div class="kpi-card kpi-mined-hicieron">
                 <div class="kpi-top">
-                    <span class="kpi-label">1. Cuánto se hicieron</span>
+                    <span class="kpi-label">Elaboradas</span>
                     <div class="kpi-icon-wrap">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -1329,14 +1776,14 @@
                 </div>
                 <div class="kpi-number">{{ number_format($minedHicieron) }}</div>
                 <div class="kpi-subtext">
-                    <strong>Total emitidas / elaboradas</strong> en el período
+                    <strong>Total emitidas</strong> en el período
                 </div>
             </div>
 
             {{-- 2. Cuánto se entregaron --}}
             <div class="kpi-card kpi-mined-entregaron">
                 <div class="kpi-top">
-                    <span class="kpi-label">2. Cuánto se entregaron</span>
+                    <span class="kpi-label">Entregadas</span>
                     <div class="kpi-icon-wrap">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
@@ -1354,7 +1801,7 @@
             {{-- 3. Cuánto están ahí sin entregar --}}
             <div class="kpi-card kpi-mined-sin-entregar">
                 <div class="kpi-top">
-                    <span class="kpi-label">3. Cuánto están sin entregar</span>
+                    <span class="kpi-label">En resguardo</span>
                     <div class="kpi-icon-wrap">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <circle cx="12" cy="12" r="10"/>
@@ -1373,7 +1820,7 @@
             {{-- 4. Tasa Global de Cumplimiento / Entrega --}}
             <div class="kpi-card kpi-rate">
                 <div class="kpi-top">
-                    <span class="kpi-label">Efectividad de Entrega</span>
+                    <span class="kpi-label">Tasa de entrega</span>
                     <div class="kpi-icon-wrap">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
@@ -1387,6 +1834,12 @@
             </div>
         </section>
 
+        <details class="stats-more" {{ request()->query('detalle') === 'mined' || $certificaciones->currentPage() > 1 ? 'open' : '' }}>
+            <summary>
+                <span>Ver desglose MINED</span>
+                <span style="color:var(--stats-muted);font-size:10px;font-weight:500;">{{ $minedPorCarrera->count() }} carreras · {{ number_format($minedHicieron) }} certificaciones</span>
+            </summary>
+            <div class="stats-more-content">
         {{-- Resumen Ejecutivo de Escala (MINED) --}}
         @if($minedHicieron > 0)
             <section class="insights-strip" aria-label="Métricas ejecutivas de certificaciones">
@@ -1398,7 +1851,7 @@
                         </svg>
                     </div>
                     <div class="insight-content">
-                        <div class="insight-label">Carrera Líder en Trámites</div>
+                        <div class="insight-label">Carrera con más trámites</div>
                         <div class="insight-val" title="{{ $carreraMinedLider?->nombre ?? 'N/A' }}">
                             {{ $carreraMinedLider?->nombre ? \Illuminate\Support\Str::limit($carreraMinedLider->nombre, 28) : 'Sin datos' }}
                         </div>
@@ -1421,7 +1874,7 @@
                         </svg>
                     </div>
                     <div class="insight-content">
-                        <div class="insight-label">Mayor Custodia en Ventanilla</div>
+                        <div class="insight-label">Más documentos en resguardo</div>
                         <div class="insight-val" title="{{ $carreraMayorRezago?->nombre ?? 'N/A' }}">
                             {{ $carreraMayorRezago?->nombre ? \Illuminate\Support\Str::limit($carreraMayorRezago->nombre, 28) : 'Al día' }}
                         </div>
@@ -1443,7 +1896,7 @@
                         </svg>
                     </div>
                     <div class="insight-content">
-                        <div class="insight-label">Unidades Académicas Auditadas</div>
+                        <div class="insight-label">Departamentos incluidos</div>
                         <div class="insight-val">{{ $minedPorDepartamento->count() }} Departamentos</div>
                         <div class="insight-desc">
                             En {{ $minedPorCarrera->count() }} carreras de la facultad
@@ -1459,8 +1912,8 @@
             <div class="visual-card" style="padding:0; overflow:hidden;">
                 <div class="visual-card-head" style="padding:16px 20px 10px;">
                     <div>
-                        <h3>Matriz MINED por Carrera</h3>
-                        <small>Comparativa: hechas vs entregadas vs en custodia</small>
+                        <h3>Certificaciones por carrera</h3>
+                        <small>Emitidas, entregadas y en resguardo</small>
                     </div>
                     <span class="badge">{{ $minedPorCarrera->count() }} carreras</span>
                 </div>
@@ -1569,8 +2022,8 @@
             <div class="visual-card" style="padding:0; overflow:hidden;">
                 <div class="visual-card-head" style="padding:16px 20px 10px;">
                     <div>
-                        <h3>Matriz MINED por Departamento</h3>
-                        <small>Balance por unidad académica responsable</small>
+                        <h3>Certificaciones por departamento</h3>
+                        <small>Estado de entrega por departamento</small>
                     </div>
                     <span class="badge">{{ $minedPorDepartamento->count() }} deptos</span>
                 </div>
@@ -1638,8 +2091,7 @@
         <section class="card">
             <div class="card-head">
                 <div>
-                    <h2>Padrón de Certificaciones Oficiales MINED</h2>
-                    <small style="color:#64748b;">Listado auditado de resoluciones emitidas, recepcionadas y resguardadas</small>
+                    <h2>Certificaciones</h2>
                 </div>
                 <div style="display:flex;align-items:center;gap:10px;">
                     <span class="badge">{{ $certificaciones->total() }} registros</span>
@@ -1649,13 +2101,11 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Folio Oficial</th>
-                            <th>Estado MINED</th>
-                            <th>Estudiante & Carnet</th>
+                            <th>Folio</th>
+                            <th>Estudiante</th>
                             <th>Carrera</th>
                             <th>Proyecto</th>
-                            <th>Fecha Emisión (Hecha)</th>
-                            <th>Recepción / Firma</th>
+                            <th>Entrega</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1664,57 +2114,43 @@
                             <tr>
                                 <td>
                                     <strong style="color:var(--navy);font-size:13px;">{{ $cert->folio ?? 'S/F' }}</strong>
+                                    <small class="cert-metadata">Emitida {{ $cert->fecha_emision?->format('d/m/Y') ?? '—' }}</small>
                                 </td>
                                 <td>
-                                    @if($cert->fecha_entrega)
-                                        <span class="status-entregada" title="Entregada formalmente el {{ $cert->fecha_entrega->format('d/m/Y') }}">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                                            Entregada
-                                        </span>
-                                    @else
-                                        <span class="status-sin-entregar" title="En custodia en la oficina UPS">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                            Sin entregar
-                                        </span>
-                                    @endif
+                                    <strong>{{ $cert->estudiante?->nombre_completo ?? '—' }}</strong>
+                                    <small class="cert-metadata">{{ $cert->estudiante?->due ?? 'Sin carnet' }}</small>
                                 </td>
                                 <td>
-                                    <strong>{{ $cert->estudiante?->due }}</strong>
-                                    <div style="font-size:11px;color:#475569;">{{ $cert->estudiante?->nombre_completo }}</div>
-                                </td>
-                                <td>
-                                    <span style="font-weight:600;color:#334155;">{{ $carr?->nombre ?? '—' }}</span>
+                                    <span style="font-weight:600;color:#334155;">{{ \Illuminate\Support\Str::limit($carr?->nombre ?? '—', 30) }}</span>
                                     @if($carr?->departamentoRel)
-                                        <div style="font-size:10px;color:#64748b;">{{ $carr->departamentoRel->nombre }}</div>
+                                        <small class="cert-metadata">{{ \Illuminate\Support\Str::limit($carr->departamentoRel->nombre, 30) }}</small>
                                     @endif
                                 </td>
                                 <td>
-                                    <div style="font-size:11px;">
+                                    <div style="font-size:11px;max-width:260px;">
                                         <span class="badge" style="background:#1e293b;color:#fff;font-size:9px;">#{{ $cert->proyecto?->numero_proyecto ?? $cert->proyecto_id }}</span>
-                                        <span>{{ \Illuminate\Support\Str::limit($cert->proyecto?->titulo, 40) }}</span>
+                                        <span title="{{ $cert->proyecto?->titulo }}">{{ \Illuminate\Support\Str::limit($cert->proyecto?->titulo, 38) }}</span>
                                     </div>
-                                    <small style="color:#64748b;">Área: {{ $cert->proyecto?->areaConocimiento?->nombre ?? '—' }}</small>
-                                </td>
-                                <td>
-                                    <span style="font-weight:600;">{{ $cert->fecha_emision?->format('d/m/Y') ?? '—' }}</span>
-                                    <div style="font-size:10px;color:#64748b;">Emisor: {{ $cert->emisor?->nombre_completo ?? 'UPS' }}</div>
                                 </td>
                                 <td>
                                     @if($cert->fecha_entrega)
-                                        <div style="font-size:11px;color:#065f46;">
-                                            <strong>{{ $cert->fecha_entrega->format('d/m/Y') }}</strong>
-                                            @if($cert->firma_receptor)
-                                                <div>Recibió: {{ $cert->firma_receptor }}</div>
-                                            @endif
-                                        </div>
+                                        <span class="status-entregada">Entregada</span>
+                                        <small class="cert-metadata">{{ $cert->fecha_entrega->format('d/m/Y') }}</small>
                                     @else
-                                        <span style="font-size:11px;color:#b45309;font-style:italic;">En resguardo en ventanilla</span>
+                                        <span class="status-sin-entregar">En resguardo</span>
                                     @endif
+                                    <details class="cert-extra-details">
+                                        <summary>Más datos</summary>
+                                        <div>Emisor: {{ $cert->emisor?->nombre_completo ?? 'UPS' }}</div>
+                                        @if($cert->firma_receptor)
+                                            <div>Recibió: {{ $cert->firma_receptor }}</div>
+                                        @endif
+                                    </details>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="empty">No se encontraron certificaciones con los filtros aplicados.</td>
+                                <td colspan="5" class="empty">No se encontraron certificaciones con los filtros aplicados.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -1728,6 +2164,8 @@
                 </div>
             @endif
         </section>
+            </div>
+        </details>
     @endif
 
 </div>

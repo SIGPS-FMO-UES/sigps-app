@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Certificacion;
 use App\Models\Departamento;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -103,6 +105,22 @@ class EstadisticasExportService
             ->orderBy('carreras.nombre')
             ->orderBy('estudiantes.nombre_completo');
 
+        $buscar = trim((string) ($filtros['buscar'] ?? ''));
+        if ($buscar !== '') {
+            $needle = '%'.mb_strtolower($buscar).'%';
+            $numero = ltrim($buscar, '#');
+            $query->where(function (QueryBuilder $matches) use ($needle, $numero): void {
+                $matches
+                    ->whereRaw('LOWER(estudiantes.due) LIKE ?', [$needle])
+                    ->orWhereRaw('LOWER(estudiantes.nombre_completo) LIKE ?', [$needle])
+                    ->orWhereRaw('LOWER(proyectos.titulo) LIKE ?', [$needle]);
+
+                if ($numero !== '' && ctype_digit($numero)) {
+                    $matches->orWhere('proyectos.numero_proyecto', (int) $numero);
+                }
+            });
+        }
+
         $registros = $query->get();
 
         if ($departamentoId) {
@@ -164,6 +182,11 @@ class EstadisticasExportService
             ->when(($filtros['estado_mined'] ?? null) === 'sin_entregar', fn ($q) => $q->whereNull('fecha_entrega'))
             ->orderBy('fecha_emision');
 
+        $buscar = trim((string) ($filtros['buscar'] ?? ''));
+        if ($buscar !== '') {
+            $this->aplicarBusquedaCertificaciones($query, $buscar);
+        }
+
         $rows = $query->get();
         $nombreArchivo = 'reporte-estadistico-'.(($filtros['tab'] ?? null) === 'mined' ? 'mined' : 'certificaciones').'-'.now()->format('Ymd_His').'.csv';
 
@@ -207,6 +230,30 @@ class EstadisticasExportService
             }
             fclose($out);
         }, $nombreArchivo, ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    /** Applies the statistics search to exported certification rows too. */
+    private function aplicarBusquedaCertificaciones(EloquentBuilder $query, string $search): void
+    {
+        $needle = '%'.mb_strtolower($search).'%';
+        $numero = ltrim($search, '#');
+
+        $query->where(function (EloquentBuilder $matches) use ($needle, $numero): void {
+            $matches
+                ->whereRaw('LOWER(certificaciones.folio) LIKE ?', [$needle])
+                ->orWhereHas('estudiante', function (EloquentBuilder $student) use ($needle): void {
+                    $student
+                        ->whereRaw('LOWER(estudiantes.due) LIKE ?', [$needle])
+                        ->orWhereRaw('LOWER(estudiantes.nombre_completo) LIKE ?', [$needle]);
+                })
+                ->orWhereHas('proyecto', function (EloquentBuilder $project) use ($needle, $numero): void {
+                    $project->whereRaw('LOWER(proyectos.titulo) LIKE ?', [$needle]);
+
+                    if ($numero !== '' && ctype_digit($numero)) {
+                        $project->orWhere('proyectos.numero_proyecto', (int) $numero);
+                    }
+                });
+        });
     }
 
     /**

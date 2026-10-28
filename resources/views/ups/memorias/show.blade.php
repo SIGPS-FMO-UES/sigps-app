@@ -10,6 +10,23 @@
     @if($documentoDisponible && in_array($memoria->estado->value, ['recibido', 'en_revision', 'observada'], true))
         <a class="btn btn-primary" href="{{ route('ups.auditoria.show', $memoria->id_memoria) }}">Auditar sellos y tinta azul</a>
     @endif
+    @if($memoria->estado->value !== \App\Enums\EstadoMemoria::Entregada->value)
+        <details class="dropdown" style="position:relative;display:inline-block">
+            <summary class="btn" style="cursor:pointer">Marcar entregada</summary>
+            <form method="POST" action="{{ route('ups.memorias.entregar', $memoria->id_memoria) }}" style="position:absolute;z-index:20;right:0;top:calc(100% + 6px);width:280px;padding:16px;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(23,40,58,0.14)">
+                @csrf
+                <div class="field" style="margin-bottom:8px">
+                    <label for="fecha_entrega" style="font-size:12px;font-weight:600">Fecha de entrega</label>
+                    <input id="fecha_entrega" type="date" name="fecha_entrega" required max="{{ now()->toDateString() }}" value="{{ now()->toDateString() }}" style="width:100%;font-size:13px;padding:6px">
+                </div>
+                <div class="field" style="margin-bottom:10px">
+                    <label for="observaciones_entrega" style="font-size:12px;font-weight:600">Observaciones (opcional)</label>
+                    <textarea id="observaciones_entrega" name="observaciones" rows="2" maxlength="2000" style="width:100%;font-size:12px;padding:6px"></textarea>
+                </div>
+                <button class="btn btn-primary btn-small" type="submit" style="width:100%">Confirmar entrega</button>
+            </form>
+        </details>
+    @endif
 @endsection
 
 @section('content')

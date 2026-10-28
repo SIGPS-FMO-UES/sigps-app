@@ -46,6 +46,7 @@ class MemoriaController extends Controller
 
         $proyectosSinMemoria = Proyecto::query()
             ->with(['areaConocimiento', 'estudiantes'])
+            ->where('estado_expediente', 'en_tramite')
             ->whereDoesntHave('memoria')
             ->orderBy('fecha_inicio')
             ->paginate(100, ['*'], 'proyectos_page')
@@ -134,6 +135,119 @@ class MemoriaController extends Controller
             'Content-Type' => 'application/pdf',
             'X-Content-Type-Options' => 'nosniff',
         ]);
+    }
+
+    public function entregarPorProyecto(Request $request, string $id): RedirectResponse
+    {
+        $datos = $request->validate([
+            'fecha_entrega' => ['required', 'date', 'before_or_equal:today'],
+            'observaciones' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        DB::transaction(function () use ($id, $datos): void {
+            $proyecto = Proyecto::query()->with('memoria')->lockForUpdate()->findOrFail($id);
+            $memoria = $proyecto->memoria;
+
+            if ($memoria) {
+                $memoria->update([
+                    'estado' => EstadoMemoria::Entregada,
+                    'fecha_entrega' => $datos['fecha_entrega'],
+                    'observaciones' => $datos['observaciones'] ?? $memoria->observaciones,
+                ]);
+            } else {
+                Memoria::create([
+                    'numero_proyecto' => $proyecto->numero_proyecto,
+                    'registrada_por' => auth()->id(),
+                    'fecha_recibimiento' => $datos['fecha_entrega'],
+                    'fecha_entrega' => $datos['fecha_entrega'],
+                    'estado' => EstadoMemoria::Entregada,
+                    'observaciones' => $datos['observaciones'] ?? null,
+                ]);
+            }
+
+            LogAccion::create([
+                'accion' => "Memoria final del proyecto #{$proyecto->numero_proyecto} marcada como entregada.",
+                'usuario' => auth()->id(),
+            ]);
+        });
+
+        return back()->with('success', 'La memoria final fue marcada como entregada.');
+    }
+
+    public function entregar(Request $request, string $id): RedirectResponse
+    {
+        $datos = $request->validate([
+            'fecha_entrega' => ['required', 'date', 'before_or_equal:today'],
+            'observaciones' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        DB::transaction(function () use ($id, $datos): void {
+            $memoria = Memoria::query()->lockForUpdate()->findOrFail($id);
+            $memoria->update([
+                'estado' => EstadoMemoria::Entregada,
+                'fecha_entrega' => $datos['fecha_entrega'],
+                'observaciones' => $datos['observaciones'] ?? $memoria->observaciones,
+            ]);
+
+            LogAccion::create([
+                'accion' => "Memoria #{$memoria->id_memoria} marcada como entregada.",
+                'usuario' => auth()->id(),
+            ]);
+        });
+
+        return back()->with('success', 'La memoria final fue marcada como entregada.');
+    }
+
+    public function recibirPorProyecto(Request $request, string $id): RedirectResponse
+    {
+        $datos = $request->validate([
+            'fecha_recibimiento' => ['required', 'date', 'before_or_equal:today'],
+            'archivo' => ['nullable', 'file', 'mimes:pdf', 'max:15360'],
+            'observaciones' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        DB::transaction(function () use ($id, $datos, $request): void {
+            $proyecto = Proyecto::query()->with('memoria')->lockForUpdate()->findOrFail($id);
+            $ruta = null;
+
+            if ($request->hasFile('archivo')) {
+                $archivo = $request->file('archivo');
+                $ruta = $archivo->store("proyectos/{$proyecto->id_proyecto}", 'expedientes_ups');
+
+                $proyecto->documentos()->create([
+                    'fase' => 'memoria_final',
+                    'nombre_original' => $archivo->getClientOriginalName(),
+                    'ruta' => $ruta,
+                    'mime_type' => 'application/pdf',
+                    'tamano_bytes' => $archivo->getSize(),
+                    'usuario_id' => auth()->id(),
+                ]);
+            }
+
+            $memoriaExistente = $proyecto->memoria;
+            $intento = $memoriaExistente
+                ? ($memoriaExistente->intento + ($memoriaExistente->estado === EstadoMemoria::Observada ? 1 : 0))
+                : 1;
+
+            Memoria::updateOrCreate(
+                ['numero_proyecto' => $proyecto->numero_proyecto],
+                [
+                    'registrada_por' => auth()->id(),
+                    'fecha_recibimiento' => $datos['fecha_recibimiento'],
+                    'estado' => EstadoMemoria::Recibido,
+                    'documento' => $ruta ?? $memoriaExistente?->documento,
+                    'observaciones' => $datos['observaciones'] ?? $memoriaExistente?->observaciones,
+                    'intento' => $intento,
+                ]
+            );
+
+            LogAccion::create([
+                'accion' => "Recepción de memoria registrada para el proyecto #{$proyecto->numero_proyecto}.",
+                'usuario' => auth()->id(),
+            ]);
+        });
+
+        return back()->with('success', 'La recepción de la memoria final quedó registrada en el expediente.');
     }
 
     private function documentoPdfDisponible(Memoria $memoria): bool

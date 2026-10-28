@@ -83,12 +83,14 @@ Route::middleware('auth')->group(function () {
         Route::put('/proyectos/{id}', [ProyectoController::class, 'update'])->name('proyectos.update');
         Route::get('/proyectos/{id}/historial', [ProyectoController::class, 'historial'])->whereNumber('id')->name('proyectos.historial');
         Route::get('/proyectos/{id}', [ProyectoController::class, 'show'])->name('proyectos.show');
-        // El documento define memorias como parte del ciclo del proyecto, no como CRUD independiente.
         Route::get('/memorias', [MemoriaController::class, 'index'])->name('memorias.index');
+        Route::post('/proyectos/{id}/memoria/entregar', [MemoriaController::class, 'entregarPorProyecto'])->whereNumber('id')->name('proyectos.memoria.entregar');
+        Route::post('/proyectos/{id}/memoria/recibir', [MemoriaController::class, 'recibirPorProyecto'])->whereNumber('id')->name('proyectos.memoria.recibir');
         Route::get('/auditoria/{versionId}', [MemoriaController::class, 'auditar'])->whereNumber('versionId')->name('auditoria.show');
         Route::post('/auditoria/{versionId}/dictamen', [MemoriaController::class, 'dictamen'])->whereNumber('versionId')->name('auditoria.store');
         Route::get('/documentos/{versionId}/descargar', [MemoriaController::class, 'documento'])->whereNumber('versionId')->name('documentos.descargar');
         Route::get('/memorias/{id}', [MemoriaController::class, 'show'])->name('memorias.show');
+        Route::post('/memorias/{id}/entregar', [MemoriaController::class, 'entregar'])->whereNumber('id')->name('memorias.entregar');
         Route::get('/certificaciones', [CertificacionController::class, 'index'])->name('certificaciones.index');
         Route::post('/certificaciones/{proyectoId}/emitir', [CertificacionController::class, 'emitir'])->whereNumber('proyectoId')->middleware('permission:certificaciones.emitir')->name('certificaciones.emitir');
         Route::post('/certificaciones/{id}/entregar', [CertificacionController::class, 'registrarEntrega'])->whereNumber('id')->name('certificaciones.entregar');

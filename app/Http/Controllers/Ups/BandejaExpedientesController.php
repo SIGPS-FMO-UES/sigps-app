@@ -103,8 +103,32 @@ class BandejaExpedientesController extends Controller
         $datos = $request->validate(['observaciones' => ['nullable', 'string', 'max:2000']]);
 
         DB::transaction(function () use ($id, $datos): void {
-            $proyecto = Proyecto::query()->lockForUpdate()->findOrFail($id);
-            abort_unless($proyecto->estado_expediente === 'en_tramite' && $proyecto->fase_actual === 'finalizacion', 409, 'El proyecto debe completar todas las fases antes de finalizarse.');
+            $proyecto = Proyecto::query()->with('memoria')->lockForUpdate()->findOrFail($id);
+            abort_unless($proyecto->estado_expediente === 'en_tramite', 409, 'El expediente ya no está en trámite.');
+
+            $memoriaValida = $proyecto->memoria && in_array($proyecto->memoria->estado->value, [
+                EstadoMemoria::Aprobada->value,
+                EstadoMemoria::Aprovada->value,
+                EstadoMemoria::EsperandoFirmas->value,
+                EstadoMemoria::Lista->value,
+                EstadoMemoria::Entregada->value,
+            ], true);
+
+            abort_unless(
+                $proyecto->fase_actual === 'finalizacion' || ($proyecto->fase_actual === 'memoria_final' && $memoriaValida),
+                409,
+                'El proyecto debe completar todas las fases o tener la memoria aprobada antes de finalizarse.'
+            );
+
+            if ($proyecto->fase_actual === 'memoria_final') {
+                HistorialFaseProyecto::create([
+                    'proyecto_id' => $proyecto->id_proyecto,
+                    'fase' => 'memoria_final',
+                    'evento' => 'fase_admitida',
+                    'observaciones' => 'Admisión automática previa a la finalización oficial.',
+                    'usuario_id' => auth()->id(),
+                ]);
+            }
 
             HistorialFaseProyecto::create([
                 'proyecto_id' => $proyecto->id_proyecto,
@@ -115,10 +139,19 @@ class BandejaExpedientesController extends Controller
             ]);
 
             $proyecto->update([
+                'fase_actual' => 'finalizacion',
                 'estado_expediente' => 'finalizado',
                 'fecha_finalizacion' => now(),
                 'fecha_final' => $proyecto->fecha_final ?? now()->toDateString(),
             ]);
+
+            if ($proyecto->memoria && ! $proyecto->memoria->fecha_entrega) {
+                $proyecto->memoria->update([
+                    'fecha_entrega' => now()->toDateString(),
+                    'estado' => EstadoMemoria::Entregada,
+                ]);
+            }
+
             LogAccion::create([
                 'accion' => "Proyecto #{$proyecto->id_proyecto} finalizado: {$proyecto->titulo}",
                 'usuario' => auth()->id(),

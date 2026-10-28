@@ -27,6 +27,14 @@
                 <span>Más opciones</span>
             </summary>
             <div class="project-actions-popover" role="menu" aria-label="Acciones del proyecto">
+                @if(auth()->user()->hasRole('jefe_ups'))
+                    <button type="button" role="menuitem" style="color: #15803d; font-weight: 600;" data-project-modal="modal-finalizar">Finalizar proyecto</button>
+                @endif
+                @if($proyecto->memoria && $proyecto->memoria->estado !== \App\Enums\EstadoMemoria::Entregada)
+                    <button type="button" role="menuitem" data-project-modal="modal-entregar-memoria">Marcar memoria entregada</button>
+                @elseif(! $proyecto->memoria)
+                    <button type="button" role="menuitem" data-project-modal="modal-recibir-memoria">Registrar memoria</button>
+                @endif
                 <button type="button" role="menuitem" data-project-modal="modal-ampliar">Ampliar plazo</button>
                 @can('prorrogas.resolver')<button type="button" role="menuitem" data-project-modal="modal-prorroga">Registrar prórroga</button>@endcan
                 <button type="button" role="menuitem" data-project-modal="modal-retirar">Retirar estudiante</button>
@@ -310,17 +318,29 @@
 
                             @if($proyecto->fase_actual === 'memoria_final')
                                 @if($memoriaAprobada)
-                                    <form method="POST" action="{{ route('ups.proyectos.admitirFase', $proyecto->id_proyecto) }}" style="margin: 0;">
-                                        @csrf
-                                        <button class="btn btn-small" type="submit">Avanzar fase →</button>
-                                    </form>
+                                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                                        <form method="POST" action="{{ route('ups.proyectos.admitirFase', $proyecto->id_proyecto) }}" style="margin: 0;">
+                                            @csrf
+                                            <button class="btn btn-small" type="submit">Avanzar a Finalización →</button>
+                                        </form>
+                                        @if(auth()->user()->hasRole('jefe_ups'))
+                                            <button type="button" class="btn btn-small btn-primary" data-project-modal="modal-finalizar">Finalizar proyecto</button>
+                                        @endif
+                                    </div>
                                 @else
                                     <p class="muted" style="margin: 0; font-size: 11.5px; line-height: 1.4;">
-                                        Requiere memoria aprobada por coordinación académica.
+                                        Requiere memoria aprobada o entregada.
                                         @if($proyecto->memoria)
                                             <a href="{{ route('ups.memorias.show', $proyecto->memoria->id_memoria) }}" style="display: block; margin-top: 4px;">
                                                 Ver estado ({{ $proyecto->memoria->estado->label() }}) →
                                             </a>
+                                            @if(in_array($proyecto->memoria->estado->value, ['recibido', 'en_revision', 'observada'], true))
+                                                <a href="{{ route('ups.auditoria.show', $proyecto->memoria->id_memoria) }}" style="display: block; margin-top: 4px; font-weight: 600; color: #1d4ed8;">
+                                                    Auditar sellos y tinta azul →
+                                                </a>
+                                            @endif
+                                        @else
+                                            <button type="button" class="btn btn-small" style="margin-top: 6px; width: 100%;" data-project-modal="modal-recibir-memoria">Registrar memoria →</button>
                                         @endif
                                     </p>
                                 @endif
@@ -335,10 +355,7 @@
                                 Finalización oficial
                             </div>
                             @if(auth()->user()->hasRole('jefe_ups'))
-                                <form method="POST" action="{{ route('ups.proyectos.finalizar', $proyecto->id_proyecto) }}" style="margin: 0;">
-                                    @csrf
-                                    <button class="btn btn-small" type="submit">Finalizar proyecto</button>
-                                </form>
+                                <button class="btn btn-small btn-primary" type="button" data-project-modal="modal-finalizar">Finalizar proyecto</button>
                             @else
                                 <span class="muted" style="font-size: 12px;">Pendiente de Jefatura UPS</span>
                             @endif
@@ -417,17 +434,46 @@
     @if($proyecto->memoria)
         <section class="card">
             <div class="card-head">
-                <div><h2>Memoria final</h2><p class="muted" style="margin:5px 0 0">Estado documental del proyecto.</p></div>
-                <a href="{{ route('ups.memorias.show', $proyecto->memoria->id_memoria) }}">Abrir memoria →</a>
+                <div>
+                    <h2>Memoria final</h2>
+                    <p class="muted" style="margin:5px 0 0">Estado documental del proyecto.</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <a href="{{ route('ups.memorias.show', $proyecto->memoria->id_memoria) }}" class="btn btn-small">Abrir memoria →</a>
+                    @if($proyecto->memoria->estado === \App\Enums\EstadoMemoria::Entregada)
+                        <span class="badge badge-success">Entregada {{ $proyecto->memoria->fecha_entrega?->format('d/m/Y') }}</span>
+                    @elseif($proyecto->estado_expediente === 'en_tramite')
+                        <button type="button" class="btn btn-small btn-primary" data-project-modal="modal-entregar-memoria">Marcar como entregada</button>
+                    @endif
+                    @if(in_array($proyecto->memoria->estado->value, ['recibido', 'en_revision', 'observada'], true))
+                        <a href="{{ route('ups.auditoria.show', $proyecto->memoria->id_memoria) }}" class="btn btn-small">Auditar sellos y tinta →</a>
+                    @endif
+                </div>
             </div>
             <div class="card-body">
                 <div class="detail-grid">
                     <div class="detail"><small>Estado</small><strong>{{ $proyecto->memoria->estado->label() }}</strong></div>
                     <div class="detail"><small>Recibida</small><strong>{{ $proyecto->memoria->fecha_recibimiento?->format('d/m/Y') ?? '—' }}</strong></div>
+                    <div class="detail"><small>Fecha de entrega</small><strong>{{ $proyecto->memoria->fecha_entrega?->format('d/m/Y') ?? 'Pendiente' }}</strong></div>
                     <div class="detail"><small>Intento</small><strong>{{ $proyecto->memoria->intento }}</strong></div>
                     <div class="detail"><small>Último dictamen</small><strong>{{ $proyecto->memoria->revisiones->first()?->created_at?->format('d/m/Y H:i') ?? 'Sin revisión' }}</strong></div>
                 </div>
-                @if($proyecto->memoria->observaciones)<p class="muted" style="margin-top: 10px;">{{ $proyecto->memoria->observaciones }}</p>@endif
+                @if($proyecto->memoria->observaciones)<p class="muted" style="margin-top: 10px;"><strong>Observaciones:</strong> {{ $proyecto->memoria->observaciones }}</p>@endif
+            </div>
+        </section>
+    @else
+        <section class="card">
+            <div class="card-head">
+                <div>
+                    <h2>Memoria final</h2>
+                    <p class="muted" style="margin:5px 0 0">Pendiente de recepción en el expediente.</p>
+                </div>
+                @if($proyecto->estado_expediente === 'en_tramite')
+                    <button type="button" class="btn btn-small btn-primary" data-project-modal="modal-recibir-memoria">Registrar recepción de memoria</button>
+                @endif
+            </div>
+            <div class="card-body">
+                <p class="muted" style="margin: 0; font-size: 13px;">No se ha registrado una memoria final para este proyecto. Puedes registrar su recepción física o adjuntar el documento oficial para iniciar el proceso de revisión y dictamen.</p>
             </div>
         </section>
     @endif
@@ -471,7 +517,77 @@
             </form>
         </dialog>
 
+        <dialog class="project-action-dialog" id="modal-entregar-memoria" aria-labelledby="modal-entregar-memoria-title">
+            <form method="POST" action="{{ route('ups.proyectos.memoria.entregar', $proyecto->id_proyecto) }}">
+                @csrf <input type="hidden" name="form_key" value="entregar-memoria">
+                <div class="project-dialog-head">
+                    <h2 id="modal-entregar-memoria-title">Marcar memoria como entregada</h2>
+                    <button type="button" class="project-dialog-close" data-project-close aria-label="Cerrar">×</button>
+                </div>
+                <p>Registra la entrega física y formal de la memoria del proyecto <strong>#{{ $proyecto->numero_proyecto }}</strong>.</p>
+                <div class="field">
+                    <label for="entrega-fecha">Fecha de entrega</label>
+                    <input id="entrega-fecha" name="fecha_entrega" type="date" required max="{{ now()->toDateString() }}" value="{{ old('form_key') === 'entregar-memoria' ? old('fecha_entrega') : now()->toDateString() }}">
+                    @error('fecha_entrega') @if(old('form_key') === 'entregar-memoria')<small class="project-field-error">{{ $message }}</small>@endif @enderror
+                </div>
+                <div class="field">
+                    <label for="entrega-observaciones">Observaciones de entrega (opcional)</label>
+                    <textarea id="entrega-observaciones" name="observaciones" maxlength="2000" placeholder="Anotaciones sobre la entrega">{{ old('form_key') === 'entregar-memoria' ? old('observaciones') : '' }}</textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" data-project-close>Volver</button>
+                    <button class="btn btn-primary" type="submit">Confirmar entrega</button>
+                </div>
+            </form>
+        </dialog>
+
+        <dialog class="project-action-dialog" id="modal-recibir-memoria" aria-labelledby="modal-recibir-memoria-title">
+            <form method="POST" enctype="multipart/form-data" action="{{ route('ups.proyectos.memoria.recibir', $proyecto->id_proyecto) }}">
+                @csrf <input type="hidden" name="form_key" value="recibir-memoria">
+                <div class="project-dialog-head">
+                    <h2 id="modal-recibir-memoria-title">Registrar recepción de memoria</h2>
+                    <button type="button" class="project-dialog-close" data-project-close aria-label="Cerrar">×</button>
+                </div>
+                <p>Registra el ingreso formal de la memoria final para el proyecto <strong>#{{ $proyecto->numero_proyecto }}</strong>.</p>
+                <div class="field">
+                    <label for="recibir-fecha">Fecha de recepción</label>
+                    <input id="recibir-fecha" name="fecha_recibimiento" type="date" required max="{{ now()->toDateString() }}" value="{{ old('form_key') === 'recibir-memoria' ? old('fecha_recibimiento') : now()->toDateString() }}">
+                </div>
+                <div class="field">
+                    <label for="recibir-archivo">Documento PDF (opcional si es entrega física, máx. 15 MB)</label>
+                    <input id="recibir-archivo" name="archivo" type="file" accept="application/pdf,.pdf">
+                </div>
+                <div class="field">
+                    <label for="recibir-observaciones">Observaciones (opcional)</label>
+                    <textarea id="recibir-observaciones" name="observaciones" maxlength="2000" placeholder="Observaciones sobre la recepción de la memoria">{{ old('form_key') === 'recibir-memoria' ? old('observaciones') : '' }}</textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" data-project-close>Volver</button>
+                    <button class="btn btn-primary" type="submit">Registrar memoria</button>
+                </div>
+            </form>
+        </dialog>
+
         @if(auth()->user()->hasRole('jefe_ups'))
+            <dialog class="project-action-dialog" id="modal-finalizar" aria-labelledby="modal-finalizar-title">
+                <form method="POST" action="{{ route('ups.proyectos.finalizar', $proyecto->id_proyecto) }}">
+                    @csrf <input type="hidden" name="form_key" value="finalizar">
+                    <div class="project-dialog-head">
+                        <h2 id="modal-finalizar-title">Finalizar proyecto oficialmente</h2>
+                        <button type="button" class="project-dialog-close" data-project-close aria-label="Cerrar">×</button>
+                    </div>
+                    <p>Está por registrar la <strong>finalización oficial</strong> del proyecto <strong>{{ $proyecto->titulo }}</strong> (#{{ $proyecto->numero_proyecto }}). Esta acción cerrará el expediente de horas sociales.</p>
+                    <div class="field">
+                        <label for="finalizar-observaciones">Observaciones de cierre institucional (opcional)</label>
+                        <textarea id="finalizar-observaciones" name="observaciones" maxlength="2000" placeholder="Observaciones o notas de cierre institucional">{{ old('form_key') === 'finalizar' ? old('observaciones') : '' }}</textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn" data-project-close>Volver</button>
+                        <button class="btn btn-primary" type="submit">Confirmar finalización</button>
+                    </div>
+                </form>
+            </dialog>
+
             <dialog class="project-action-dialog" id="modal-cancelar" aria-labelledby="modal-cancelar-title">
                 <form method="POST" action="{{ route('ups.proyectos.cancelar', $proyecto->id_proyecto) }}">
                     @csrf <input type="hidden" name="form_key" value="cancelar">

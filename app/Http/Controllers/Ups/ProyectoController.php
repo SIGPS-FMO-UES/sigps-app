@@ -8,6 +8,7 @@ use App\Models\AreaConocimiento;
 use App\Models\Carrera;
 use App\Models\Estudiante;
 use App\Models\LogAccion;
+use App\Models\Memoria;
 use App\Models\Proyecto;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -368,14 +369,33 @@ class ProyectoController extends Controller
 
     private function guardarDocumento(Proyecto $proyecto, UploadedFile $archivo, string $fase): void
     {
+        $faseNormalizada = in_array($fase, ['inscripcion', 'anteproyecto', 'avance_50', 'memoria_final'], true) ? $fase : 'otro';
         $ruta = $archivo->store("proyectos/{$proyecto->id_proyecto}", 'expedientes_ups');
         $proyecto->documentos()->create([
-            'fase' => in_array($fase, ['inscripcion', 'anteproyecto', 'avance_50', 'memoria_final'], true) ? $fase : 'otro',
+            'fase' => $faseNormalizada,
             'nombre_original' => $archivo->getClientOriginalName(),
             'ruta' => $ruta,
             'mime_type' => 'application/pdf',
             'tamano_bytes' => $archivo->getSize(),
             'usuario_id' => auth()->id(),
         ]);
+
+        if ($faseNormalizada === 'memoria_final') {
+            $memoriaExistente = $proyecto->memoria;
+            $intento = $memoriaExistente
+                ? ($memoriaExistente->intento + ($memoriaExistente->estado === EstadoMemoria::Observada ? 1 : 0))
+                : 1;
+
+            Memoria::updateOrCreate(
+                ['numero_proyecto' => $proyecto->numero_proyecto],
+                [
+                    'registrada_por' => auth()->id(),
+                    'fecha_recibimiento' => now()->toDateString(),
+                    'estado' => EstadoMemoria::Recibido,
+                    'documento' => $ruta,
+                    'intento' => $intento,
+                ]
+            );
+        }
     }
 }

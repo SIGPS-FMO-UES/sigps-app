@@ -117,7 +117,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="empty">Todos los proyectos tienen una memoria registrada.</td></tr>
+                        <tr><td colspan="7" class="empty">Todos los proyectos tienen una memoria registrada.</td></tr>
                     @endforelse
                 </tbody>
             </table>

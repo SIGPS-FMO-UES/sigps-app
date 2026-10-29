@@ -316,10 +316,21 @@ class Proyecto extends Model
             return [
                 'nivel' => 'tramite',
                 'badge_class' => 'badge-warning',
-                'etiqueta' => 'Pendiente auditoría',
-                'plazo_humano' => 'En espera de revisión',
+                'etiqueta' => 'Memoria recibida',
+                'plazo_humano' => 'Pendiente de aprobación',
                 'fecha_referencia' => $memoria->fecha_recibimiento,
-                'siguiente_accion' => 'Auditar sellos',
+                'siguiente_accion' => 'Aprobar memoria',
+            ];
+        }
+
+        if (in_array($estadoMemoria, [EstadoMemoria::Aprobada, EstadoMemoria::Aprovada], true)) {
+            return [
+                'nivel' => 'tramite',
+                'badge_class' => 'badge-info',
+                'etiqueta' => 'Memoria aprobada',
+                'plazo_humano' => 'Lista para firmas o entrega',
+                'fecha_referencia' => $memoria->fecha_aprovado,
+                'siguiente_accion' => 'Firmas o Entrega',
             ];
         }
 
@@ -327,10 +338,10 @@ class Proyecto extends Model
             return [
                 'nivel' => 'tramite',
                 'badge_class' => 'badge-warning',
-                'etiqueta' => 'Esperando firmas',
-                'plazo_humano' => 'Firma de Jefatura',
+                'etiqueta' => 'En proceso de firmas',
+                'plazo_humano' => 'Firmas físicas en trámite',
                 'fecha_referencia' => $memoria->fecha_aprovado,
-                'siguiente_accion' => 'Firmar certificación',
+                'siguiente_accion' => 'Marcar listo',
             ];
         }
 
@@ -338,10 +349,10 @@ class Proyecto extends Model
             return [
                 'nivel' => 'tramite',
                 'badge_class' => 'badge-info',
-                'etiqueta' => 'Certificación lista',
-                'plazo_humano' => 'Lista para entregar',
+                'etiqueta' => 'Lista para entrega',
+                'plazo_humano' => 'Retenida en ventanilla',
                 'fecha_referencia' => $memoria->fecha_listo ?? $memoria->fecha_aprovado,
-                'siguiente_accion' => 'Registrar entrega',
+                'siguiente_accion' => 'Entregar al estudiante',
             ];
         }
 

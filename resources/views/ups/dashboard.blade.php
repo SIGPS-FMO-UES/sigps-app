@@ -371,11 +371,8 @@
                         <a class="nav-child {{ request()->routeIs('ups.plazos.*') ? 'active' : '' }}" href="{{ route('ups.plazos.index', [], false) }}">Plazos</a>
                     </div>
                 </details>
-                <a class="nav-item {{ request()->routeIs('ups.memorias.*', 'ups.auditoria.*') ? 'active' : '' }}" href="{{ route('ups.memorias.index', [], false) }}" aria-label="Memorias" title="Memorias">
+                <a class="nav-item {{ request()->routeIs('ups.memorias.*') ? 'active' : '' }}" href="{{ route('ups.memorias.index', [], false) }}" aria-label="Memorias" title="Memorias">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l5 5v13H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"></path><path d="M14 3v6h6M8 13h8M8 17h8"></path></svg><span>Memorias</span>
-                </a>
-                <a class="nav-item {{ request()->routeIs('ups.certificaciones.*') ? 'active' : '' }}" href="{{ route('ups.certificaciones.index', [], false) }}" aria-label="Certificaciones" title="Certificaciones">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l5 5v8H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"></path><path d="M14 3v6h6M8 11h8M8 14h5M9 16l-1 6 4-2 4 2-1-6"></path></svg><span>Certificaciones</span>
                 </a>
                 @canany(['estadisticas.consultar', 'estadisticas.exportar'])
                     <a class="nav-item {{ request()->routeIs('ups.estadisticas.*') ? 'active' : '' }}" href="{{ route('ups.estadisticas.index', [], false) }}" aria-label="Estadísticas" title="Estadísticas">
@@ -491,12 +488,12 @@
                         <strong class="summary-value">{{ $triaje['plazosCriticos'] }}</strong>
                         <span class="summary-action">Ver urgentes <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></span>
                     </a>
-                    <a class="summary-card summary-review" href="{{ route('ups.proyectos.index', ['triaje' => 'tramite']) }}" aria-label="{{ $triaje['auditoriasPendientes'] }} revisiones pendientes. Abrir casos.">
-                        <span class="summary-title">En revisión</span>
+                    <a class="summary-card summary-review" href="{{ route('ups.proyectos.index', ['triaje' => 'tramite']) }}" aria-label="{{ $triaje['auditoriasPendientes'] }} memorias en trámite. Abrir casos.">
+                        <span class="summary-title">Memorias en trámite</span>
                         <strong class="summary-value">{{ $triaje['auditoriasPendientes'] }}</strong>
-                        <span class="summary-action">Revisar casos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></span>
+                        <span class="summary-action">Revisar memorias <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></span>
                     </a>
-                    <a class="summary-card summary-delivery" href="{{ route('ups.proyectos.index', ['estado' => 'lista']) }}" aria-label="{{ $triaje['entregasPendientes'] }} entregas pendientes. Gestionar certificaciones listas.">
+                    <a class="summary-card summary-delivery" href="{{ route('ups.proyectos.index', ['estado' => 'lista']) }}" aria-label="{{ $triaje['entregasPendientes'] }} entregas pendientes. Gestionar expedientes listos.">
                         <span class="summary-title">Listas para entregar</span>
                         <strong class="summary-value">{{ $triaje['entregasPendientes'] }}</strong>
                         <span class="summary-action">Gestionar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></span>

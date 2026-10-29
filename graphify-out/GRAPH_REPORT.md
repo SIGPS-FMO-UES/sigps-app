@@ -1,17 +1,17 @@
-# Graph Report - sigps-app  (2026-10-27)
+# Graph Report - sigps-app  (2026-10-28)
 
 ## Corpus Check
-- 151 files · ~66,867 words
+- 145 files · ~66,340 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 31 file(s) not represented in the graph (top: (none) 19, .conf 4, .example 2)
 
 ## Summary
-- 965 nodes · 1726 edges · 105 communities (32 shown, 73 thin omitted)
+- 944 nodes · 1702 edges · 106 communities (28 shown, 78 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 8 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b466e4da`
+- Built from commit: `bc9cb628`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -21,52 +21,54 @@
 - Illuminate\Database\Schema\Blueprint
 - ProyectoApiController.php
 - package.json
-- EstadoMemoria
 - Illuminate\View\View
 - Illuminate\Http\Request
 - AppServiceProvider
-- Carrera
+- api.php
 - CarreraApiController.php
-- ExampleTest
+- EstadisticasExportService
 - dev/entrypoint.sh
 - docker/entrypoint.sh
 - EstudianteApiController.php
-- Illuminate\Http\Request
+- MemoriaController.php
 - PlantillaController.php
-- Controller
+- DocumentoProyectoController.php
 - UsuarioController.php
 - EstudianteController.php
-- Illuminate\Http\JsonResponse
+- ProyectoController
 - Illuminate\Database\Eloquent\Relations\HasMany
 - CertificacionApiController.php
 - bootstrap/app.php
 - api.php
 - BitacoraAuditoriaController.php
-- AuditoriaApiController.php
+- Illuminate\Http\JsonResponse
+- web.php
 - Illuminate\Http\Resources\Json\JsonResource
 - Illuminate\Http\Resources\Json\AnonymousResourceCollection
 - require-dev
-- Proyecto.php
+- ProyectoController.php
 - Illuminate\Support\Facades\Schema
 - catalogos/index.blade.php
-- Illuminate\Database\Eloquent\Model
+- Proyecto.php
 - Illuminate\Database\Migrations\Migration
 - EstadisticasController
-- Symfony\Component\HttpFoundation\StreamedResponse
-- Controller
+- UserFactory.php
+- FormatoApiController.php
 - GestionProrrogasController.php
+- Carrera
 - Memoria
 - config
 - require
+- Illuminate\Database\Eloquent\Relations\BelongsTo
 - areas/index.blade.php
 - auditoria/index.blade.php
 - plantillas/index.blade.php
 - usuarios/create.blade.php
 - usuarios/edit.blade.php
 - usuarios/index.blade.php
-- auditoria.blade.php
+- MemoriaYFinalizacionProyectoTest
 - bandeja/index.blade.php
-- certificaciones/index.blade.php
+- AreaConocimientoController.php
 - estadisticas/index.blade.php
 - estudiantes/create.blade.php
 - estudiantes/edit.blade.php
@@ -82,13 +84,13 @@
 - historial.blade.php
 - proyectos/index.blade.php
 - proyectos/show.blade.php
-- MemoriaController.php
+- Illuminate\Database\Eloquent\Model
+- AuditoriaApiController.php
 - LoginRequest
 - 0001_01_01_000002_create_jobs_table.php
-- Illuminate\Database\Eloquent\Relations\BelongsTo
+- Proyecto
 - 2026_10_14_000005_create_proyectos_tables.php
 - Illuminate\Database\Seeder
-- ProyectoController.php
 - psr-4
 - 0001_01_01_000001_create_cache_table.php
 - 2026_10_14_000002_create_departamentos_and_carreras_tables.php
@@ -100,19 +102,18 @@
 - autoload-dev
 - extra
 - {closure#47}
-- Proyecto
 
 ## God Nodes (most connected - your core abstractions)
-1. `Controller` - 65 edges
+1. `Controller` - 63 edges
 2. `Proyecto` - 49 edges
-3. `EstadoMemoria` - 23 edges
+3. `EstadoMemoria` - 22 edges
 4. `LogAccion` - 21 edges
 5. `ProcesoExtraordinario` - 20 edges
-6. `Memoria` - 18 edges
-7. `Estudiante` - 16 edges
-8. `ProyectoController` - 15 edges
-9. `Carrera` - 15 edges
-10. `AreaConocimiento` - 14 edges
+6. `Memoria` - 19 edges
+7. `MemoriaController` - 18 edges
+8. `Estudiante` - 16 edges
+9. `ProyectoController` - 15 edges
+10. `Carrera` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `{closure#3}()` --references--> `Estudiante`  [EXTRACTED]
@@ -123,13 +124,13 @@
   app/Http/Controllers/Api/V1/PlazoApiController.php → app/Models/Proyecto.php
 - `{closure#8}()` --references--> `Proyecto`  [EXTRACTED]
   app/Http/Controllers/Api/V1/ProyectoApiController.php → app/Models/Proyecto.php
-- `{closure#1}()` --references--> `Proyecto`  [EXTRACTED]
-  app/Http/Controllers/Ups/ControlPlazosController.php → app/Models/Proyecto.php
+- `{closure#1}()` --references--> `ProcesoExtraordinario`  [EXTRACTED]
+  app/Models/Proyecto.php → app/Models/ProcesoExtraordinario.php
 
 ## Import Cycles
 - None detected.
 
-## Communities (105 total, 73 thin omitted)
+## Communities (106 total, 78 thin omitted)
 
 ### Community 0 - "composer.json"
 Cohesion: 0.22
@@ -151,36 +152,24 @@ Nodes (3): {closure#8}(), ProyectoApiController, ProyectoResource
 Cohesion: 0.10
 Nodes (20): devDependencies, concurrently, laravel-vite-plugin, tailwindcss, @tailwindcss/vite, vite, optionalDependencies, @laravel/multiplex (+12 more)
 
-### Community 6 - "EstadoMemoria"
-Cohesion: 0.06
-Nodes (13): EstadoMemoria, Aprobada, Aprovada, EnRevision, Entregada, EsperandoFirmas, Lista, Observada (+5 more)
-
 ### Community 7 - "Illuminate\View\View"
-Cohesion: 0.14
-Nodes (4): {closure#1}(), ControlPlazosController, {closure#11}(), EstudianteController
+Cohesion: 0.13
+Nodes (4): CatalogoFormatosController, ControlPlazosController, {closure#11}(), EstudianteController
 
 ### Community 8 - "Illuminate\Http\Request"
-Cohesion: 0.18
-Nodes (3): AreaConocimientoController, {closure#1}(), CarreraDepartamentoController
-
-### Community 28 - "Illuminate\Http\Request"
-Cohesion: 0.19
-Nodes (3): BandejaExpedientesController, CertificacionController, ProcesosExtraordinariosController
+Cohesion: 0.16
+Nodes (4): CarreraDepartamentoController, BandejaExpedientesController, MemoriaController, ProcesosExtraordinariosController
 
 ### Community 29 - "PlantillaController.php"
 Cohesion: 0.19
 Nodes (6): TipoPlantilla, ArchivoEjemplo, Autorellenable, {closure#2}(), {closure#3}(), PlantillaController
 
 ### Community 32 - "EstudianteController.php"
-Cohesion: 0.10
-Nodes (6): {closure#10}(), {closure#7}(), {closure#9}(), Estudiante, {closure#3}(), ProyectoSeeder
-
-### Community 33 - "Illuminate\Http\JsonResponse"
-Cohesion: 0.12
-Nodes (3): AuthApiController, EstadisticaApiController, FormatoApiController
+Cohesion: 0.13
+Nodes (4): {closure#10}(), {closure#7}(), {closure#9}(), Estudiante
 
 ### Community 35 - "CertificacionApiController.php"
-Cohesion: 0.14
+Cohesion: 0.20
 Nodes (3): CertificacionApiController, {closure#5}(), CertificacionResource
 
 ### Community 36 - "bootstrap/app.php"
@@ -188,28 +177,20 @@ Cohesion: 0.15
 Nodes (4): EnsureCarreraServiceToken, {closure#1}(), {closure#3}(), {closure#4}()
 
 ### Community 37 - "api.php"
-Cohesion: 0.12
-Nodes (5): AuditoriaApiController, IntegracionApiController, {closure#1}(), PlazoApiController, ProrrogaApiController
+Cohesion: 0.14
+Nodes (6): AuditoriaApiController, EstadisticaApiController, {closure#1}(), PlazoApiController, Controller, NotificacionController
 
 ### Community 44 - "require-dev"
 Cohesion: 0.22
 Nodes (9): require-dev, fakerphp/faker, laravel/boost, laravel/pail, laravel/pao, laravel/pint, mockery/mockery, nunomaduro/collision (+1 more)
 
-### Community 45 - "Proyecto.php"
+### Community 48 - "Proyecto.php"
 Cohesion: 0.22
 Nodes (3): Plantilla, {closure#1}(), {closure#2}()
-
-### Community 48 - "Illuminate\Database\Eloquent\Model"
-Cohesion: 0.19
-Nodes (4): AreaConocimiento, Departamento, HistorialFaseProyecto, VersionPlantilla
 
 ### Community 50 - "EstadisticasController"
 Cohesion: 0.29
 Nodes (3): {closure#46}(), {closure#48}(), EstadisticasController
-
-### Community 52 - "Controller"
-Cohesion: 0.09
-Nodes (6): LoginController, ProfileController, Controller, CatalogoFormatosController, NotificacionController, UpsDashboardController
 
 ### Community 56 - "config"
 Cohesion: 0.29
@@ -219,29 +200,37 @@ Nodes (7): pestphp/pest-plugin, php-http/discovery, config, allow-plugins, optim
 Cohesion: 0.29
 Nodes (7): require, laravel/framework, laravel/sanctum, laravel/tinker, php, phpoffice/phpspreadsheet, spatie/laravel-permission
 
+### Community 58 - "Illuminate\Database\Eloquent\Relations\BelongsTo"
+Cohesion: 0.14
+Nodes (5): {closure#1}(), Certificacion, DocumentoProyecto, HistorialFaseProyecto, LogAccion
+
+### Community 65 - "MemoriaYFinalizacionProyectoTest"
+Cohesion: 0.07
+Nodes (13): EstadoMemoria, Aprobada, Aprovada, EnRevision, Entregada, EsperandoFirmas, Lista, Observada (+5 more)
+
+### Community 87 - "Illuminate\Database\Eloquent\Model"
+Cohesion: 0.29
+Nodes (3): AreaConocimiento, Departamento, VersionPlantilla
+
 ### Community 89 - "LoginRequest"
-Cohesion: 0.09
-Nodes (5): RecepcionExpedienteAvaladoRequest, LoginRequest, UpdateProfileRequest, {closure#1}(), DictamenMemoriaRequest
+Cohesion: 0.11
+Nodes (4): ProfileController, RecepcionExpedienteAvaladoRequest, LoginRequest, UpdateProfileRequest
 
 ### Community 90 - "0001_01_01_000002_create_jobs_table.php"
 Cohesion: 0.33
 Nodes (3): {closure#1}(), {closure#2}(), {closure#3}()
 
-### Community 92 - "Illuminate\Database\Eloquent\Relations\BelongsTo"
-Cohesion: 0.16
-Nodes (5): {closure#1}(), {closure#9}(), Certificacion, DocumentoProyecto, LogAccion
+### Community 92 - "Proyecto"
+Cohesion: 0.07
+Nodes (5): {closure#1}(), {closure#1}(), {closure#9}(), ProcesoExtraordinario, Proyecto
 
 ### Community 93 - "2026_10_14_000005_create_proyectos_tables.php"
 Cohesion: 0.33
 Nodes (3): {closure#1}(), {closure#2}(), {closure#3}()
 
 ### Community 94 - "Illuminate\Database\Seeder"
-Cohesion: 0.05
-Nodes (10): {closure#2}(), User, ExpedienteRecibidoNotification, UserFactory, AdminSeeder, DashboardDemoSeeder, DatabaseSeeder, EstudianteSeeder (+2 more)
-
-### Community 95 - "ProyectoController.php"
-Cohesion: 0.05
-Nodes (3): {closure#28}(), {closure#33}(), ProyectoController
+Cohesion: 0.06
+Nodes (11): {closure#2}(), User, ExpedienteRecibidoNotification, AdminSeeder, DashboardDemoSeeder, DatabaseSeeder, EstudianteSeeder, JefaturaSeeder (+3 more)
 
 ### Community 96 - "psr-4"
 Cohesion: 0.40
@@ -255,29 +244,25 @@ Nodes (3): autoload-dev, psr-4, Tests\\
 Cohesion: 0.67
 Nodes (3): extra, laravel, dont-discover
 
-### Community 113 - "Proyecto"
-Cohesion: 0.06
-Nodes (4): {closure#1}(), {closure#9}(), ProcesoExtraordinario, Proyecto
-
 ## Knowledge Gaps
-- **39 isolated node(s):** `Recibido`, `EnRevision`, `Observada`, `Aprobada`, `Aprovada` (+34 more)
-  These have ≤1 connection - possible missing edges. (Counts symbols only; 470 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **73 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **37 isolated node(s):** `Recibido`, `EnRevision`, `Observada`, `Aprobada`, `Aprovada` (+32 more)
+  These have ≤1 connection - possible missing edges. (Counts symbols only; 456 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **78 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Controller` connect `Controller` to `EstadisticasController.php`, `ProyectoApiController.php`, `EstadoMemoria`, `Illuminate\View\View`, `Illuminate\Http\Request`, `CarreraApiController.php`, `EstudianteApiController.php`, `Illuminate\Http\Request`, `PlantillaController.php`, `Controller`, `UsuarioController.php`, `EstudianteController.php`, `Illuminate\Http\JsonResponse`, `CertificacionApiController.php`, `api.php`, `BitacoraAuditoriaController.php`, `AuditoriaApiController.php`, `Illuminate\Http\Resources\Json\AnonymousResourceCollection`, `EstadisticasController`, `GestionProrrogasController.php`, `MemoriaController.php`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `ProyectoController.php`, `Proyecto`?**
-  _High betweenness centrality (0.086) - this node is a cross-community bridge._
+- **Why does `Controller` connect `api.php` to `App\Http\Controllers\Ups\EstadisticasController`, `ProyectoApiController.php`, `BandejaExpedientesController.php`, `Illuminate\View\View`, `Illuminate\Http\Request`, `api.php`, `CarreraApiController.php`, `EstudianteApiController.php`, `MemoriaController.php`, `PlantillaController.php`, `DocumentoProyectoController.php`, `UsuarioController.php`, `EstudianteController.php`, `ProyectoController`, `CertificacionApiController.php`, `BitacoraAuditoriaController.php`, `Illuminate\Http\JsonResponse`, `web.php`, `Illuminate\Http\Resources\Json\AnonymousResourceCollection`, `ProyectoController.php`, `EstadisticasController`, `FormatoApiController.php`, `GestionProrrogasController.php`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `AreaConocimientoController.php`, `AuditoriaApiController.php`, `LoginRequest`, `Proyecto`?**
+  _High betweenness centrality (0.085) - this node is a cross-community bridge._
 - **What connects `Recibido`, `EnRevision`, `Observada` to the rest of the system?**
-  _39 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `EstadisticasController.php` be split into smaller, more focused modules?**
+  _37 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `App\Http\Controllers\Ups\EstadisticasController` be split into smaller, more focused modules?**
   _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._
-- **Why does `Proyecto` connect `Proyecto` to `EstudianteController.php`, `Illuminate\Http\JsonResponse`, `EstadisticasController.php`, `CertificacionApiController.php`, `ProyectoApiController.php`, `api.php`, `EstadoMemoria`, `Illuminate\View\View`, `Illuminate\Database\Eloquent\Relations\HasMany`, `Proyecto.php`, `Illuminate\Database\Eloquent\Model`, `Memoria`, `MemoriaController.php`, `Illuminate\Database\Seeder`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `Controller`, `ProyectoController.php`?**
-  _High betweenness centrality (0.067) - this node is a cross-community bridge._
-- **Should `ProyectoApiController.php` be split into smaller, more focused modules?**
-  _Cohesion score 0.14705882352941177 - nodes in this community are weakly interconnected._
-- **Why does `EstadoMemoria` connect `EstadoMemoria` to `AuditoriaApiController.php`, `Proyecto.php`, `Proyecto`, `Memoria`, `MemoriaController.php`, `Illuminate\Database\Seeder`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `Controller`, `ProyectoController.php`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **Why does `Proyecto` connect `Proyecto` to `ProyectoController`, `App\Http\Controllers\Ups\EstadisticasController`, `CertificacionApiController.php`, `ProyectoApiController.php`, `api.php`, `BandejaExpedientesController.php`, `Illuminate\Database\Eloquent\Relations\HasMany`, `MemoriaYFinalizacionProyectoTest`, `ProyectoController.php`, `Proyecto.php`, `Memoria`, `Illuminate\Database\Eloquent\Model`, `Illuminate\Database\Seeder`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `MemoriaController.php`, `DocumentoProyectoController.php`?**
+  _High betweenness centrality (0.069) - this node is a cross-community bridge._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.09956709956709957 - nodes in this community are weakly interconnected._
+- **Why does `User` connect `Illuminate\Database\Seeder` to `MemoriaYFinalizacionProyectoTest`, `Illuminate\Database\Eloquent\Relations\HasMany`, `Illuminate\Http\JsonResponse`, `UserFactory.php`, `Illuminate\Database\Eloquent\Relations\BelongsTo`, `UsuarioController.php`?**
+  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **Should `Illuminate\View\View` be split into smaller, more focused modules?**
+  _Cohesion score 0.12631578947368421 - nodes in this community are weakly interconnected._

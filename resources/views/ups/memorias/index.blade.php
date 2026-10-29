@@ -37,7 +37,7 @@
         <div class="card-head">
             <div>
                 <h2>Bandeja de memorias finales</h2>
-                <p class="muted" style="margin:5px 0 0">{{ $disponiblesParaRevision }} expediente(s) esperan o requieren una revisión documental.</p>
+                <p class="muted" style="margin:5px 0 0">{{ $disponiblesParaRevision }} expediente(s) con memoria pendiente de aprobación.</p>
             </div>
             <span class="badge">{{ $memorias->total() }} registros</span>
         </div>
@@ -51,7 +51,7 @@
                         <th>Área</th>
                         <th>Recibida</th>
                         <th>Estado</th>
-                        <th>Última revisión</th>
+                        <th>Aprobación</th>
                         <th>Acción</th>
                     </tr>
                 </thead>
@@ -64,12 +64,21 @@
                             <td>{{ $memoria->proyecto?->estudiantes->pluck('nombre_completo')->join(', ') ?: '—' }}</td>
                             <td>{{ $memoria->proyecto?->areaConocimiento?->nombre ?? '—' }}</td>
                             <td>{{ $memoria->fecha_recibimiento?->format('d/m/Y') ?? '—' }}</td>
-                            <td><span class="badge {{ $estado === 'observada' ? 'badge-warning' : ($estado === 'aprobada' || $estado === 'aprovada' ? 'badge-success' : 'badge-info') }}">{{ $memoria->estado->label() }}</span></td>
-                            <td>{{ $memoria->revisiones->first()?->created_at?->format('d/m/Y H:i') ?? 'Sin dictamen' }}</td>
-                            <td style="white-space:nowrap">
-                                <a href="{{ route('ups.memorias.show', $memoria->id_memoria) }}">Ver expediente</a>
-                                @if(in_array($estado, ['recibido', 'en_revision', 'observada'], true))
-                                    <a href="{{ route('ups.auditoria.show', $memoria->id_memoria) }}">Auditar sellos y tinta →</a>
+                            <td><span class="badge {{ $estado === 'entregada' ? 'badge-success' : (in_array($estado, ['aprobada', 'aprovada', 'lista'], true) ? 'badge-info' : 'badge-warning') }}">{{ $memoria->estado->label() }}</span></td>
+                            <td>{{ $memoria->fecha_aprovado?->format('d/m/Y') ?? 'Pendiente' }}</td>
+                            <td style="white-space:nowrap;display:flex;align-items:center;gap:6px">
+                                <a href="{{ route('ups.memorias.show', $memoria->id_memoria) }}">Ver</a>
+                                @if($memoria->documento)
+                                    <a href="{{ route('ups.documentos.descargar', $memoria->id_memoria) }}" target="_blank" rel="noopener">PDF</a>
+                                @endif
+                                @if(in_array($estado, ['recibido', 'en_revision', 'observada'], true) && auth()->user()->hasRole('jefe_ups'))
+                                    <form method="POST" action="{{ route('ups.memorias.aprobar', $memoria->id_memoria) }}" style="display:inline;margin:0;">
+                                        @csrf
+                                        <button class="btn btn-small btn-primary" type="submit">Aprobar</button>
+                                    </form>
+                                @endif
+                                @if(in_array($estado, ['aprobada', 'aprovada', 'esperando_firmas', 'lista'], true))
+                                    <a href="{{ route('ups.memorias.show', $memoria->id_memoria) }}" class="btn btn-small btn-primary" style="color:#ffffff!important;" title="Registrar entrega y finalizar proyecto">Entregar</a>
                                 @endif
                             </td>
                         </tr>

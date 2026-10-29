@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Ups;
 
 use App\Enums\EstadoMemoria;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Ups\DictamenMemoriaRequest;
+use App\Models\HistorialFaseProyecto;
 use App\Models\LogAccion;
 use App\Models\Memoria;
 use App\Models\Proyecto;
-use App\Models\RevisionMemoria;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +29,6 @@ class MemoriaController extends Controller
             'proyecto.areaConocimiento',
             'proyecto.estudiantes',
             'registrador',
-            'revisiones' => fn ($revisiones) => $revisiones->limit(1),
         ])
             ->when($filtros['search'] ?? null, fn ($query, $search) => $query->whereHas('proyecto', fn ($proyectos) => $proyectos->where('titulo', 'ilike', "%{$search}%")
                 ->orWhereHas('estudiantes', fn ($estudiantes) => $estudiantes->where('due', 'ilike', "%{$search}%")->orWhere('nombre_completo', 'ilike', "%{$search}%"))))
@@ -58,7 +56,7 @@ class MemoriaController extends Controller
     public function show(string $id): View
     {
         $memoria = Memoria::query()
-            ->with(['proyecto.areaConocimiento', 'proyecto.estudiantes', 'registrador', 'revisiones.auditor'])
+            ->with(['proyecto.areaConocimiento', 'proyecto.estudiantes', 'registrador'])
             ->findOrFail($id);
 
         return view('ups.memorias.show', [
@@ -67,135 +65,15 @@ class MemoriaController extends Controller
         ]);
     }
 
-    public function auditar(string $id): View
-    {
-        $memoria = Memoria::query()
-            ->with(['proyecto.areaConocimiento', 'proyecto.estudiantes', 'revisiones.auditor'])
-            ->findOrFail($id);
-
-        abort_unless(in_array($memoria->estado->value, [
-            EstadoMemoria::Recibido->value,
-            EstadoMemoria::EnRevision->value,
-            EstadoMemoria::Observada->value,
-        ], true), 409, 'Esta memoria ya tiene un dictamen aprobado o fue cerrada.');
-
-        return view('ups.auditoria', [
-            'memoria' => $memoria,
-            'documentoDisponible' => $this->documentoPdfDisponible($memoria),
-        ]);
-    }
-
-    public function dictamen(DictamenMemoriaRequest $request, string $id): RedirectResponse
-    {
-        $datos = $request->validated();
-
-        DB::transaction(function () use ($datos, $id): void {
-            $memoria = Memoria::query()->lockForUpdate()->findOrFail($id);
-            abort_unless($this->documentoPdfDisponible($memoria), 422, 'No hay un PDF de memoria disponible para revisar.');
-            abort_unless(in_array($memoria->estado->value, [
-                EstadoMemoria::Recibido->value,
-                EstadoMemoria::EnRevision->value,
-                EstadoMemoria::Observada->value,
-            ], true), 409, 'Esta memoria ya tiene un dictamen aprobado o fue cerrada.');
-
-            $resultado = $datos['resultado'];
-            $observaciones = $datos['observaciones'] ?? null;
-
-            RevisionMemoria::create([
-                'memoria_id' => $memoria->id_memoria,
-                'auditor_id' => auth()->id(),
-                'resultado' => $resultado,
-                'sellos_verificados' => (bool) $datos['sellos_verificados'],
-                'tinta_azul_verificada' => (bool) $datos['tinta_azul_verificada'],
-                'observaciones' => $observaciones,
-            ]);
-
-            $memoria->update([
-                'estado' => $resultado === 'aprobado' ? EstadoMemoria::Aprobada : EstadoMemoria::Observada,
-                'fecha_aprovado' => $resultado === 'aprobado' ? now()->toDateString() : null,
-                'observaciones' => $observaciones,
-            ]);
-
-            LogAccion::create([
-                'accion' => "Dictamen de memoria #{$memoria->id_memoria}: {$resultado}.",
-                'usuario' => auth()->id(),
-            ]);
-        });
-
-        return redirect()->route('ups.memorias.show', $id)
-            ->with('success', 'El dictamen documental quedó registrado en el historial de la memoria.');
-    }
-
     public function documento(string $id): BinaryFileResponse
     {
         $memoria = Memoria::query()->findOrFail($id);
-        abort_unless($this->documentoPdfDisponible($memoria), 404);
+        abort_unless($this->documentoPdfDisponible($memoria), 404, 'Documento PDF no encontrado.');
 
         return response()->file(Storage::disk('expedientes_ups')->path($memoria->documento), [
             'Content-Type' => 'application/pdf',
             'X-Content-Type-Options' => 'nosniff',
         ]);
-    }
-
-    public function entregarPorProyecto(Request $request, string $id): RedirectResponse
-    {
-        $datos = $request->validate([
-            'fecha_entrega' => ['required', 'date', 'before_or_equal:today'],
-            'observaciones' => ['nullable', 'string', 'max:2000'],
-        ]);
-
-        DB::transaction(function () use ($id, $datos): void {
-            $proyecto = Proyecto::query()->with('memoria')->lockForUpdate()->findOrFail($id);
-            $memoria = $proyecto->memoria;
-
-            if ($memoria) {
-                $memoria->update([
-                    'estado' => EstadoMemoria::Entregada,
-                    'fecha_entrega' => $datos['fecha_entrega'],
-                    'observaciones' => $datos['observaciones'] ?? $memoria->observaciones,
-                ]);
-            } else {
-                Memoria::create([
-                    'numero_proyecto' => $proyecto->numero_proyecto,
-                    'registrada_por' => auth()->id(),
-                    'fecha_recibimiento' => $datos['fecha_entrega'],
-                    'fecha_entrega' => $datos['fecha_entrega'],
-                    'estado' => EstadoMemoria::Entregada,
-                    'observaciones' => $datos['observaciones'] ?? null,
-                ]);
-            }
-
-            LogAccion::create([
-                'accion' => "Memoria final del proyecto #{$proyecto->numero_proyecto} marcada como entregada.",
-                'usuario' => auth()->id(),
-            ]);
-        });
-
-        return back()->with('success', 'La memoria final fue marcada como entregada.');
-    }
-
-    public function entregar(Request $request, string $id): RedirectResponse
-    {
-        $datos = $request->validate([
-            'fecha_entrega' => ['required', 'date', 'before_or_equal:today'],
-            'observaciones' => ['nullable', 'string', 'max:2000'],
-        ]);
-
-        DB::transaction(function () use ($id, $datos): void {
-            $memoria = Memoria::query()->lockForUpdate()->findOrFail($id);
-            $memoria->update([
-                'estado' => EstadoMemoria::Entregada,
-                'fecha_entrega' => $datos['fecha_entrega'],
-                'observaciones' => $datos['observaciones'] ?? $memoria->observaciones,
-            ]);
-
-            LogAccion::create([
-                'accion' => "Memoria #{$memoria->id_memoria} marcada como entregada.",
-                'usuario' => auth()->id(),
-            ]);
-        });
-
-        return back()->with('success', 'La memoria final fue marcada como entregada.');
     }
 
     public function recibirPorProyecto(Request $request, string $id): RedirectResponse
@@ -248,6 +126,257 @@ class MemoriaController extends Controller
         });
 
         return back()->with('success', 'La recepción de la memoria final quedó registrada en el expediente.');
+    }
+
+    public function aprobar(Request $request, string $id): RedirectResponse
+    {
+        abort_unless(auth()->user()->hasRole('jefe_ups'), 403, 'Solo el Jefe de UPS puede aprobar la memoria.');
+
+        DB::transaction(function () use ($id, $request): void {
+            $memoria = Memoria::query()->lockForUpdate()->findOrFail($id);
+            abort_if(
+                in_array($memoria->estado->value, [EstadoMemoria::Aprobada->value, EstadoMemoria::Aprovada->value, EstadoMemoria::Entregada->value], true),
+                409,
+                'La memoria ya fue aprobada o entregada previamente.'
+            );
+
+            $memoria->update([
+                'estado' => EstadoMemoria::Aprobada,
+                'fecha_aprovado' => now()->toDateString(),
+                'observaciones' => $request->input('observaciones', $memoria->observaciones),
+            ]);
+
+            LogAccion::create([
+                'accion' => "Memoria #{$memoria->id_memoria} aprobada por Jefatura UPS.",
+                'usuario' => auth()->id(),
+            ]);
+        });
+
+        return back()->with('success', 'La memoria fue aprobada exitosamente.');
+    }
+
+    public function aprobarPorProyecto(Request $request, string $id): RedirectResponse
+    {
+        abort_unless(auth()->user()->hasRole('jefe_ups'), 403, 'Solo el Jefe de UPS puede aprobar la memoria.');
+
+        $proyecto = Proyecto::query()->with('memoria')->findOrFail($id);
+        abort_unless($proyecto->memoria, 404, 'El proyecto no tiene una memoria registrada.');
+
+        return $this->aprobar($request, (string) $proyecto->memoria->id_memoria);
+    }
+
+    public function pasarAFirmas(Request $request, string $id): RedirectResponse
+    {
+        abort_unless(auth()->user()->hasRole('jefe_ups'), 403, 'Solo el Jefe de UPS puede gestionar el proceso de firmas.');
+
+        DB::transaction(function () use ($id, $request): void {
+            $memoria = Memoria::query()->lockForUpdate()->findOrFail($id);
+            abort_unless(
+                in_array($memoria->estado->value, [EstadoMemoria::Aprobada->value, EstadoMemoria::Aprovada->value], true),
+                422,
+                'La memoria debe estar aprobada antes de pasar al trámite de firmas.'
+            );
+
+            $memoria->update([
+                'estado' => EstadoMemoria::EsperandoFirmas,
+                'observaciones' => $request->input('observaciones', $memoria->observaciones),
+            ]);
+
+            LogAccion::create([
+                'accion' => "Memoria #{$memoria->id_memoria} marcada en proceso de firmas físicas.",
+                'usuario' => auth()->id(),
+            ]);
+        });
+
+        return back()->with('success', 'El proyecto quedó marcado en proceso de firmas físicas.');
+    }
+
+    public function pasarAFirmasPorProyecto(Request $request, string $id): RedirectResponse
+    {
+        abort_unless(auth()->user()->hasRole('jefe_ups'), 403, 'Solo el Jefe de UPS puede gestionar el proceso de firmas.');
+
+        $proyecto = Proyecto::query()->with('memoria')->findOrFail($id);
+        abort_unless($proyecto->memoria, 404, 'El proyecto no tiene una memoria registrada.');
+
+        return $this->pasarAFirmas($request, (string) $proyecto->memoria->id_memoria);
+    }
+
+    public function marcarLista(Request $request, string $id): RedirectResponse
+    {
+        abort_unless(auth()->user()->hasRole('jefe_ups'), 403, 'Solo el Jefe de UPS puede marcar el documento como listo para entrega.');
+
+        DB::transaction(function () use ($id, $request): void {
+            $memoria = Memoria::query()->lockForUpdate()->findOrFail($id);
+            abort_unless(
+                in_array($memoria->estado->value, [
+                    EstadoMemoria::EsperandoFirmas->value,
+                    EstadoMemoria::Aprobada->value,
+                    EstadoMemoria::Aprovada->value,
+                ], true),
+                422,
+                'La memoria debe estar aprobada o en firmas antes de marcarse como lista.'
+            );
+
+            $memoria->update([
+                'estado' => EstadoMemoria::Lista,
+                'fecha_listo' => now()->toDateString(),
+                'observaciones' => $request->input('observaciones', $memoria->observaciones),
+            ]);
+
+            LogAccion::create([
+                'accion' => "Certificado físico de memoria #{$memoria->id_memoria} marcado como listo y retenido en ventanilla.",
+                'usuario' => auth()->id(),
+            ]);
+        });
+
+        return back()->with('success', 'El certificado físico quedó registrado como listo y retenido en ventanilla para entrega.');
+    }
+
+    public function marcarListaPorProyecto(Request $request, string $id): RedirectResponse
+    {
+        abort_unless(auth()->user()->hasRole('jefe_ups'), 403, 'Solo el Jefe de UPS puede marcar el documento como listo para entrega.');
+
+        $proyecto = Proyecto::query()->with('memoria')->findOrFail($id);
+        abort_unless($proyecto->memoria, 404, 'El proyecto no tiene una memoria registrada.');
+
+        return $this->marcarLista($request, (string) $proyecto->memoria->id_memoria);
+    }
+
+    public function entregar(Request $request, string $id): RedirectResponse
+    {
+        $datos = $request->validate([
+            'fecha_entrega' => ['required', 'date', 'before_or_equal:today'],
+            'observaciones' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        DB::transaction(function () use ($id, $datos): void {
+            $memoria = Memoria::query()->with('proyecto')->lockForUpdate()->findOrFail($id);
+            $this->validarPermisoEntrega($memoria);
+
+            $memoria->update([
+                'estado' => EstadoMemoria::Entregada,
+                'fecha_entrega' => $datos['fecha_entrega'],
+                'observaciones' => $datos['observaciones'] ?? $memoria->observaciones,
+            ]);
+
+            $this->finalizarProyectoAutomaticamente($memoria, $datos['observaciones'] ?? null);
+
+            LogAccion::create([
+                'accion' => "Memoria #{$memoria->id_memoria} entregada al estudiante. Proyecto finalizado oficialmente.",
+                'usuario' => auth()->id(),
+            ]);
+        });
+
+        return back()->with('success', 'La memoria fue marcada como entregada y el proyecto quedó finalizado automáticamente.');
+    }
+
+    public function entregarPorProyecto(Request $request, string $id): RedirectResponse
+    {
+        $datos = $request->validate([
+            'fecha_entrega' => ['required', 'date', 'before_or_equal:today'],
+            'observaciones' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        DB::transaction(function () use ($id, $datos): void {
+            $proyecto = Proyecto::query()->with('memoria')->lockForUpdate()->findOrFail($id);
+            $memoria = $proyecto->memoria;
+
+            if ($memoria) {
+                $this->validarPermisoEntrega($memoria);
+
+                $memoria->update([
+                    'estado' => EstadoMemoria::Entregada,
+                    'fecha_entrega' => $datos['fecha_entrega'],
+                    'observaciones' => $datos['observaciones'] ?? $memoria->observaciones,
+                ]);
+            } else {
+                abort_unless(auth()->user()->hasRole('jefe_ups'), 403, 'Solo el Jefe de UPS puede registrar y entregar directamente una memoria no radicada.');
+
+                $memoria = Memoria::create([
+                    'numero_proyecto' => $proyecto->numero_proyecto,
+                    'registrada_por' => auth()->id(),
+                    'fecha_recibimiento' => $datos['fecha_entrega'],
+                    'fecha_aprovado' => $datos['fecha_entrega'],
+                    'fecha_entrega' => $datos['fecha_entrega'],
+                    'estado' => EstadoMemoria::Entregada,
+                    'observaciones' => $datos['observaciones'] ?? null,
+                ]);
+            }
+
+            $this->finalizarProyectoAutomaticamente($memoria, $datos['observaciones'] ?? null, $proyecto);
+
+            LogAccion::create([
+                'accion' => "Memoria final del proyecto #{$proyecto->numero_proyecto} entregada. Proyecto finalizado automáticamente.",
+                'usuario' => auth()->id(),
+            ]);
+        });
+
+        return back()->with('success', 'La memoria final fue entregada y el proyecto quedó finalizado oficialmente.');
+    }
+
+    /**
+     * Valida permisos según rol:
+     * - Jefe UPS y Auxiliar UPS pueden entregar si la memoria fue aprobada por la Jefatura
+     *   (estados: aprobada, esperando_firmas, lista).
+     */
+    private function validarPermisoEntrega(Memoria $memoria): void
+    {
+        $user = auth()->user();
+        abort_if($memoria->estado === EstadoMemoria::Entregada, 409, 'Esta memoria ya fue entregada.');
+
+        if ($user->hasRole('jefe_ups') || $user->hasRole('auxiliar_ups')) {
+            abort_unless(
+                in_array($memoria->estado->value, [
+                    EstadoMemoria::Aprobada->value,
+                    EstadoMemoria::Aprovada->value,
+                    EstadoMemoria::EsperandoFirmas->value,
+                    EstadoMemoria::Lista->value,
+                ], true),
+                422,
+                'La memoria debe ser aprobada por la Jefatura antes de entregarse.'
+            );
+
+            return;
+        }
+
+        abort(403, 'No tienes permisos para registrar la entrega de la memoria.');
+    }
+
+    /**
+     * Finaliza automáticamente el proyecto asociado a la memoria.
+     */
+    private function finalizarProyectoAutomaticamente(Memoria $memoria, ?string $observaciones = null, ?Proyecto $proyectoInstancia = null): void
+    {
+        $proyecto = $proyectoInstancia ?? $memoria->proyecto ?? Proyecto::where('numero_proyecto', $memoria->numero_proyecto)->first();
+
+        if (! $proyecto || $proyecto->estado_expediente === 'finalizado') {
+            return;
+        }
+
+        if ($proyecto->fase_actual === 'memoria_final') {
+            HistorialFaseProyecto::create([
+                'proyecto_id' => $proyecto->id_proyecto,
+                'fase' => 'memoria_final',
+                'evento' => 'fase_admitida',
+                'observaciones' => 'Memoria final entregada físicamente.',
+                'usuario_id' => auth()->id(),
+            ]);
+        }
+
+        HistorialFaseProyecto::create([
+            'proyecto_id' => $proyecto->id_proyecto,
+            'fase' => 'finalizacion',
+            'evento' => 'proyecto_finalizado',
+            'observaciones' => $observaciones ?? 'Entrega física completada. Proyecto finalizado automáticamente.',
+            'usuario_id' => auth()->id(),
+        ]);
+
+        $proyecto->update([
+            'fase_actual' => 'finalizacion',
+            'estado_expediente' => 'finalizado',
+            'fecha_finalizacion' => now(),
+            'fecha_final' => $proyecto->fecha_final ?? now()->toDateString(),
+        ]);
     }
 
     private function documentoPdfDisponible(Memoria $memoria): bool

@@ -59,12 +59,20 @@ class DocumentoProyectoController extends Controller
                     ? ($memoriaExistente->intento + ($memoriaExistente->estado === EstadoMemoria::Observada ? 1 : 0))
                     : 1;
 
+                $estadoFinal = ($memoriaExistente && in_array($memoriaExistente->estado->value, [
+                    EstadoMemoria::Aprobada->value,
+                    EstadoMemoria::Aprovada->value,
+                    EstadoMemoria::EsperandoFirmas->value,
+                    EstadoMemoria::Lista->value,
+                    EstadoMemoria::Entregada->value,
+                ], true)) ? $memoriaExistente->estado : EstadoMemoria::Recibido;
+
                 Memoria::updateOrCreate(
                     ['numero_proyecto' => $proyecto->numero_proyecto],
                     [
                         'registrada_por' => auth()->id(),
-                        'fecha_recibimiento' => now()->toDateString(),
-                        'estado' => EstadoMemoria::Recibido,
+                        'fecha_recibimiento' => $memoriaExistente?->fecha_recibimiento ?? now()->toDateString(),
+                        'estado' => $estadoFinal,
                         'documento' => $ruta,
                         'intento' => $intento,
                     ]

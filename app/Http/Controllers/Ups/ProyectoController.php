@@ -221,7 +221,7 @@ class ProyectoController extends Controller
     public function show(string $id): View
     {
         $proyecto = Proyecto::query()->with([
-            'areaConocimiento', 'estudiantes.carreras', 'memoria.revisiones.auditor', 'creador', 'documentos',
+            'areaConocimiento', 'estudiantes.carreras', 'memoria', 'creador', 'documentos',
             'historialFases', 'procesosExtraordinarios',
         ])->findOrFail($id);
 

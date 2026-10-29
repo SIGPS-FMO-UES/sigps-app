@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\V1\AuditoriaApiController;
 use App\Http\Controllers\Api\V1\AuthApiController;
 use App\Http\Controllers\Api\V1\CarreraApiController;
-use App\Http\Controllers\Api\V1\CertificacionApiController;
 use App\Http\Controllers\Api\V1\DepartamentoApiController;
 use App\Http\Controllers\Api\V1\EstadisticaApiController;
 use App\Http\Controllers\Api\V1\EstudianteApiController;
@@ -69,19 +67,10 @@ Route::prefix('v1')->group(function () {
             // Proyectos
             Route::apiResource('/proyectos', ProyectoApiController::class)->names('api.ups.proyectos');
 
-            // Auditoría Documental de Sellos y Tinta Azul
-            Route::post('/auditoria/{id}/dictaminar', [AuditoriaApiController::class, 'dictaminar']);
-
             // Plazos y Prórrogas
             Route::get('/plazos/alertas', [PlazoApiController::class, 'alertas']);
             Route::post('/prorrogas/{id}/resolver', [ProrrogaApiController::class, 'resolver'])
                 ->middleware('permission:prorrogas.resolver');
-
-            // Certificaciones Oficiales
-            Route::get('/certificaciones', [CertificacionApiController::class, 'index']);
-            Route::post('/certificaciones', [CertificacionApiController::class, 'store'])
-                ->middleware('permission:certificaciones.emitir');
-            Route::patch('/certificaciones/{id}/entregar', [CertificacionApiController::class, 'marcarEntregada']);
 
             // Estadísticas Gerenciales
             Route::get('/estadisticas/resumen', [EstadisticaApiController::class, 'resumen']);

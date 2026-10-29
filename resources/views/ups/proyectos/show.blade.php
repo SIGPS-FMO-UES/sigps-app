@@ -21,6 +21,12 @@
     </a>
 
     @if($proyecto->estado_expediente === 'en_tramite')
+        @if($proyecto->memoria && $proyecto->memoria->estado !== \App\Enums\EstadoMemoria::Entregada && in_array($proyecto->memoria->estado->value, ['aprobada', 'aprovada', 'esperando_firmas', 'lista'], true))
+            <button type="button" class="btn btn-primary" data-project-modal="modal-entregar-memoria" title="Registrar entrega de memoria física y finalizar expediente">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                <span>Entregar y finalizar</span>
+            </button>
+        @endif
         <details class="project-actions-menu">
             <summary class="btn" title="Opciones extraordinarias y trámites administrativos">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
@@ -30,10 +36,8 @@
                 @if(auth()->user()->hasRole('jefe_ups'))
                     <button type="button" role="menuitem" style="color: #15803d; font-weight: 600;" data-project-modal="modal-finalizar">Finalizar proyecto</button>
                 @endif
-                @if($proyecto->memoria && $proyecto->memoria->estado !== \App\Enums\EstadoMemoria::Entregada)
-                    <button type="button" role="menuitem" data-project-modal="modal-entregar-memoria">Marcar memoria entregada</button>
-                @elseif(! $proyecto->memoria)
-                    <button type="button" role="menuitem" data-project-modal="modal-recibir-memoria">Registrar memoria</button>
+                @if($proyecto->memoria && $proyecto->memoria->estado !== \App\Enums\EstadoMemoria::Entregada && in_array($proyecto->memoria->estado->value, ['aprobada', 'aprovada', 'esperando_firmas', 'lista'], true))
+                    <button type="button" role="menuitem" data-project-modal="modal-entregar-memoria">Entregar y finalizar</button>
                 @endif
                 <button type="button" role="menuitem" data-project-modal="modal-ampliar">Ampliar plazo</button>
                 @can('prorrogas.resolver')<button type="button" role="menuitem" data-project-modal="modal-prorroga">Registrar prórroga</button>@endcan
@@ -59,6 +63,19 @@
         ];
         $infoFase = $nombresFases[$proyecto->fase_actual] ?? ['actual' => $proyecto->fase_actual, 'siguiente' => null, 'sig_nombre' => null];
         $docFaseActual = $proyecto->documentos->firstWhere('fase', $proyecto->fase_actual);
+
+        // Si la fase actual es memoria_final y la memoria ya tiene documento registrado, sincronizar el documento
+        if (! $docFaseActual && $proyecto->fase_actual === 'memoria_final' && $proyecto->memoria?->documento) {
+            $docFaseActual = (object) [
+                'id_documento_proyecto' => null,
+                'nombre_original' => basename($proyecto->memoria->documento),
+                'ruta' => $proyecto->memoria->documento,
+                'tamano_bytes' => 0,
+                'created_at' => $proyecto->memoria->created_at ?? $proyecto->memoria->fecha_recibimiento,
+                'memoria_id' => $proyecto->memoria->id_memoria,
+            ];
+        }
+
         $memoriaAprobada = $proyecto->memoria && in_array($proyecto->memoria->estado->value, [
             \App\Enums\EstadoMemoria::Aprobada->value,
             \App\Enums\EstadoMemoria::Aprovada->value,
@@ -219,7 +236,11 @@
                                 Estado actual del proyecto
                             </small>
                             <span class="badge {{ $docFaseActual ? 'badge-success' : 'badge-warning' }}" style="font-size: 10px;">
-                                {{ $docFaseActual ? 'Documentado' : 'Documento pendiente' }}
+                                @if($proyecto->fase_actual === 'memoria_final')
+                                    {{ $proyecto->memoria ? $proyecto->memoria->estado->label() : ($docFaseActual ? 'Memoria recibida' : 'PDF pendiente') }}
+                                @else
+                                    {{ $docFaseActual ? 'Documentado' : 'Documento pendiente' }}
+                                @endif
                             </span>
                         </div>
 
@@ -230,10 +251,15 @@
                         <!-- Bloque de Documento Adjunto (Énfasis principal con mayor contraste) -->
                         <div class="status-doc-card {{ $docFaseActual ? 'has-doc' : 'pending' }}">
                             <small style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; color: #334155;">
-                                Documento de respaldo de esta fase
+                                {{ $proyecto->fase_actual === 'memoria_final' ? 'Documento de la memoria final' : 'Documento de respaldo de esta fase' }}
                             </small>
 
                             @if($docFaseActual)
+                                @php
+                                    $urlDescargaDoc = ($docFaseActual && ! empty($docFaseActual->id_documento_proyecto))
+                                        ? route('ups.documentos-proyecto.descargar', $docFaseActual->id_documento_proyecto)
+                                        : ($proyecto->memoria ? route('ups.documentos.descargar', $proyecto->memoria->id_memoria) : '#');
+                                @endphp
                                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
                                     <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
                                         <div style="width: 34px; height: 34px; border-radius: 6px; background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; display: flex; align-items: center; justify-content: center; flex-shrink: 0;" aria-hidden="true">
@@ -246,17 +272,17 @@
                                             </svg>
                                         </div>
                                         <div style="min-width: 0;">
-                                            <a href="{{ route('ups.documentos-proyecto.descargar', $docFaseActual->id_documento_proyecto) }}" target="_blank" rel="noopener" style="font-weight: 700; font-size: 13.5px; color: #0f172a; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 340px;">
+                                            <a href="{{ $urlDescargaDoc }}" target="_blank" rel="noopener" style="font-weight: 700; font-size: 13.5px; color: #0f172a; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 340px;">
                                                 {{ $docFaseActual->nombre_original }}
                                             </a>
                                             <small class="muted" style="font-size: 11px;">
-                                                {{ number_format($docFaseActual->tamano_bytes / 1024, 0) }} KB · Subido el {{ $docFaseActual->created_at?->format('d/m/Y H:i') }}
+                                                {{ $docFaseActual->tamano_bytes > 0 ? number_format($docFaseActual->tamano_bytes / 1024, 0) . ' KB · ' : '' }}Subido el {{ $docFaseActual->created_at?->format('d/m/Y H:i') }}
                                             </small>
                                         </div>
                                     </div>
 
                                     <div style="display: flex; align-items: center; gap: 8px;">
-                                        <a href="{{ route('ups.documentos-proyecto.descargar', $docFaseActual->id_documento_proyecto) }}" target="_blank" rel="noopener" class="btn btn-small" style="background: #ffffff; display: inline-flex; align-items: center; gap: 5px;">
+                                        <a href="{{ $urlDescargaDoc }}" target="_blank" rel="noopener" class="btn btn-small" style="background: #ffffff; display: inline-flex; align-items: center; gap: 5px;">
                                             <span>Ver PDF</span>
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                                         </a>
@@ -272,7 +298,7 @@
                                                         <input id="subir-otro-pdf" name="archivo" type="file" accept="application/pdf,.pdf" required style="font-size: 12px; margin-bottom: 8px; width: 100%;">
                                                         <button type="submit" class="btn btn-primary btn-small" style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
                                                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                                                            <span>Guardar documento</span>
+                                                            <span>Actualizar PDF</span>
                                                         </button>
                                                     </form>
                                                 </div>
@@ -291,12 +317,12 @@
                                             </div>
                                             <button type="submit" class="btn btn-primary btn-small" style="white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">
                                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                                                <span>Subir PDF de {{ $infoFase['actual'] }}</span>
+                                                <span>{{ $proyecto->fase_actual === 'memoria_final' ? 'Subir PDF de la memoria final' : 'Subir PDF de ' . $infoFase['actual'] }}</span>
                                             </button>
                                         </div>
                                     </form>
                                     <small style="display: block; margin-top: 6px; font-size: 11px; color: #475569;">
-                                        Adjunta el archivo PDF oficial (máximo 15 MB) correspondiente a la fase de {{ $infoFase['actual'] }}.
+                                        {{ $proyecto->fase_actual === 'memoria_final' ? 'Al subir el PDF de la memoria final se registra automáticamente la memoria en el expediente.' : 'Adjunta el archivo PDF oficial (máximo 15 MB) correspondiente a la fase de ' . $infoFase['actual'] . '.' }}
                                     </small>
                                 @else
                                     <p class="muted" style="margin: 0; font-size: 12px;">Sin documento de respaldo registrado en esta etapa.</p>
@@ -319,28 +345,32 @@
                             @if($proyecto->fase_actual === 'memoria_final')
                                 @if($memoriaAprobada)
                                     <div style="display: flex; flex-direction: column; gap: 8px;">
-                                        <form method="POST" action="{{ route('ups.proyectos.admitirFase', $proyecto->id_proyecto) }}" style="margin: 0;">
-                                            @csrf
-                                            <button class="btn btn-small" type="submit">Avanzar a Finalización →</button>
-                                        </form>
+                                        @if(in_array($proyecto->memoria?->estado?->value, ['aprobada', 'aprovada', 'esperando_firmas', 'lista'], true))
+                                            <button type="button" class="btn btn-small btn-primary" data-project-modal="modal-entregar-memoria">Entregar y finalizar →</button>
+                                        @endif
                                         @if(auth()->user()->hasRole('jefe_ups'))
-                                            <button type="button" class="btn btn-small btn-primary" data-project-modal="modal-finalizar">Finalizar proyecto</button>
+                                            <button type="button" class="btn btn-small" data-project-modal="modal-finalizar">Cierre directo</button>
                                         @endif
                                     </div>
                                 @else
                                     <p class="muted" style="margin: 0; font-size: 11.5px; line-height: 1.4;">
-                                        Requiere memoria aprobada o entregada.
-                                        @if($proyecto->memoria)
-                                            <a href="{{ route('ups.memorias.show', $proyecto->memoria->id_memoria) }}" style="display: block; margin-top: 4px;">
-                                                Ver estado ({{ $proyecto->memoria->estado->label() }}) →
-                                            </a>
-                                            @if(in_array($proyecto->memoria->estado->value, ['recibido', 'en_revision', 'observada'], true))
-                                                <a href="{{ route('ups.auditoria.show', $proyecto->memoria->id_memoria) }}" style="display: block; margin-top: 4px; font-weight: 600; color: #1d4ed8;">
-                                                    Auditar sellos y tinta azul →
+                                        @if($docFaseActual || $proyecto->memoria)
+                                            <span style="display: block; font-weight: 500; color: #1e293b;">Estado: {{ $proyecto->memoria?->estado?->label() ?? 'Recibido' }}</span>
+                                            @if(auth()->user()->hasRole('jefe_ups'))
+                                                <form method="POST" action="{{ route('ups.proyectos.memoria.aprobar', $proyecto->id_proyecto) }}" style="margin-top: 6px;">
+                                                    @csrf
+                                                    <button class="btn btn-small btn-primary" type="submit" style="width: 100%;">Aprobar memoria →</button>
+                                                </form>
+                                            @else
+                                                <span class="muted" style="display: block; margin-top: 4px; font-size: 11px;">Memoria recibida. En espera de aprobación por Jefatura.</span>
+                                            @endif
+                                            @if($proyecto->memoria)
+                                                <a href="{{ route('ups.memorias.show', $proyecto->memoria->id_memoria) }}" style="display: block; margin-top: 4px;">
+                                                    Ver expediente de memoria →
                                                 </a>
                                             @endif
                                         @else
-                                            <button type="button" class="btn btn-small" style="margin-top: 6px; width: 100%;" data-project-modal="modal-recibir-memoria">Registrar memoria →</button>
+                                            <span>Sube el PDF de la memoria final en el bloque de la izquierda para registrarla y continuar.</span>
                                         @endif
                                     </p>
                                 @endif
@@ -440,13 +470,42 @@
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                     <a href="{{ route('ups.memorias.show', $proyecto->memoria->id_memoria) }}" class="btn btn-small">Abrir memoria →</a>
+                    @if($proyecto->memoria->documento)
+                        <a href="{{ route('ups.documentos.descargar', $proyecto->memoria->id_memoria) }}" class="btn btn-small" target="_blank" rel="noopener">Descargar PDF</a>
+                    @endif
                     @if($proyecto->memoria->estado === \App\Enums\EstadoMemoria::Entregada)
                         <span class="badge badge-success">Entregada {{ $proyecto->memoria->fecha_entrega?->format('d/m/Y') }}</span>
                     @elseif($proyecto->estado_expediente === 'en_tramite')
-                        <button type="button" class="btn btn-small btn-primary" data-project-modal="modal-entregar-memoria">Marcar como entregada</button>
-                    @endif
-                    @if(in_array($proyecto->memoria->estado->value, ['recibido', 'en_revision', 'observada'], true))
-                        <a href="{{ route('ups.auditoria.show', $proyecto->memoria->id_memoria) }}" class="btn btn-small">Auditar sellos y tinta →</a>
+                        @if(auth()->user()->hasRole('jefe_ups'))
+                            @if(in_array($proyecto->memoria->estado->value, ['recibido', 'en_revision', 'observada'], true))
+                                <form method="POST" action="{{ route('ups.proyectos.memoria.aprobar', $proyecto->id_proyecto) }}" style="display:inline;margin:0;">
+                                    @csrf
+                                    <button class="btn btn-small btn-primary" type="submit">Aprobar memoria</button>
+                                </form>
+                            @elseif(in_array($proyecto->memoria->estado->value, ['aprobada', 'aprovada'], true))
+                                <form method="POST" action="{{ route('ups.proyectos.memoria.firmas', $proyecto->id_proyecto) }}" style="display:inline;margin:0;">
+                                    @csrf
+                                    <button class="btn btn-small" type="submit" title="Pasar al trámite de firmas físicas">Pasar a firmas</button>
+                                </form>
+                                <form method="POST" action="{{ route('ups.proyectos.memoria.lista', $proyecto->id_proyecto) }}" style="display:inline;margin:0;">
+                                    @csrf
+                                    <button class="btn btn-small" type="submit" title="Marcar como listo en ventanilla para entrega">Marcar listo</button>
+                                </form>
+                                <button type="button" class="btn btn-small btn-primary" data-project-modal="modal-entregar-memoria">Entregar y finalizar</button>
+                            @elseif($proyecto->memoria->estado === \App\Enums\EstadoMemoria::EsperandoFirmas)
+                                <form method="POST" action="{{ route('ups.proyectos.memoria.lista', $proyecto->id_proyecto) }}" style="display:inline;margin:0;">
+                                    @csrf
+                                    <button class="btn btn-small" type="submit" title="Registrar que el certificado físico está firmado y retenido en ventanilla">Marcar listo en ventanilla</button>
+                                </form>
+                                <button type="button" class="btn btn-small btn-primary" data-project-modal="modal-entregar-memoria">Entregar y finalizar</button>
+                            @elseif($proyecto->memoria->estado === \App\Enums\EstadoMemoria::Lista)
+                                <button type="button" class="btn btn-small btn-primary" data-project-modal="modal-entregar-memoria">Entregar y finalizar</button>
+                            @endif
+                        @elseif(auth()->user()->hasRole('auxiliar_ups'))
+                            @if(in_array($proyecto->memoria->estado->value, ['aprobada', 'aprovada', 'esperando_firmas', 'lista'], true))
+                                <button type="button" class="btn btn-small btn-primary" data-project-modal="modal-entregar-memoria">Entregar y finalizar</button>
+                            @endif
+                        @endif
                     @endif
                 </div>
             </div>
@@ -454,26 +513,23 @@
                 <div class="detail-grid">
                     <div class="detail"><small>Estado</small><strong>{{ $proyecto->memoria->estado->label() }}</strong></div>
                     <div class="detail"><small>Recibida</small><strong>{{ $proyecto->memoria->fecha_recibimiento?->format('d/m/Y') ?? '—' }}</strong></div>
+                    <div class="detail"><small>Fecha de aprobación</small><strong>{{ $proyecto->memoria->fecha_aprovado?->format('d/m/Y') ?? 'Pendiente' }}</strong></div>
+                    <div class="detail"><small>Certificado listo</small><strong>{{ $proyecto->memoria->fecha_listo?->format('d/m/Y') ?? 'Pendiente' }}</strong></div>
                     <div class="detail"><small>Fecha de entrega</small><strong>{{ $proyecto->memoria->fecha_entrega?->format('d/m/Y') ?? 'Pendiente' }}</strong></div>
-                    <div class="detail"><small>Intento</small><strong>{{ $proyecto->memoria->intento }}</strong></div>
-                    <div class="detail"><small>Último dictamen</small><strong>{{ $proyecto->memoria->revisiones->first()?->created_at?->format('d/m/Y H:i') ?? 'Sin revisión' }}</strong></div>
                 </div>
                 @if($proyecto->memoria->observaciones)<p class="muted" style="margin-top: 10px;"><strong>Observaciones:</strong> {{ $proyecto->memoria->observaciones }}</p>@endif
             </div>
         </section>
-    @else
+    @elseif($proyecto->fase_actual === 'memoria_final')
         <section class="card">
             <div class="card-head">
                 <div>
                     <h2>Memoria final</h2>
-                    <p class="muted" style="margin:5px 0 0">Pendiente de recepción en el expediente.</p>
+                    <p class="muted" style="margin:5px 0 0">Documento oficial del expediente.</p>
                 </div>
-                @if($proyecto->estado_expediente === 'en_tramite')
-                    <button type="button" class="btn btn-small btn-primary" data-project-modal="modal-recibir-memoria">Registrar recepción de memoria</button>
-                @endif
             </div>
             <div class="card-body">
-                <p class="muted" style="margin: 0; font-size: 13px;">No se ha registrado una memoria final para este proyecto. Puedes registrar su recepción física o adjuntar el documento oficial para iniciar el proceso de revisión y dictamen.</p>
+                <p class="muted" style="margin: 0; font-size: 13px;">El documento PDF de la memoria final se adjunta en el bloque superior de la <strong>Fase de Memoria final</strong>. Al subir el archivo, quedará registrada automáticamente como recibida para su aprobación y entrega.</p>
             </div>
         </section>
     @endif
@@ -521,10 +577,10 @@
             <form method="POST" action="{{ route('ups.proyectos.memoria.entregar', $proyecto->id_proyecto) }}">
                 @csrf <input type="hidden" name="form_key" value="entregar-memoria">
                 <div class="project-dialog-head">
-                    <h2 id="modal-entregar-memoria-title">Marcar memoria como entregada</h2>
+                    <h2 id="modal-entregar-memoria-title">Entregar y finalizar proyecto</h2>
                     <button type="button" class="project-dialog-close" data-project-close aria-label="Cerrar">×</button>
                 </div>
-                <p>Registra la entrega física y formal de la memoria del proyecto <strong>#{{ $proyecto->numero_proyecto }}</strong>.</p>
+                <p>Registra la entrega física del certificado y memoria al estudiante. <strong>Al confirmar la entrega, el proyecto quedará finalizado oficialmente.</strong></p>
                 <div class="field">
                     <label for="entrega-fecha">Fecha de entrega</label>
                     <input id="entrega-fecha" name="fecha_entrega" type="date" required max="{{ now()->toDateString() }}" value="{{ old('form_key') === 'entregar-memoria' ? old('fecha_entrega') : now()->toDateString() }}">
@@ -536,34 +592,7 @@
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn" data-project-close>Volver</button>
-                    <button class="btn btn-primary" type="submit">Confirmar entrega</button>
-                </div>
-            </form>
-        </dialog>
-
-        <dialog class="project-action-dialog" id="modal-recibir-memoria" aria-labelledby="modal-recibir-memoria-title">
-            <form method="POST" enctype="multipart/form-data" action="{{ route('ups.proyectos.memoria.recibir', $proyecto->id_proyecto) }}">
-                @csrf <input type="hidden" name="form_key" value="recibir-memoria">
-                <div class="project-dialog-head">
-                    <h2 id="modal-recibir-memoria-title">Registrar recepción de memoria</h2>
-                    <button type="button" class="project-dialog-close" data-project-close aria-label="Cerrar">×</button>
-                </div>
-                <p>Registra el ingreso formal de la memoria final para el proyecto <strong>#{{ $proyecto->numero_proyecto }}</strong>.</p>
-                <div class="field">
-                    <label for="recibir-fecha">Fecha de recepción</label>
-                    <input id="recibir-fecha" name="fecha_recibimiento" type="date" required max="{{ now()->toDateString() }}" value="{{ old('form_key') === 'recibir-memoria' ? old('fecha_recibimiento') : now()->toDateString() }}">
-                </div>
-                <div class="field">
-                    <label for="recibir-archivo">Documento PDF (opcional si es entrega física, máx. 15 MB)</label>
-                    <input id="recibir-archivo" name="archivo" type="file" accept="application/pdf,.pdf">
-                </div>
-                <div class="field">
-                    <label for="recibir-observaciones">Observaciones (opcional)</label>
-                    <textarea id="recibir-observaciones" name="observaciones" maxlength="2000" placeholder="Observaciones sobre la recepción de la memoria">{{ old('form_key') === 'recibir-memoria' ? old('observaciones') : '' }}</textarea>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn" data-project-close>Volver</button>
-                    <button class="btn btn-primary" type="submit">Registrar memoria</button>
+                    <button class="btn btn-primary" type="submit">Confirmar entrega y finalizar</button>
                 </div>
             </form>
         </dialog>

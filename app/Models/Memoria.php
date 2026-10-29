@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'fecha_listo',
     'fecha_entrega',
     'observaciones',
-    'proyecto_id',
+    'numero_proyecto',
     'documento',
 ])]
 class Memoria extends Model
@@ -38,6 +38,7 @@ class Memoria extends Model
     protected function casts(): array
     {
         return [
+            'numero_proyecto' => 'integer',
             'intento' => 'integer',
             'fecha_recibimiento' => 'date',
             'fecha_aprovado' => 'date',
@@ -56,11 +57,11 @@ class Memoria extends Model
     }
 
     /**
-     * Proyecto al que pertenece esta memoria.
+     * Proyecto al que pertenece esta memoria mediante el correlativo de proyecto.
      */
     public function proyecto(): BelongsTo
     {
-        return $this->belongsTo(Proyecto::class, 'proyecto_id', 'id_proyecto');
+        return $this->belongsTo(Proyecto::class, 'numero_proyecto', 'numero_proyecto');
     }
 
     public function revisiones(): HasMany

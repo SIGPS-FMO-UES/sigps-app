@@ -19,8 +19,10 @@ return new class extends Migration
 
         Schema::create('carreras', function (Blueprint $table) {
             $table->id('id_carrera');
+            $table->string('codigo', 50)->nullable()->unique();
             $table->string('nombre');
             $table->foreignId('departamento')->constrained('departamentos', 'id_departamento')->cascadeOnDelete();
+            $table->unsignedInteger('horas_servicio_social')->default(500);
             $table->timestamps();
         });
     }

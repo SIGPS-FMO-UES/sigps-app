@@ -14,7 +14,7 @@ class CatalogoFormatosController extends Controller
     {
         return view('publico.formatos.index', [
             'plantillas' => Plantilla::query()->where('activa', true)->whereHas('versionPublicada', fn ($q) => $q->whereNotNull('ruta_archivo'))
-                ->with('versionPublicada')->orderBy('nombre')->get(),
+                ->with('versionPublicada')->orderBy('nombre')->paginate(100)->withQueryString(),
         ]);
     }
 

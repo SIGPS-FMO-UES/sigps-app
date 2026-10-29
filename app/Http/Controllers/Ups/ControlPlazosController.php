@@ -14,11 +14,13 @@ class ControlPlazosController extends Controller
     public function index(): View
     {
         $memoriaVencida = Proyecto::query()->with(['areaConocimiento', 'estudiantes'])
+            ->where('estado_expediente', 'en_tramite')
             ->whereDate('fecha_inicio', '<=', now()->subMonths(3)->toDateString())
-            ->whereDoesntHave('memorias')->orderBy('fecha_inicio')->paginate(10, ['*'], 'memoria_page');
+            ->whereDoesntHave('memorias')->orderBy('fecha_inicio')->paginate(100, ['*'], 'memoria_page')->withQueryString();
         $junta = Proyecto::query()->with(['areaConocimiento', 'estudiantes', 'creador'])
+            ->where('estado_expediente', 'en_tramite')
             ->whereDate('fecha_inicio', '<=', now()->subMonths(18)->toDateString())
-            ->orderBy('fecha_inicio')->paginate(10, ['*'], 'junta_page');
+            ->orderBy('fecha_inicio')->paginate(100, ['*'], 'junta_page')->withQueryString();
 
         return view('ups.plazos.index', compact('memoriaVencida', 'junta'));
     }

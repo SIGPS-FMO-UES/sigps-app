@@ -23,7 +23,7 @@ class GestionProrrogasController extends Controller
             ->whereIn('tipo', ['ampliacion_plazo', 'prorroga'])
             ->when($filtros['estado'] ?? null, fn ($query, $estado) => $query->where('estado', $estado))
             ->when($filtros['tipo'] ?? null, fn ($query, $tipo) => $query->where('tipo', $tipo))
-            ->latest()->paginate(15)->withQueryString();
+            ->latest()->paginate(100)->withQueryString();
 
         return view('ups.prorrogas.index', compact('procesos', 'filtros'));
     }

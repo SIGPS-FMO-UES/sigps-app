@@ -21,7 +21,7 @@
             <div class="check-list">
                 @php($seleccion = collect(old('carreras', []))->map(fn ($id) => (string) $id)->all())
                 @forelse($carreras as $carrera)
-                    <label class="check-option"><input type="checkbox" name="carreras[]" value="{{ $carrera->id_carrera }}" @checked(in_array((string) $carrera->id_carrera, $seleccion, true))><span>{{ $carrera->nombre }}@if($carrera->departamentoRel) <small class="muted">· {{ $carrera->departamentoRel->nombre }}</small>@endif</span></label>
+                    <label class="check-option"><input type="checkbox" name="carreras[]" value="{{ $carrera->id_carrera }}" @checked(in_array((string) $carrera->id_carrera, $seleccion, true))><span>{{ $carrera->nombre }} <small class="muted">({{ number_format($carrera->horas_servicio_social) }} h)@if($carrera->departamentoRel) · {{ $carrera->departamentoRel->nombre }}@endif</small></span></label>
                 @empty
                     <p class="muted">No hay carreras registradas en el catálogo.</p>
                 @endforelse

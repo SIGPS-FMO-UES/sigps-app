@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\LogAccion;
-use App\Models\Usuario;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,13 +14,12 @@ class UsuarioController extends Controller
 {
     public function create(): View
     {
-        return view('admin.usuarios.create', ['usuario' => new Usuario]);
+        return view('admin.usuarios.create', ['usuario' => new User]);
     }
 
     public function edit(string $id): View
     {
-        $usuario = Usuario::with('roles')->findOrFail($id);
-        abort_if($usuario->hasRole('admin'), 404);
+        $usuario = User::with('roles')->findOrFail($id);
 
         return view('admin.usuarios.edit', compact('usuario'));
     }
@@ -33,13 +32,13 @@ class UsuarioController extends Controller
             'rol' => ['nullable', 'in:auxiliar_ups,jefe_ups'],
         ]);
 
-        $usuarios = Usuario::query()->with('roles')
+        $usuarios = User::query()->with('roles')
             ->when($filtros['search'] ?? null, fn ($query, $search) => $query->where(fn ($subquery) => $subquery->where('nombre_completo', 'ilike', "%{$search}%")
                 ->orWhere('nombre_usuario', 'ilike', "%{$search}%")
                 ->orWhere('email', 'ilike', "%{$search}%")))
             ->when(isset($filtros['estado']), fn ($query) => $query->where('activo', $filtros['estado'] === 'activo'))
             ->when($filtros['rol'] ?? null, fn ($query, $rol) => $query->role($rol))
-            ->orderBy('nombre_completo')->paginate(12)->withQueryString();
+            ->orderBy('nombre_completo')->paginate(100)->withQueryString();
 
         return view('admin.usuarios.index', compact('usuarios', 'filtros'));
     }
@@ -58,7 +57,7 @@ class UsuarioController extends Controller
         unset($datos['rol']);
 
         DB::transaction(function () use ($datos, $rol): void {
-            $usuario = Usuario::create($datos);
+            $usuario = User::create($datos);
             $usuario->assignRole($rol);
             LogAccion::create(['accion' => "Creación de usuario {$usuario->nombre_usuario} con rol {$rol}", 'usuario' => auth()->id()]);
         });
@@ -68,8 +67,7 @@ class UsuarioController extends Controller
 
     public function update(Request $request, string $id): RedirectResponse
     {
-        $usuario = Usuario::with('roles')->findOrFail($id);
-        abort_if($usuario->hasRole('admin'), 404);
+        $usuario = User::with('roles')->findOrFail($id);
         abort_if((int) $usuario->id_usuario === (int) auth()->id() && ! $request->boolean('activo'), 422, 'No puedes desactivar tu propia cuenta.');
 
         $datos = $request->validate([
@@ -98,7 +96,7 @@ class UsuarioController extends Controller
     public function cambiarEstado(Request $request, string $id): RedirectResponse
     {
         $datos = $request->validate(['activo' => ['required', 'boolean']]);
-        $usuario = Usuario::findOrFail($id);
+        $usuario = User::findOrFail($id);
         abort_if((int) $usuario->getKey() === (int) auth()->id() && ! $request->boolean('activo'), 422, 'No puedes desactivar tu propia cuenta.');
 
         $usuario->update(['activo' => $request->boolean('activo')]);

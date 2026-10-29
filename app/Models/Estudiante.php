@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['due', 'nombre_completo'])]
 class Estudiante extends Model
@@ -34,5 +35,27 @@ class Estudiante extends Model
         return $this->belongsToMany(Proyecto::class, 'proyectos_estudiantes', 'id_estudiante', 'id_proyecto')
             ->withPivot('id_proyecto_estudiante')
             ->withTimestamps();
+    }
+
+    /**
+     * Certificaciones emitidas al estudiante.
+     */
+    public function certificaciones(): HasMany
+    {
+        return $this->hasMany(Certificacion::class, 'estudiante_id', 'id_estudiante');
+    }
+
+    /**
+     * Iniciales del estudiante para avatar visual.
+     */
+    public function getInicialesAttribute(): string
+    {
+        $palabras = array_filter(explode(' ', trim((string) $this->nombre_completo)));
+        $iniciales = '';
+        foreach (array_slice($palabras, 0, 2) as $p) {
+            $iniciales .= mb_strtoupper(mb_substr($p, 0, 1));
+        }
+
+        return $iniciales ?: 'E';
     }
 }

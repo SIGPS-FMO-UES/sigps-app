@@ -37,7 +37,7 @@ Antes de escribir cualquier línea de código, localiza la sección correspondie
    - Para la interfaz operativa de la UPS mediante vistas Blade, cookies de sesión y formularios con token `@csrf`.
    - Agrupación por prefijos:
      - `/ups`: Rutas operativas protegidas con `middleware("role:auxiliar_ups|jefe_ups")`.
-     - `/admin`: Rutas de configuración protegidas con `middleware("role:admin")`.
+     - `/admin`: Rutas de configuración protegidas con `middleware("role:jefe_ups")`.
    - Nombres canónicos de ruta: `ups.bandeja.index`, `ups.auditoria.show`, `admin.usuarios.index`, etc.
 2. **Canal API RESTful (`routes/api.php`)**:
    - Prefijo obligatorio `/api/v1/ups/` protegido con `auth:sanctum`.
@@ -54,8 +54,7 @@ Ubicar o crear el controlador dentro de `app/Http/Controllers/` según el mapa:
 
 ### Paso 4: Configurar Seguridad y Permisos RBAC (Spatie)
 1. Roles habilitados en la UPS:
-   - `admin`: Administrador técnico institucional (`usuarios.gestionar`, `carreras.gestionar`, `areas.gestionar`, `plantillas.gestionar`, `auditoria.consultar`).
-   - `jefe_ups`: Jefatura de la UPS (`expedientes.auditar`, `expedientes.aprobar`, `expedientes.observar`, `plazos.consultar`, `prorrogas.resolver`, `certificaciones.emitir`, `estadisticas.exportar`).
+   - `jefe_ups`: Jefatura de la UPS, incluida la administración técnica (`usuarios.gestionar`, `carreras.gestionar`, `areas.gestionar`, `plantillas.gestionar`, `auditoria.consultar`, `expedientes.auditar`, `expedientes.aprobar`, `expedientes.observar`, `plazos.consultar`, `prorrogas.resolver`, `certificaciones.emitir`, `estadisticas.exportar`).
    - `auxiliar_ups`: Auxiliar / Secretaría UPS (`expedientes.auditar`, `expedientes.observar`, `estudiantes.buscar`, `proyectos.modificar`, `certificaciones.registrar_entrega`, `estadisticas.consultar`).
 2. Uso de middlewares:
    - Rutas operativas compartidas: `middleware(["auth", "role:auxiliar_ups|jefe_ups"])`.
@@ -168,8 +167,7 @@ class User extends Authenticatable
 ### 2.3 Matriz de Roles y Permisos Exclusivos de la UPS
 | Rol Spatie (`role`) | Actor del Dominio | Permisos Granulares Asociados (`permission`) |
 |---|---|---|
-| `admin` | Administrador Técnico (`ACT-ADMIN`) | `usuarios.gestionar`, `carreras.gestionar`, `areas.gestionar`, `plantillas.gestionar`, `auditoria.consultar` |
-| `jefe_ups` | Jefatura de la UPS (`ACT-UPS`) | `expedientes.auditar`, `expedientes.aprobar`, `expedientes.observar`, `plazos.consultar`, `prorrogas.resolver`, `certificaciones.emitir`, `estadisticas.exportar` |
+| `jefe_ups` | Jefatura de la UPS | `usuarios.gestionar`, `carreras.gestionar`, `areas.gestionar`, `plantillas.gestionar`, `auditoria.consultar`, `expedientes.auditar`, `expedientes.aprobar`, `expedientes.observar`, `plazos.consultar`, `prorrogas.resolver`, `certificaciones.emitir`, `estadisticas.exportar` |
 | `auxiliar_ups` | Auxiliar / Secretaría UPS (`ACT-AUX`) | `expedientes.auditar`, `expedientes.observar`, `estudiantes.buscar`, `proyectos.modificar`, `certificaciones.registrar_entrega`, `estadisticas.consultar` |
 
 ---
@@ -258,10 +256,10 @@ Rutas orientadas a la interfaz web de la Unidad de Proyección Social, con rende
 
 | Método | URI | Nombre de Ruta | Controlador y Acción | Middleware Spatie | Descripción y Vista Blade Retornada |
 |---|---|---|---|---|---|
-| `GET` | `/admin/areas-conocimiento` | `admin.areas.index` | `Admin\AreaConocimientoController@index` | `auth`, `role:admin` | Vista `admin.areas.index`: Catálogo institucional de áreas de conocimiento. |
-| `POST` | `/admin/areas-conocimiento` | `admin.areas.store` | `Admin\AreaConocimientoController@store` | `auth`, `role:admin` | Registra una nueva área de conocimiento ([HU-28]). |
-| `PUT` | `/admin/areas-conocimiento/{id}` | `admin.areas.update` | `Admin\AreaConocimientoController@update` | `auth`, `role:admin` | Actualiza un área aplicando cambios con parámetro de alcance (`retroactivo` o `futuro`). |
-| `PATCH` | `/admin/areas-conocimiento/{id}/estado` | `admin.areas.cambiarEstado` | `Admin\AreaConocimientoController@cambiarEstado` | `auth`, `role:admin` | Activa o desactiva la disponibilidad del área de conocimiento ([HU-30]). |
+| `GET` | `/admin/areas-conocimiento` | `admin.areas.index` | `Admin\AreaConocimientoController@index` | `auth`, `role:jefe_ups` | Vista `admin.areas.index`: Catálogo institucional de áreas de conocimiento. |
+| `POST` | `/admin/areas-conocimiento` | `admin.areas.store` | `Admin\AreaConocimientoController@store` | `auth`, `role:jefe_ups` | Registra una nueva área de conocimiento ([HU-28]). |
+| `PUT` | `/admin/areas-conocimiento/{id}` | `admin.areas.update` | `Admin\AreaConocimientoController@update` | `auth`, `role:jefe_ups` | Actualiza un área aplicando cambios con parámetro de alcance (`retroactivo` o `futuro`). |
+| `PATCH` | `/admin/areas-conocimiento/{id}/estado` | `admin.areas.cambiarEstado` | `Admin\AreaConocimientoController@cambiarEstado` | `auth`, `role:jefe_ups` | Activa o desactiva la disponibilidad del área de conocimiento ([HU-30]). |
 
 ---
 
@@ -283,10 +281,10 @@ Rutas orientadas a la interfaz web de la Unidad de Proyección Social, con rende
 
 | Método | URI | Nombre de Ruta | Controlador y Acción | Middleware Spatie | Descripción y Vista Blade Retornada |
 |---|---|---|---|---|---|
-| `GET` | `/admin/plantillas` | `admin.plantillas.index` | `Admin\PlantillaController@index` | `auth`, `role:admin` | Vista `admin.plantillas.index`: Catálogo de formatos descargables oficiales (F1 a F8). |
-| `POST` | `/admin/plantillas` | `admin.plantillas.store` | `Admin\PlantillaController@store` | `auth`, `role:admin` | Sube nueva plantilla oficial invalidando la versión previa ([HU-40]). |
-| `PUT` | `/admin/plantillas/{id}` | `admin.plantillas.update` | `Admin\PlantillaController@update` | `auth`, `role:admin` | Actualiza metadatos e instrucciones de uso de la plantilla. |
-| `PATCH` | `/admin/plantillas/{id}/estado` | `admin.plantillas.cambiarEstado` | `Admin\PlantillaController@cambiarEstado` | `auth`, `role:admin` | Activa o desactiva la disponibilidad pública de un formato ([HU-42]). |
+| `GET` | `/admin/plantillas` | `admin.plantillas.index` | `Admin\PlantillaController@index` | `auth`, `role:jefe_ups` | Vista `admin.plantillas.index`: Catálogo de formatos descargables oficiales (F1 a F8). |
+| `POST` | `/admin/plantillas` | `admin.plantillas.store` | `Admin\PlantillaController@store` | `auth`, `role:jefe_ups` | Sube nueva plantilla oficial invalidando la versión previa ([HU-40]). |
+| `PUT` | `/admin/plantillas/{id}` | `admin.plantillas.update` | `Admin\PlantillaController@update` | `auth`, `role:jefe_ups` | Actualiza metadatos e instrucciones de uso de la plantilla. |
+| `PATCH` | `/admin/plantillas/{id}/estado` | `admin.plantillas.cambiarEstado` | `Admin\PlantillaController@cambiarEstado` | `auth`, `role:jefe_ups` | Activa o desactiva la disponibilidad pública de un formato ([HU-42]). |
 | `GET` | `/formatos-oficiales/{id}/descargar` | `plantillas.descargar` | `Publico\CatalogoFormatosController@descargar` | `web` | Descarga pública y directa del documento oficial vigente ([HU-43]). |
 
 ---
@@ -294,10 +292,10 @@ Rutas orientadas a la interfaz web de la Unidad de Proyección Social, con rende
 ### 3.10 Administración Técnica de Usuarios y Auditoría ([SYS-01], `ACT-ADMIN`)
 | Método | URI | Nombre de Ruta | Controlador y Acción | Middleware Spatie | Descripción y Vista Blade Retornada |
 |---|---|---|---|---|---|
-| `GET` | `/admin/usuarios` | `admin.usuarios.index` | `Admin\UsuarioController@index` | `auth`, `role:admin` | Vista `admin.usuarios.index`: Gestión de cuentas de usuario interno de la UPS ([UI-01]). |
-| `POST` | `/admin/usuarios` | `admin.usuarios.store` | `Admin\UsuarioController@store` | `auth`, `role:admin` | Registra nuevo usuario asignando rol en Spatie (`auxiliar_ups` o `jefe_ups`). |
-| `PUT` | `/admin/usuarios/{id}/estado` | `admin.usuarios.cambiarEstado` | `Admin\UsuarioController@cambiarEstado` | `auth`, `role:admin` | Activa o desactiva acceso inmediato al personal de la UPS ([HU-03]). |
-| `GET` | `/admin/auditoria` | `admin.auditoria.index` | `Admin\BitacoraAuditoriaController@index` | `auth`, `role:admin` | Vista `admin.auditoria.index`: Explorador inmutable de eventos de auditoría ([ARQ-05]). |
+| `GET` | `/admin/usuarios` | `admin.usuarios.index` | `Admin\UsuarioController@index` | `auth`, `role:jefe_ups` | Vista `admin.usuarios.index`: Gestión de cuentas de usuario interno de la UPS ([UI-01]). |
+| `POST` | `/admin/usuarios` | `admin.usuarios.store` | `Admin\UsuarioController@store` | `auth`, `role:jefe_ups` | Registra nuevo usuario asignando rol en Spatie (`auxiliar_ups` o `jefe_ups`). |
+| `PUT` | `/admin/usuarios/{id}/estado` | `admin.usuarios.cambiarEstado` | `Admin\UsuarioController@cambiarEstado` | `auth`, `role:jefe_ups` | Activa o desactiva acceso inmediato al personal de la UPS ([HU-03]). |
+| `GET` | `/admin/auditoria` | `admin.auditoria.index` | `Admin\BitacoraAuditoriaController@index` | `auth`, `role:jefe_ups` | Vista `admin.auditoria.index`: Explorador inmutable de eventos de auditoría ([ARQ-05]). |
 
 ---
 
@@ -454,7 +452,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // 4. Módulo de Administración Técnica (ACT-ADMIN - Épicas 1, 7, 9)
-    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('role:jefe_ups')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('usuarios', UsuarioController::class)->except(['destroy']);
         Route::put('/usuarios/{id}/estado', [UsuarioController::class, 'cambiarEstado'])->name('usuarios.estado');
         Route::resource('areas-conocimiento', AreaConocimientoController::class)->except(['show', 'destroy']);
@@ -555,7 +553,7 @@ Esta matriz demuestra la cobertura directa del 100 % de las historias del **Sist
 | HU | Descripción | Ruta Web (Blade / MVC) | Endpoint REST API | Controlador Laravel |
 |---|---|---|---|---|
 | **HU-01** | Inicio de sesión interno | `POST /login` | `POST /api/v1/auth/login` | `Auth\LoginController@login` |
-| **HU-02** | Gestión de roles (Admin / Auxiliar) | `POST /admin/usuarios`, `PUT /admin/usuarios/{id}` | `POST /api/v1/admin/usuarios` | `Admin\UsuarioController@store` |
+| **HU-02** | Gestión de roles (Jefatura / Auxiliar) | `POST /admin/usuarios`, `PUT /admin/usuarios/{id}` | `POST /api/v1/admin/usuarios` | `Admin\UsuarioController@store` |
 | **HU-03** | Crear, activar o desactivar usuarios | `PUT /admin/usuarios/{id}/estado` | `PATCH /api/v1/admin/usuarios/{id}/estado` | `Admin\UsuarioController@cambiarEstado` |
 
 ### Épica 2: Gestión de estudiantes

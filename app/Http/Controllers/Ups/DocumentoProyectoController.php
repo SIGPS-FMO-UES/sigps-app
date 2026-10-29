@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Ups;
 
+use App\Enums\EstadoMemoria;
 use App\Http\Controllers\Controller;
 use App\Models\DocumentoProyecto;
 use App\Models\LogAccion;
+use App\Models\Memoria;
 use App\Models\Proyecto;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,14 +19,22 @@ class DocumentoProyectoController extends Controller
 {
     public function index(string $id): View
     {
-        $proyecto = Proyecto::query()->with(['documentos.usuario', 'memoria'])->findOrFail($id);
+        $proyecto = Proyecto::query()
+            ->with([
+                'documentos' => fn ($query) => $query->latest(),
+                'documentos.usuario',
+                'memoria',
+                'areaConocimiento',
+                'estudiantes',
+            ])
+            ->findOrFail($id);
 
         return view('ups.proyectos.expediente', compact('proyecto'));
     }
 
     public function store(Request $request, string $id): RedirectResponse
     {
-        $proyecto = Proyecto::query()->findOrFail($id);
+        $proyecto = Proyecto::query()->with('memoria')->findOrFail($id);
         abort_unless($proyecto->estado_expediente === 'en_tramite', 409, 'No se pueden agregar documentos a un proyecto cerrado.');
         $datos = $request->validate([
             'fase' => ['required', 'in:inscripcion,anteproyecto,avance_50,memoria_final,otro'],
@@ -42,6 +52,33 @@ class DocumentoProyectoController extends Controller
                 'tamano_bytes' => $archivo->getSize(),
                 'usuario_id' => auth()->id(),
             ]);
+
+            if ($datos['fase'] === 'memoria_final') {
+                $memoriaExistente = $proyecto->memoria;
+                $intento = $memoriaExistente
+                    ? ($memoriaExistente->intento + ($memoriaExistente->estado === EstadoMemoria::Observada ? 1 : 0))
+                    : 1;
+
+                $estadoFinal = ($memoriaExistente && in_array($memoriaExistente->estado->value, [
+                    EstadoMemoria::Aprobada->value,
+                    EstadoMemoria::Aprovada->value,
+                    EstadoMemoria::EsperandoFirmas->value,
+                    EstadoMemoria::Lista->value,
+                    EstadoMemoria::Entregada->value,
+                ], true)) ? $memoriaExistente->estado : EstadoMemoria::Recibido;
+
+                Memoria::updateOrCreate(
+                    ['numero_proyecto' => $proyecto->numero_proyecto],
+                    [
+                        'registrada_por' => auth()->id(),
+                        'fecha_recibimiento' => $memoriaExistente?->fecha_recibimiento ?? now()->toDateString(),
+                        'estado' => $estadoFinal,
+                        'documento' => $ruta,
+                        'intento' => $intento,
+                    ]
+                );
+            }
+
             LogAccion::create([
                 'accion' => "Documento {$documento->nombre_original} agregado al proyecto #{$proyecto->id_proyecto}",
                 'usuario' => auth()->id(),

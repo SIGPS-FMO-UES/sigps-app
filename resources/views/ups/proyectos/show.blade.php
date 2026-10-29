@@ -21,30 +21,42 @@
     </a>
 
     @if($proyecto->estado_expediente === 'en_tramite')
-        @if($proyecto->memoria && $proyecto->memoria->estado !== \App\Enums\EstadoMemoria::Entregada && in_array($proyecto->memoria->estado->value, ['aprobada', 'aprovada', 'esperando_firmas', 'lista'], true))
+        @php
+            $esJefe = auth()->user()->hasRole('jefe_ups');
+            $puedeEntregarMemoria = $proyecto->memoria && $proyecto->memoria->estado !== \App\Enums\EstadoMemoria::Entregada && in_array($proyecto->memoria->estado->value, ['aprobada', 'aprovada', 'esperando_firmas', 'lista'], true);
+            $conteoOpciones = 0;
+            if ($esJefe) {
+                $conteoOpciones += 4; // Finalizar, Ampliar, Retirar, Cancelar
+                if (auth()->user()->can('prorrogas.resolver')) {
+                    $conteoOpciones++;
+                }
+            }
+        @endphp
+
+        @if($puedeEntregarMemoria)
             <button type="button" class="btn btn-primary" data-project-modal="modal-entregar-memoria" title="Registrar entrega de memoria física y finalizar expediente">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
                 <span>Entregar y finalizar</span>
             </button>
         @endif
-        <details class="project-actions-menu">
-            <summary class="btn" title="Opciones extraordinarias y trámites administrativos">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                <span>Más opciones</span>
-            </summary>
-            <div class="project-actions-popover" role="menu" aria-label="Acciones del proyecto">
-                @if(auth()->user()->hasRole('jefe_ups'))
-                    <button type="button" role="menuitem" style="color: #15803d; font-weight: 600;" data-project-modal="modal-finalizar">Finalizar proyecto</button>
-                @endif
-                @if($proyecto->memoria && $proyecto->memoria->estado !== \App\Enums\EstadoMemoria::Entregada && in_array($proyecto->memoria->estado->value, ['aprobada', 'aprovada', 'esperando_firmas', 'lista'], true))
-                    <button type="button" role="menuitem" data-project-modal="modal-entregar-memoria">Entregar y finalizar</button>
-                @endif
-                <button type="button" role="menuitem" data-project-modal="modal-ampliar">Ampliar plazo</button>
-                @can('prorrogas.resolver')<button type="button" role="menuitem" data-project-modal="modal-prorroga">Registrar prórroga</button>@endcan
-                <button type="button" role="menuitem" data-project-modal="modal-retirar">Retirar estudiante</button>
-                @if(auth()->user()->hasRole('jefe_ups'))<button type="button" role="menuitem" class="project-actions-danger" data-project-modal="modal-cancelar">Cancelar proyecto</button>@endif
-            </div>
-        </details>
+
+        @if($conteoOpciones > 0)
+            <details class="project-actions-menu">
+                <summary class="btn" title="Opciones extraordinarias y trámites administrativos">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                    <span>Más opciones</span>
+                </summary>
+                <div class="project-actions-popover" role="menu" aria-label="Acciones del proyecto">
+                    @if($esJefe)
+                        <button type="button" role="menuitem" style="color: #15803d; font-weight: 600;" data-project-modal="modal-finalizar">Finalizar proyecto</button>
+                        <button type="button" role="menuitem" data-project-modal="modal-ampliar">Ampliar plazo</button>
+                        @can('prorrogas.resolver')<button type="button" role="menuitem" data-project-modal="modal-prorroga">Registrar prórroga</button>@endcan
+                        <button type="button" role="menuitem" data-project-modal="modal-retirar">Retirar estudiante</button>
+                        <button type="button" role="menuitem" class="project-actions-danger" data-project-modal="modal-cancelar">Cancelar proyecto</button>
+                    @endif
+                </div>
+            </details>
+        @endif
         <a class="btn btn-primary" href="{{ route('ups.proyectos.edit', $proyecto->id_proyecto) }}" title="Modificar datos del proyecto y participantes">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             <span>Editar proyecto</span>
@@ -536,42 +548,44 @@
 
     <!-- Diálogos de Acciones Extraordinarias (Menú 'Más acciones') -->
     @if($proyecto->estado_expediente === 'en_tramite')
-        <dialog class="project-action-dialog" id="modal-ampliar" aria-labelledby="modal-ampliar-title">
-            <form method="POST" enctype="multipart/form-data" action="{{ route('ups.proyectos.ampliar', $proyecto->id_proyecto) }}">
-                @csrf <input type="hidden" name="form_key" value="ampliar">
-                <div class="project-dialog-head"><h2 id="modal-ampliar-title">Ampliar plazo</h2><button type="button" class="project-dialog-close" data-project-close aria-label="Cerrar">×</button></div>
-                <p class="muted">Fecha vigente: <strong>{{ $proyecto->fecha_final?->format('d/m/Y') ?? $proyecto->fecha_inicio?->format('d/m/Y') }}</strong></p>
-                <div class="field"><label for="ampliar-fecha">Nueva fecha</label><input id="ampliar-fecha" name="fecha_nueva" type="date" required min="{{ ($proyecto->fecha_final ?? $proyecto->fecha_inicio)->copy()->addDay()->format('Y-m-d') }}" value="{{ old('form_key') === 'ampliar' ? old('fecha_nueva') : '' }}">@error('fecha_nueva') @if(old('form_key') === 'ampliar')<small class="project-field-error">{{ $message }}</small>@endif @enderror</div>
-                <div class="field"><label for="ampliar-motivo">Motivo</label><textarea id="ampliar-motivo" name="motivo" required minlength="10" maxlength="3000" placeholder="Indique el motivo">{{ old('form_key') === 'ampliar' ? old('motivo') : '' }}</textarea>@error('motivo') @if(old('form_key') === 'ampliar')<small class="project-field-error">{{ $message }}</small>@endif @enderror</div>
-                <div class="field"><label for="ampliar-respaldo">Documento de respaldo (opcional, PDF hasta 15 MB)</label><input id="ampliar-respaldo" name="respaldo" type="file" accept="application/pdf,.pdf"></div>
-                <div class="form-actions"><button type="button" class="btn" data-project-close>Volver</button><button class="btn btn-primary" type="submit">Solicitar ampliación</button></div>
-            </form>
-        </dialog>
-
-        @can('prorrogas.resolver')
-            <dialog class="project-action-dialog" id="modal-prorroga" aria-labelledby="modal-prorroga-title">
-                <form method="POST" action="{{ route('ups.proyectos.prorroga.store', $proyecto->id_proyecto) }}">
-                    @csrf <input type="hidden" name="form_key" value="prorroga">
-                    <div class="project-dialog-head"><h2 id="modal-prorroga-title">Registrar prórroga</h2><button type="button" class="project-dialog-close" data-project-close aria-label="Cerrar">×</button></div>
+        @if(auth()->user()->hasRole('jefe_ups'))
+            <dialog class="project-action-dialog" id="modal-ampliar" aria-labelledby="modal-ampliar-title">
+                <form method="POST" enctype="multipart/form-data" action="{{ route('ups.proyectos.ampliar', $proyecto->id_proyecto) }}">
+                    @csrf <input type="hidden" name="form_key" value="ampliar">
+                    <div class="project-dialog-head"><h2 id="modal-ampliar-title">Ampliar plazo</h2><button type="button" class="project-dialog-close" data-project-close aria-label="Cerrar">×</button></div>
                     <p class="muted">Fecha vigente: <strong>{{ $proyecto->fecha_final?->format('d/m/Y') ?? $proyecto->fecha_inicio?->format('d/m/Y') }}</strong></p>
-                    <div class="field"><label for="prorroga-fecha">Nueva fecha</label><input id="prorroga-fecha" name="fecha_nueva" type="date" required min="{{ ($proyecto->fecha_final ?? $proyecto->fecha_inicio)->copy()->addDay()->format('Y-m-d') }}" value="{{ old('form_key') === 'prorroga' ? old('fecha_nueva') : '' }}">@error('fecha_nueva') @if(old('form_key') === 'prorroga')<small class="project-field-error">{{ $message }}</small>@endif @enderror</div>
-                    <div class="field"><label for="prorroga-autorizacion">Resolución / autorización</label><input id="prorroga-autorizacion" name="autorizacion" required maxlength="255" value="{{ old('form_key') === 'prorroga' ? old('autorizacion') : '' }}" placeholder="Número o referencia de autorización"></div>
-                    <div class="field"><label for="prorroga-motivo">Motivo (opcional)</label><textarea id="prorroga-motivo" name="motivo" maxlength="3000" placeholder="Escriba el motivo">{{ old('form_key') === 'prorroga' ? old('motivo') : '' }}</textarea></div>
-                    <div class="form-actions"><button type="button" class="btn" data-project-close>Volver</button><button class="btn btn-primary" type="submit">Confirmar prórroga</button></div>
+                    <div class="field"><label for="ampliar-fecha">Nueva fecha</label><input id="ampliar-fecha" name="fecha_nueva" type="date" required min="{{ ($proyecto->fecha_final ?? $proyecto->fecha_inicio)->copy()->addDay()->format('Y-m-d') }}" value="{{ old('form_key') === 'ampliar' ? old('fecha_nueva') : '' }}">@error('fecha_nueva') @if(old('form_key') === 'ampliar')<small class="project-field-error">{{ $message }}</small>@endif @enderror</div>
+                    <div class="field"><label for="ampliar-motivo">Motivo</label><textarea id="ampliar-motivo" name="motivo" required minlength="10" maxlength="3000" placeholder="Indique el motivo">{{ old('form_key') === 'ampliar' ? old('motivo') : '' }}</textarea>@error('motivo') @if(old('form_key') === 'ampliar')<small class="project-field-error">{{ $message }}</small>@endif @enderror</div>
+                    <div class="field"><label for="ampliar-respaldo">Documento de respaldo (opcional, PDF hasta 15 MB)</label><input id="ampliar-respaldo" name="respaldo" type="file" accept="application/pdf,.pdf"></div>
+                    <div class="form-actions"><button type="button" class="btn" data-project-close>Volver</button><button class="btn btn-primary" type="submit">Solicitar ampliación</button></div>
                 </form>
             </dialog>
-        @endcan
 
-        <dialog class="project-action-dialog" id="modal-retirar" aria-labelledby="modal-retirar-title">
-            <form method="POST" action="{{ route('ups.proyectos.retirar', $proyecto->id_proyecto) }}">
-                @csrf <input type="hidden" name="form_key" value="retirar">
-                <div class="project-dialog-head"><h2 id="modal-retirar-title">Retirar estudiante</h2><button type="button" class="project-dialog-close" data-project-close aria-label="Cerrar">×</button></div>
-                <p>Confirme el retiro del estudiante de este proyecto.</p>
-                <div class="field"><label for="retirar-estudiante">Estudiante</label><select id="retirar-estudiante" name="estudiante_id" required><option value="">Seleccione un participante</option>@foreach($proyecto->estudiantes as $estudiante)<option value="{{ $estudiante->id_estudiante }}">{{ $estudiante->due }} · {{ $estudiante->nombre_completo }}</option>@endforeach</select></div>
-                <div class="field"><label for="retirar-motivo">Motivo obligatorio</label><textarea id="retirar-motivo" name="motivo" required minlength="10" maxlength="3000" placeholder="Escriba el motivo del retiro"></textarea></div>
-                <div class="form-actions"><button type="button" class="btn" data-project-close>Volver</button><button class="btn btn-primary" type="submit" @disabled($proyecto->estudiantes->isEmpty())>Confirmar retiro</button></div>
-            </form>
-        </dialog>
+            @can('prorrogas.resolver')
+                <dialog class="project-action-dialog" id="modal-prorroga" aria-labelledby="modal-prorroga-title">
+                    <form method="POST" action="{{ route('ups.proyectos.prorroga.store', $proyecto->id_proyecto) }}">
+                        @csrf <input type="hidden" name="form_key" value="prorroga">
+                        <div class="project-dialog-head"><h2 id="modal-prorroga-title">Registrar prórroga</h2><button type="button" class="project-dialog-close" data-project-close aria-label="Cerrar">×</button></div>
+                        <p class="muted">Fecha vigente: <strong>{{ $proyecto->fecha_final?->format('d/m/Y') ?? $proyecto->fecha_inicio?->format('d/m/Y') }}</strong></p>
+                        <div class="field"><label for="prorroga-fecha">Nueva fecha</label><input id="prorroga-fecha" name="fecha_nueva" type="date" required min="{{ ($proyecto->fecha_final ?? $proyecto->fecha_inicio)->copy()->addDay()->format('Y-m-d') }}" value="{{ old('form_key') === 'prorroga' ? old('fecha_nueva') : '' }}">@error('fecha_nueva') @if(old('form_key') === 'prorroga')<small class="project-field-error">{{ $message }}</small>@endif @enderror</div>
+                        <div class="field"><label for="prorroga-autorizacion">Resolución / autorización</label><input id="prorroga-autorizacion" name="autorizacion" required maxlength="255" value="{{ old('form_key') === 'prorroga' ? old('autorizacion') : '' }}" placeholder="Número o referencia de autorización"></div>
+                        <div class="field"><label for="prorroga-motivo">Motivo (opcional)</label><textarea id="prorroga-motivo" name="motivo" maxlength="3000" placeholder="Escriba el motivo">{{ old('form_key') === 'prorroga' ? old('motivo') : '' }}</textarea></div>
+                        <div class="form-actions"><button type="button" class="btn" data-project-close>Volver</button><button class="btn btn-primary" type="submit">Confirmar prórroga</button></div>
+                    </form>
+                </dialog>
+            @endcan
+
+            <dialog class="project-action-dialog" id="modal-retirar" aria-labelledby="modal-retirar-title">
+                <form method="POST" action="{{ route('ups.proyectos.retirar', $proyecto->id_proyecto) }}">
+                    @csrf <input type="hidden" name="form_key" value="retirar">
+                    <div class="project-dialog-head"><h2 id="modal-retirar-title">Retirar estudiante</h2><button type="button" class="project-dialog-close" data-project-close aria-label="Cerrar">×</button></div>
+                    <p>Confirme el retiro del estudiante de este proyecto.</p>
+                    <div class="field"><label for="retirar-estudiante">Estudiante</label><select id="retirar-estudiante" name="estudiante_id" required><option value="">Seleccione un participante</option>@foreach($proyecto->estudiantes as $estudiante)<option value="{{ $estudiante->id_estudiante }}">{{ $estudiante->due }} · {{ $estudiante->nombre_completo }}</option>@endforeach</select></div>
+                    <div class="field"><label for="retirar-motivo">Motivo obligatorio</label><textarea id="retirar-motivo" name="motivo" required minlength="10" maxlength="3000" placeholder="Escriba el motivo del retiro"></textarea></div>
+                    <div class="form-actions"><button type="button" class="btn" data-project-close>Volver</button><button class="btn btn-primary" type="submit" @disabled($proyecto->estudiantes->isEmpty())>Confirmar retiro</button></div>
+                </form>
+            </dialog>
+        @endif
 
         <dialog class="project-action-dialog" id="modal-entregar-memoria" aria-labelledby="modal-entregar-memoria-title">
             <form method="POST" action="{{ route('ups.proyectos.memoria.entregar', $proyecto->id_proyecto) }}">

@@ -15,6 +15,8 @@ class ProcesosExtraordinariosController extends Controller
 {
     public function retirarEstudiante(Request $request, string $id): RedirectResponse
     {
+        abort_unless(auth()->user()->hasRole('jefe_ups'), 403, 'Solo el Jefe de UPS puede retirar estudiantes de un proyecto.');
+
         $datos = $request->validate([
             'estudiante_id' => ['required', 'integer', 'exists:estudiantes,id_estudiante'],
             'motivo' => ['required', 'string', 'min:10', 'max:3000'],
@@ -82,6 +84,8 @@ class ProcesosExtraordinariosController extends Controller
 
     public function ampliarPlazo(Request $request, string $id): RedirectResponse
     {
+        abort_unless(auth()->user()->hasRole('jefe_ups'), 403, 'Solo el Jefe de UPS puede gestionar la ampliación de plazos.');
+
         $proyecto = Proyecto::query()->findOrFail($id);
         abort_unless($proyecto->estado_expediente === 'en_tramite', 409);
         $fechaAnterior = $proyecto->fecha_final?->format('Y-m-d') ?? $proyecto->fecha_inicio->format('Y-m-d');

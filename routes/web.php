@@ -61,9 +61,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/proyectos/{id}/expediente', [DocumentoProyectoController::class, 'index'])->whereNumber('id')->name('proyectos.documentos');
         Route::post('/proyectos/{id}/documentos', [DocumentoProyectoController::class, 'store'])->whereNumber('id')->name('proyectos.documentos.store');
         Route::get('/documentos-proyecto/{id}/descargar', [DocumentoProyectoController::class, 'descargar'])->whereNumber('id')->name('documentos-proyecto.descargar');
-        Route::post('/proyectos/{id}/retirar-estudiante', [ProcesosExtraordinariosController::class, 'retirarEstudiante'])->whereNumber('id')->name('proyectos.retirar');
-        Route::post('/proyectos/{id}/cancelar', [ProcesosExtraordinariosController::class, 'cancelar'])->whereNumber('id')->name('proyectos.cancelar');
-        Route::post('/proyectos/{id}/ampliar-plazo', [ProcesosExtraordinariosController::class, 'ampliarPlazo'])->whereNumber('id')->name('proyectos.ampliar');
+        Route::post('/proyectos/{id}/retirar-estudiante', [ProcesosExtraordinariosController::class, 'retirarEstudiante'])->whereNumber('id')->middleware('role:jefe_ups')->name('proyectos.retirar');
+        Route::post('/proyectos/{id}/cancelar', [ProcesosExtraordinariosController::class, 'cancelar'])->whereNumber('id')->middleware('role:jefe_ups')->name('proyectos.cancelar');
+        Route::post('/proyectos/{id}/ampliar-plazo', [ProcesosExtraordinariosController::class, 'ampliarPlazo'])->whereNumber('id')->middleware('role:jefe_ups')->name('proyectos.ampliar');
         Route::post('/proyectos/{id}/registrar-prorroga', [ProcesosExtraordinariosController::class, 'registrarProrroga'])->whereNumber('id')->name('proyectos.prorroga.store');
         Route::get('/prorrogas', [GestionProrrogasController::class, 'index'])->name('prorrogas.index');
         Route::post('/prorrogas/{id}/resolver', [GestionProrrogasController::class, 'resolver'])->whereNumber('id')->middleware('permission:prorrogas.resolver')->name('prorrogas.resolver');

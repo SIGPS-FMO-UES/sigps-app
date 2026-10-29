@@ -1,26 +1,54 @@
 // ==============================================================================
-// SIGPS - Sistema Integral de Gestión de Proyección Social
-// Diagrama de Base de Datos DBML (Sincronizado con esquema real de Laravel 13)
+// SIGPS - Sistema Integral de Gestión de Proyección Social (UPS - SYS-01)
+// Diagrama de Base de Datos DBML (Sincronizado con esquema real de Laravel 12 / 13)
 // ==============================================================================
 
 // ------------------------------------------------------------------------------
-// ENUMS
+// ENUMS DE DOMINIO
 // ------------------------------------------------------------------------------
 
 Enum estado_memoria {
-  recibido
-  en_revision
-  observada
-  aprobada
-  esperando_firmas
-  lista
-  entregada
-  rechazada
+  recibido [note: 'Memoria radicada en ventanilla o API']
+  en_revision [note: 'En proceso de auditoría documental']
+  observada [note: 'Observaciones de sellos o tinta azul pendientes de subsanar']
+  aprobada [note: 'Aprobada formalmente por Jefatura UPS']
+  esperando_firmas [note: 'En recolección de firmas físicas']
+  lista [note: 'Firmada y retenida en ventanilla para entrega']
+  entregada [note: 'Entregada físicamente al estudiante']
+  rechazada [note: 'Rechazo definitivo']
 }
 
 Enum tipo_plantilla {
-  archivo_ejemplo
-  autorellenable
+  archivo_ejemplo [note: 'Documento descargable de referencia']
+  autorellenable [note: 'Formato dinámico digital']
+}
+
+Enum fase_proyecto {
+  inscripcion [note: 'Fase inicial de apertura']
+  anteproyecto [note: 'Plan y propuesta de trabajo avalada']
+  avance_50 [note: 'Reporte del 50 % de horas ejecutadas']
+  memoria_final [note: 'Informe final de servicio social']
+  finalizacion [note: 'Expediente culminado y archivado']
+}
+
+Enum estado_expediente {
+  en_tramite [note: 'Expediente activo y abierto']
+  finalizado [note: 'Expediente cerrado tras certificación']
+  cancelado [note: 'Cancelado por resolución ejecutiva']
+}
+
+Enum tipo_proceso_extraordinario {
+  retiro_estudiante [note: 'Desvinculación voluntaria o disciplinaria de participante']
+  cancelacion [note: 'Cancelación definitiva del proyecto']
+  ampliacion_plazo [note: 'Solicitud ordinaria de extensión de fecha límite']
+  prorroga [note: 'Prórroga extraordinaria autorizada por Jefatura']
+}
+
+Enum estado_proceso_extraordinario {
+  registrado [note: 'Asentado directamente en el sistema']
+  pendiente [note: 'A la espera de resolución de Jefatura UPS']
+  aprobada [note: 'Dictamen favorable emitido']
+  rechazada [note: 'Dictamen desestimado']
 }
 
 // ------------------------------------------------------------------------------
@@ -38,6 +66,44 @@ Table usuarios {
   remember_token varchar [null]
   created_at timestamp [null]
   updated_at timestamp [null]
+}
+
+Table password_reset_tokens {
+  email varchar [pk]
+  token varchar [not null]
+  created_at timestamp [null]
+}
+
+Table sessions {
+  id varchar [pk]
+  user_id bigint [null]
+  ip_address varchar(45) [null]
+  user_agent text [null]
+  payload text [not null]
+  last_activity int [not null]
+
+  indexes {
+    user_id
+    last_activity
+  }
+}
+
+Table personal_access_tokens {
+  id bigint [pk, increment]
+  tokenable_type varchar [not null]
+  tokenable_id bigint [not null]
+  name text [not null]
+  token varchar(64) [unique, not null]
+  abilities text [null]
+  last_used_at timestamp [null]
+  expires_at timestamp [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+
+  indexes {
+    (tokenable_type, tokenable_id)
+    expires_at
+  }
 }
 
 // ------------------------------------------------------------------------------
@@ -112,15 +178,17 @@ Table departamentos {
 
 Table carreras {
   id_carrera bigint [pk, increment]
+  codigo varchar(50) [unique, null, note: 'Código institucional de carrera (ej. I10515)']
   nombre varchar [not null]
   departamento bigint [not null]
+  horas_servicio_social int [default: 500, not null, note: 'Horas necesarias para completar servicio social']
   created_at timestamp [null]
   updated_at timestamp [null]
 }
 
 Table estudiantes {
   id_estudiante bigint [pk, increment]
-  due varchar [unique, not null]
+  due varchar [unique, not null, note: 'Documento Único Estudiantil (Carnet UES)']
   nombre_completo varchar [not null]
   created_at timestamp [null]
   updated_at timestamp [null]
@@ -139,7 +207,7 @@ Table carreras_estudiante {
 }
 
 // ------------------------------------------------------------------------------
-// TABLAS: PROYECTOS Y MEMORIAS
+// TABLAS: PROYECTOS Y EXPEDIENTES INSTITUCIONALES
 // ------------------------------------------------------------------------------
 
 Table areas_de_conocimiento {
@@ -149,23 +217,31 @@ Table areas_de_conocimiento {
   activa bool [default: true, not null]
   created_at timestamp [null]
   updated_at timestamp [null]
+
+  indexes {
+    activa
+  }
 }
 
 Table proyectos {
   id_proyecto bigint [pk, increment]
+  numero_proyecto bigint [unique, not null, note: 'Correlativo numérico institucional único del proyecto']
   creado_por bigint [not null]
   fecha_inicio date [not null]
   fecha_final date [null]
   titulo varchar [not null]
-  miembros varchar [null, note: 'DUEs separados por coma (campo descriptivo; la relación normalizada está en proyectos_estudiantes)']
+  miembros varchar [null, note: 'DUEs descriptivos; la relación normalizada reside en proyectos_estudiantes']
+  tutor varchar [not null, note: 'Nombre completo del docente tutor']
   subcoordinador varchar [not null]
+  correo_coordinador varchar [null, note: 'Correo electrónico de contacto del coordinador']
+  ubicacion text [not null, note: 'Dirección o institución donde se ejecuta el proyecto']
   area_de_conocimiento bigint [not null]
   documento varchar [null]
-  fase_actual varchar(30) [default: 'inscripcion', not null]
-  estado_expediente varchar(30) [default: 'en_tramite', not null]
-  fecha_radicado timestamp [null]
-  fecha_finalizacion timestamp [null]
-  fecha_remision_junta timestamp [null]
+  fase_actual varchar(30) [default: 'inscripcion', not null, note: 'fase_proyecto: inscripcion, anteproyecto, avance_50, memoria_final, finalizacion']
+  estado_expediente varchar(30) [default: 'en_tramite', not null, note: 'estado_expediente: en_tramite, finalizado, cancelado']
+  fecha_radicado timestamp [null, note: 'Fecha de ingreso formal a bandeja de Proyección Social']
+  fecha_finalizacion timestamp [null, note: 'Fecha de cierre formal tras cumplimiento de fases']
+  fecha_remision_junta timestamp [null, note: 'Fecha de remisión a Junta Directiva al cumplir 18 meses']
   remitido_junta_por bigint [null]
   deleted_at timestamp [null]
   created_at timestamp [null]
@@ -220,13 +296,13 @@ Table procesos_extraordinarios {
   id_proceso_extraordinario bigint [pk, increment]
   proyecto_id bigint [not null]
   estudiante_id bigint [null]
-  tipo varchar(30) [not null]
+  tipo varchar(30) [not null, note: 'tipo_proceso_extraordinario: retiro_estudiante, cancelacion, ampliacion_plazo, prorroga']
   motivo text [null]
   fecha_anterior date [null]
   fecha_nueva date [null]
-  autorizacion varchar [null]
+  autorizacion varchar [null, note: 'Número de acuerdo institucional o dictamen habilitante']
   documento_respaldo varchar [null]
-  estado varchar(20) [default: 'registrado', not null]
+  estado varchar(20) [default: 'registrado', not null, note: 'estado_proceso_extraordinario: registrado, pendiente, aprobada, rechazada']
   resolucion text [null]
   registrado_por bigint [null]
   resuelto_por bigint [null]
@@ -240,17 +316,21 @@ Table procesos_extraordinarios {
   }
 }
 
+// ------------------------------------------------------------------------------
+// TABLAS: MEMORIAS, AUDITORÍA DOCUMENTAL Y CERTIFICACIONES
+// ------------------------------------------------------------------------------
+
 Table memorias {
   id_memoria bigint [pk, increment]
   registrada_por bigint [not null]
-  intento int [default: 1, not null]
+  intento int [default: 1, not null, note: 'Número correlativo de presentación tras observaciones']
   fecha_recibimiento date [not null]
   estado estado_memoria [default: 'recibido', not null]
   fecha_aprovado date [null]
   fecha_listo date [null]
   fecha_entrega date [null]
   observaciones text [null]
-  proyecto_id bigint [unique, not null]
+  numero_proyecto bigint [unique, not null, note: 'Correlativo del proyecto asociado']
   documento varchar [null]
   deleted_at timestamp [null]
   created_at timestamp [null]
@@ -262,8 +342,8 @@ Table revisiones_memorias {
   memoria_id bigint [not null]
   auditor_id bigint [not null]
   resultado varchar(20) [not null, note: 'aprobado u observado']
-  sellos_verificados bool [not null]
-  tinta_azul_verificada bool [not null]
+  sellos_verificados bool [not null, note: 'Inspección de sellos institucionales legibles']
+  tinta_azul_verificada bool [not null, note: 'Inspección de firmas manuscritas en tinta azul']
   observaciones text [null, note: 'Motivo obligatorio cuando el resultado es observado']
   created_at timestamp [null]
   updated_at timestamp [null]
@@ -277,22 +357,23 @@ Table certificaciones {
   id_certificacion bigint [pk, increment]
   proyecto_id bigint [not null]
   estudiante_id bigint [not null]
-  folio varchar [unique, null]
+  folio varchar [unique, null, note: 'Número de folio inmutable asentado en libro institucional']
   fecha_emision timestamp [not null]
   emitida_por bigint [not null]
   fecha_entrega date [null]
-  firma_receptor varchar [null]
+  firma_receptor varchar [null, note: 'Firma o constancia de recepción física del estudiante']
   entregada_por bigint [null]
   created_at timestamp [null]
   updated_at timestamp [null]
 
   indexes {
     (proyecto_id, estudiante_id) [unique]
+    fecha_entrega
   }
 }
 
 // ------------------------------------------------------------------------------
-// TABLAS: AUDITORÍA (LOGS)
+// TABLAS: AUDITORÍA (LOGS) Y NOTIFICACIONES
 // ------------------------------------------------------------------------------
 
 Table logs_acciones {
@@ -304,8 +385,23 @@ Table logs_acciones {
   updated_at timestamp [null]
 }
 
+Table notifications {
+  id uuid [pk]
+  type varchar [not null]
+  notifiable_type varchar [not null]
+  notifiable_id bigint [not null]
+  data json [not null]
+  read_at timestamp [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+
+  indexes {
+    (notifiable_type, notifiable_id, read_at)
+  }
+}
+
 // ------------------------------------------------------------------------------
-// TABLAS: GESTIÓN DE PLANTILLAS Y DOCUMENTOS
+// TABLAS: GESTIÓN DE PLANTILLAS Y DOCUMENTOS OFICIALES
 // ------------------------------------------------------------------------------
 
 Table plantillas {
@@ -342,6 +438,11 @@ Ref: "permissions"."id" < "model_has_permissions"."permission_id" [delete: casca
 Ref: "usuarios"."id_usuario" < "model_has_roles"."model_id"
 Ref: "usuarios"."id_usuario" < "model_has_permissions"."model_id"
 
+// Relaciones Seguridad, Sesiones y Tokens
+Ref: "usuarios"."id_usuario" < "personal_access_tokens"."tokenable_id"
+Ref: "usuarios"."id_usuario" < "sessions"."user_id"
+Ref: "usuarios"."id_usuario" < "notifications"."notifiable_id"
+
 // Relaciones Académicas
 Ref: "departamentos"."id_departamento" < "carreras"."departamento" [delete: cascade]
 Ref: "estudiantes"."id_estudiante" < "carreras_estudiante"."id_estudiante" [delete: cascade]
@@ -362,9 +463,9 @@ Ref: "estudiantes"."id_estudiante" < "procesos_extraordinarios"."estudiante_id" 
 Ref: "usuarios"."id_usuario" < "procesos_extraordinarios"."registrado_por" [delete: set null]
 Ref: "usuarios"."id_usuario" < "procesos_extraordinarios"."resuelto_por" [delete: set null]
 
-// Relaciones Memorias
+// Relaciones Memorias y Certificaciones
 Ref: "usuarios"."id_usuario" < "memorias"."registrada_por" [delete: restrict]
-Ref: "proyectos"."id_proyecto" - "memorias"."proyecto_id" [delete: cascade]
+Ref: "proyectos"."numero_proyecto" - "memorias"."numero_proyecto" [delete: cascade]
 Ref: "memorias"."id_memoria" < "revisiones_memorias"."memoria_id" [delete: cascade]
 Ref: "usuarios"."id_usuario" < "revisiones_memorias"."auditor_id" [delete: restrict]
 Ref: "proyectos"."id_proyecto" < "certificaciones"."proyecto_id" [delete: restrict]
@@ -385,12 +486,16 @@ Ref: "plantillas"."id_plantilla" < "versiones_plantillas"."id_plantilla" [delete
 
 TableGroup seguridad_autenticacion {
   usuarios
+  password_reset_tokens
+  sessions
+  personal_access_tokens
   roles
   permissions
   model_has_roles
   model_has_permissions
   role_has_permissions
   logs_acciones
+  notifications
 }
 
 TableGroup estructura_academica {

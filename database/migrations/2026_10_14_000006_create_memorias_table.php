@@ -21,10 +21,23 @@ return new class extends Migration
             $table->date('fecha_listo')->nullable();
             $table->date('fecha_entrega')->nullable();
             $table->text('observaciones')->nullable();
-            $table->foreignId('proyecto_id')->unique()->constrained('proyectos', 'id_proyecto')->cascadeOnDelete();
+            $table->foreignId('numero_proyecto')->unique()->constrained('proyectos', 'numero_proyecto')->cascadeOnDelete();
             $table->string('documento')->nullable();
             $table->softDeletes();
             $table->timestamps();
+        });
+
+        Schema::create('revisiones_memorias', function (Blueprint $table): void {
+            $table->id('id_revision_memoria');
+            $table->foreignId('memoria_id')->constrained('memorias', 'id_memoria')->cascadeOnDelete();
+            $table->foreignId('auditor_id')->constrained('usuarios', 'id_usuario')->restrictOnDelete();
+            $table->string('resultado', 20);
+            $table->boolean('sellos_verificados');
+            $table->boolean('tinta_azul_verificada');
+            $table->text('observaciones')->nullable();
+            $table->timestamps();
+
+            $table->index(['memoria_id', 'created_at']);
         });
     }
 
@@ -33,6 +46,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('revisiones_memorias');
         Schema::dropIfExists('memorias');
     }
 };

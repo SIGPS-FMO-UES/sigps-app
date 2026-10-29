@@ -7,7 +7,6 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 
 class LoginController extends Controller
@@ -52,16 +51,8 @@ class LoginController extends Controller
         $request->session()->regenerate();
 
         // Redirección dinámica según el rol del usuario (HU-58)
-        if ($user->hasRole('admin')) {
-            $destino = Route::has('admin.usuarios.index') ? route('admin.usuarios.index', [], false) : '/admin/usuarios';
-
-            return redirect()->away($destino);
-        }
-
         if ($user->hasAnyRole(['auxiliar_ups', 'jefe_ups'])) {
-            $destino = Route::has('ups.dashboard') ? route('ups.dashboard', [], false) : '/ups/dashboard';
-
-            return redirect()->away($destino);
+            return redirect()->route('ups.dashboard');
         }
 
         return redirect()->away('/');

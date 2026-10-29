@@ -22,13 +22,6 @@ class RoleAndPermissionSeeder extends Seeder
         $guard = 'web';
 
         $rolesPermisos = [
-            'admin' => [
-                'usuarios.gestionar',
-                'carreras.gestionar',
-                'areas.gestionar',
-                'plantillas.gestionar',
-                'auditoria.consultar',
-            ],
             'jefe_ups' => [
                 'expedientes.auditar',
                 'expedientes.aprobar',
@@ -37,6 +30,11 @@ class RoleAndPermissionSeeder extends Seeder
                 'prorrogas.resolver',
                 'certificaciones.emitir',
                 'estadisticas.exportar',
+                'usuarios.gestionar',
+                'carreras.gestionar',
+                'areas.gestionar',
+                'plantillas.gestionar',
+                'auditoria.consultar',
             ],
             'auxiliar_ups' => [
                 'expedientes.auditar',

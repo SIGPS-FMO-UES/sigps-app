@@ -81,14 +81,9 @@
         .remember input { width: 15px; height: 15px; margin: 0; accent-color: var(--maroon); }
         .text-link { color: var(--maroon); font-weight: 600; text-decoration: none; }
         .text-link:hover { text-decoration: underline; }
-        .primary-button, .google-button { display: flex; width: 100%; height: 48px; align-items: center; justify-content: center; border-radius: 9px; font: inherit; font-size: 14px; font-weight: 650; }
-        .primary-button { border: 1px solid var(--maroon); color: white; background: var(--maroon); cursor: pointer; transition: background .15s, transform .15s; }
+        .primary-button { display: flex; width: 100%; height: 48px; align-items: center; justify-content: center; border: 1px solid var(--maroon); border-radius: 9px; color: white; background: var(--maroon); font: inherit; font-size: 14px; font-weight: 650; cursor: pointer; transition: background .15s, transform .15s; }
         .primary-button:hover { background: #80152a; }
         .primary-button:active { transform: translateY(1px); }
-        .divider { display: flex; align-items: center; gap: 14px; margin: 22px 0; color: #8992a0; font-size: 11px; }
-        .divider::before, .divider::after { height: 1px; flex: 1; background: var(--border); content: ""; }
-        .google-button { gap: 10px; border: 1px solid var(--border); color: #435063; background: white; cursor: not-allowed; opacity: .78; }
-        .google-mark { font-size: 17px; font-weight: 700; color: #4285f4; }
         .register-prompt { margin: 24px 0 0; color: var(--muted); font-size: 12px; text-align: center; }
         .register-prompt span { color: #9aa3af; }
 
@@ -184,12 +179,6 @@
 
                     <button class="primary-button" type="submit">Iniciar sesión</button>
                 </form>
-
-                <div class="divider" aria-hidden="true">o continúa con</div>
-                <button class="google-button" type="button" disabled title="Acceso con Google aún no configurado">
-                    <span class="google-mark" aria-hidden="true">G</span>
-                    Continuar con Google
-                </button>
 
                 <p class="register-prompt"><a href="{{ route('formatos.index') }}">Consultar formatos oficiales de Proyección Social</a></p>
             </div>

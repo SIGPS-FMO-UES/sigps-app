@@ -8,6 +8,7 @@ use App\Models\Memoria;
 use App\Models\Proyecto;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class UpsDashboardController extends Controller
@@ -31,56 +32,90 @@ class UpsDashboardController extends Controller
         $dias = array_merge(array_fill(0, $desfase, null), range(1, $fechaCalendario->daysInMonth));
         $dias = array_pad($dias, (int) ceil(count($dias) / 7) * 7, null);
 
-        $estadosPendientes = [
-            EstadoMemoria::Recibido->value,
-            EstadoMemoria::EnRevision->value,
-            EstadoMemoria::Observada->value,
-        ];
+        $fechaLimiteMemoria = $ahora->subMonths(3)->toDateString();
+        $fechaLimiteJunta = $ahora->subMonths(18)->toDateString();
 
-        $expedientesQuery = Memoria::query()
-            ->with(['proyecto.areaConocimiento', 'proyecto.estudiantes'])
-            ->whereIn('estado', $estadosPendientes)
-            ->latest('fecha_recibimiento');
+        // 1. Tarjeta 1: Plazos Críticos (Urgentes)
+        $plazosCriticos = Proyecto::query()
+            ->where(function ($q) use ($fechaLimiteMemoria, $fechaLimiteJunta): void {
+                $q->whereDate('fecha_inicio', '<=', $fechaLimiteJunta)
+                    ->orWhere(fn ($sub) => $sub->whereDate('fecha_inicio', '<=', $fechaLimiteMemoria)->whereDoesntHave('memoria'))
+                    ->orWhereHas('memoria', fn ($m) => $m->where('estado', EstadoMemoria::Observada->value));
+            })->count();
 
+        // 2. Tarjeta 2: Auditorías Pendientes (Trámite UPS)
+        $auditoriasPendientes = Memoria::query()
+            ->whereIn('estado', [
+                EstadoMemoria::Recibido->value,
+                EstadoMemoria::EnRevision->value,
+                EstadoMemoria::EsperandoFirmas->value,
+            ])->count();
+
+        // 3. Tarjeta 3: Entregas Pendientes (Certificaciones Listas)
+        $entregasPendientes = Memoria::query()
+            ->where('estado', EstadoMemoria::Lista->value)
+            ->count();
+
+        // 4. Casos Prioritarios del Día (Ordenados por Gravedad Normativa)
+        $casosQuery = Proyecto::query()
+            ->with([
+                'areaConocimiento:id_area_conocimiento,nombre',
+                'estudiantes:id_estudiante,due,nombre_completo',
+                'memoria',
+            ])
+            ->where(function ($q) use ($fechaLimiteMemoria, $fechaLimiteJunta): void {
+                $q->whereDate('fecha_inicio', '<=', $fechaLimiteJunta)
+                    ->orWhere(fn ($sub) => $sub->whereDate('fecha_inicio', '<=', $fechaLimiteMemoria)->whereDoesntHave('memoria'))
+                    ->orWhereHas('memoria', fn ($m) => $m->whereIn('estado', [
+                        EstadoMemoria::Observada->value,
+                        EstadoMemoria::Recibido->value,
+                        EstadoMemoria::EnRevision->value,
+                        EstadoMemoria::EsperandoFirmas->value,
+                        EstadoMemoria::Lista->value,
+                    ]));
+            });
+
+        // Búsqueda en el dashboard
         if (! empty($filtros['buscar'])) {
-            $termino = $filtros['buscar'];
-            $expedientesQuery->whereHas('proyecto', function ($query) use ($termino): void {
-                $query->where('titulo', 'like', "%{$termino}%")
-                    ->orWhereHas('estudiantes', function ($estudiantes) use ($termino): void {
-                        $estudiantes->where('due', 'like', "%{$termino}%")
-                            ->orWhere('nombre_completo', 'like', "%{$termino}%");
-                    });
+            $search = trim((string) $filtros['buscar']);
+            $searchNum = preg_replace('/\D/', '', $search);
+            $driver = DB::connection()->getDriverName();
+            $like = $driver === 'pgsql' ? 'ilike' : 'like';
+
+            $casosQuery->where(function ($subquery) use ($search, $searchNum, $like): void {
+                $subquery->where('titulo', $like, "%{$search}%")
+                    ->orWhere('tutor', $like, "%{$search}%")
+                    ->orWhereHas('estudiantes', fn ($estudiantes) => $estudiantes
+                        ->where('due', $like, "%{$search}%")
+                        ->orWhere('nombre_completo', $like, "%{$search}%")
+                    );
+
+                if ($searchNum !== '') {
+                    $subquery->orWhere('numero_proyecto', (int) $searchNum);
+                }
             });
         }
 
-        $expedientes = $expedientesQuery->limit(7)->get()->map(function (Memoria $memoria): array {
-            $proyecto = $memoria->proyecto;
-            $estudiante = $proyecto?->estudiantes->first();
+        $casosPrioritarios = $casosQuery->orderByRaw("
+            CASE
+                WHEN fecha_inicio <= '{$fechaLimiteJunta}' AND fecha_remision_junta IS NULL THEN 1
+                WHEN fecha_inicio <= '{$fechaLimiteMemoria}' AND NOT EXISTS (SELECT 1 FROM memorias WHERE memorias.numero_proyecto = proyectos.numero_proyecto) THEN 2
+                WHEN EXISTS (SELECT 1 FROM memorias WHERE memorias.numero_proyecto = proyectos.numero_proyecto AND memorias.estado = 'observada') THEN 3
+                WHEN EXISTS (SELECT 1 FROM memorias WHERE memorias.numero_proyecto = proyectos.numero_proyecto AND memorias.estado IN ('recibido', 'en_revision', 'esperando_firmas')) THEN 4
+                WHEN EXISTS (SELECT 1 FROM memorias WHERE memorias.numero_proyecto = proyectos.numero_proyecto AND memorias.estado = 'lista') THEN 5
+                ELSE 6
+            END ASC, fecha_inicio ASC
+        ")->limit(8)->get();
 
-            return [
-                'codigo' => $estudiante?->due ?? 'Sin estudiante',
-                'proyecto' => $proyecto?->titulo ?? 'Proyecto no disponible',
-                'area' => $proyecto?->areaConocimiento?->nombre ?? 'Sin área',
-                'fecha' => $memoria->fecha_recibimiento?->format('d/m/Y') ?? '—',
-                'estado' => $memoria->estado instanceof EstadoMemoria ? $memoria->estado->label() : (string) $memoria->estado,
-            ];
-        });
+        // Alertas de plazo (top 4 más críticos para el panel lateral)
+        $alertas = $casosPrioritarios
+            ->filter(fn (Proyecto $p) => $p->semaforoOperativo()['nivel'] === 'urgente')
+            ->take(4)
+            ->values();
 
-        $memoriasPendientes = Memoria::query()->whereIn('estado', $estadosPendientes)->count();
-        $fechaLimite = $ahora->subMonths(3)->toDateString();
-        $proyectosEnAlerta = Proyecto::query()
-            ->whereDate('fecha_inicio', '<=', $fechaLimite)
-            ->whereDoesntHave('memoria')
-            ->orderBy('fecha_inicio')
-            ->limit(3)
-            ->get(['id_proyecto', 'titulo', 'fecha_inicio']);
-        $plazosCriticos = Proyecto::query()
-            ->whereDate('fecha_inicio', '<=', $fechaLimite)
-            ->whereDoesntHave('memoria')
-            ->count();
-        $certificacionesPendientes = Memoria::query()
-            ->whereIn('estado', [EstadoMemoria::Lista->value, EstadoMemoria::EsperandoFirmas->value])
-            ->count();
+        $usuario = auth()->user();
+        $notificaciones = $usuario ? $usuario->notifications()->latest()->limit(8)->get() : collect();
+        $notificacionesSinLeer = $usuario ? $usuario->unreadNotifications()->count() : 0;
 
         return view('ups.dashboard', [
             'fechaActual' => $ahora->locale('es')->translatedFormat('l, d \\d\\e F \\d\\e Y').' · '.$ahora->format('H:i'),
@@ -91,19 +126,16 @@ class UpsDashboardController extends Controller
             'mesSiguiente' => $fechaCalendario->addMonth(),
             'busqueda' => $filtros['buscar'] ?? '',
             'nombreUsuario' => auth()->user()->nombre_completo,
-            'rolUsuario' => auth()->user()->getRoleNames()->first() === 'jefe_ups' ? 'Jefatura UPS' : 'Auxiliar UPS',
-            'metricas' => [
-                ['valor' => $memoriasPendientes, 'titulo' => 'Expedientes recibidos', 'detalle' => 'Pendientes de revisión UPS', 'icono' => 'archivo'],
-                ['valor' => $plazosCriticos, 'titulo' => 'Plazos críticos', 'detalle' => 'Proyectos sin memoria y con más de 3 meses', 'icono' => 'alerta'],
-                ['valor' => $certificacionesPendientes, 'titulo' => 'Certificaciones pendientes', 'detalle' => 'Memorias listas para emisión o entrega', 'icono' => 'sello'],
+            'rolUsuario' => auth()->user()->getRoleNames()->first() === 'jefe_ups' ? 'Jefatura UPS' : (auth()->user()->hasRole('admin') ? 'Administrador' : 'Auxiliar UPS'),
+            'notificaciones' => $notificaciones,
+            'notificacionesSinLeer' => $notificacionesSinLeer,
+            'triaje' => [
+                'plazosCriticos' => $plazosCriticos,
+                'auditoriasPendientes' => $auditoriasPendientes,
+                'entregasPendientes' => $entregasPendientes,
             ],
-            'expedientes' => $expedientes,
-            'hayExpedientes' => $expedientes->isNotEmpty(),
-            'plazosCriticosTotal' => $plazosCriticos,
-            'alertas' => $proyectosEnAlerta->map(fn (Proyecto $proyecto): array => [
-                'codigo' => $proyecto->titulo,
-                'vence' => 'Superó el plazo de 3 meses desde '.CarbonImmutable::parse($proyecto->fecha_inicio)->addMonths(3)->format('d/m/Y'),
-            ]),
+            'casosPrioritarios' => $casosPrioritarios,
+            'alertas' => $alertas,
         ]);
     }
 }

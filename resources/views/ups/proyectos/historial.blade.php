@@ -13,7 +13,7 @@
         <div class="card-head">
             <div>
                 <h2>{{ $proyecto->titulo }}</h2>
-                <p class="muted" style="margin:5px 0 0">Expediente #{{ $proyecto->id_proyecto }} · {{ $proyecto->areaConocimiento?->nombre ?? 'Sin área asignada' }}</p>
+                <p class="muted" style="margin:5px 0 0">Proyecto #{{ $proyecto->numero_proyecto ?? $proyecto->id_proyecto }} · Expediente #{{ $proyecto->id_proyecto }} · {{ $proyecto->areaConocimiento?->nombre ?? 'Sin área asignada' }}</p>
             </div>
             <span class="badge {{ $proyecto->estado_expediente === 'finalizado' ? 'badge-success' : ($proyecto->estado_expediente === 'cancelado' ? 'badge-danger' : 'badge-info') }}">
                 {{ ['en_tramite' => 'En trámite', 'finalizado' => 'Finalizado', 'cancelado' => 'Cancelado'][$proyecto->estado_expediente] ?? ucfirst($proyecto->estado_expediente) }}

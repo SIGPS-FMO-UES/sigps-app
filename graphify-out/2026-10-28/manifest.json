@@ -197,12 +197,6 @@
     "ast_hash": "7e567dc27e68d5b57bae16af07f68907",
     "semantic_hash": "7e567dc27e68d5b57bae16af07f68907"
   },
-  "tests/Unit/ExampleTest.php": {
-    "mtime": 1787675219.0,
-    "seen": 1791988031.6328852,
-    "ast_hash": "3f679e9508c834f0ad95943455fcd836",
-    "semantic_hash": "3f679e9508c834f0ad95943455fcd836"
-  },
   "vite.config.js": {
     "mtime": 1790351548.720479,
     "seen": 1791988031.632886,
@@ -867,12 +861,6 @@
     "mtime": 1792994272.7778494,
     "seen": 1793068145.1110291,
     "ast_hash": "57dc658c80d4a1aa6545288ab16d22a4",
-    "semantic_hash": ""
-  },
-  "tests/Feature/MemoriaYFinalizacionProyectoTest.php": {
-    "mtime": 1793244630.6806002,
-    "seen": 1793244649.8273656,
-    "ast_hash": "1e473a27a10aa2268f15254687075b9f",
     "semantic_hash": ""
   }
 }

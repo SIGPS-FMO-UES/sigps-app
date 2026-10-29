@@ -570,9 +570,9 @@
     "semantic_hash": ""
   },
   "resources/views/layouts/portal.blade.php": {
-    "mtime": 1793241847.273172,
-    "seen": 1793242061.8229034,
-    "ast_hash": "41a166418a63758fa88b37a5d655a598",
+    "mtime": 1793247917.31262,
+    "seen": 1793247946.4209971,
+    "ast_hash": "7b8f97a4925b7d3af08add35613d0f9b",
     "semantic_hash": ""
   },
   "resources/views/publico/formatos/index.blade.php": {
@@ -588,15 +588,15 @@
     "semantic_hash": ""
   },
   "resources/views/ups/dashboard.blade.php": {
-    "mtime": 1793241867.9849396,
-    "seen": 1793242061.8229058,
-    "ast_hash": "beba1f2393a5575681b371b35fa95409",
+    "mtime": 1793247902.241796,
+    "seen": 1793247946.4210012,
+    "ast_hash": "68ddede8b5e66a3f51d02a47d713cfee",
     "semantic_hash": ""
   },
   "resources/views/ups/estadisticas/index.blade.php": {
-    "mtime": 1793117281.8747904,
-    "seen": 1793117362.6884584,
-    "ast_hash": "c95852a4dce94a66d36107d957bbd5a2",
+    "mtime": 1793249333.1590118,
+    "seen": 1793249377.9025207,
+    "ast_hash": "db39b8289523d97873aec50612c7450d",
     "semantic_hash": ""
   },
   "resources/views/ups/estudiantes/create.blade.php": {
@@ -861,12 +861,6 @@
     "mtime": 1792994272.7778494,
     "seen": 1793068145.1110291,
     "ast_hash": "57dc658c80d4a1aa6545288ab16d22a4",
-    "semantic_hash": ""
-  },
-  "tests/Feature/MemoriaYFinalizacionProyectoTest.php": {
-    "mtime": 1793244630.6806002,
-    "seen": 1793244649.8273656,
-    "ast_hash": "1e473a27a10aa2268f15254687075b9f",
     "semantic_hash": ""
   }
 }

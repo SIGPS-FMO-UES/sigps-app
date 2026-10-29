@@ -626,9 +626,10 @@
             const root = document.documentElement;
             const sidebarToggle = document.querySelector('.sidebar-toggle');
             const preferenceKey = 'sigps-ups-sidebar-collapsed';
+            const legacyKey = 'sigps-sidebar-collapsed';
 
             try {
-                const savedPreference = localStorage.getItem(preferenceKey);
+                const savedPreference = localStorage.getItem(preferenceKey) ?? localStorage.getItem(legacyKey);
                 const prefersCollapsedByDefault = window.matchMedia('(max-width: 1180px)').matches;
                 if (savedPreference === 'true' || (savedPreference === null && prefersCollapsedByDefault)) {
                     root.classList.add('sidebar-collapsed');
@@ -649,7 +650,9 @@
                 root.classList.toggle('sidebar-collapsed');
                 updateToggle();
                 try {
-                    localStorage.setItem(preferenceKey, String(root.classList.contains('sidebar-collapsed')));
+                    const state = String(root.classList.contains('sidebar-collapsed'));
+                    localStorage.setItem(preferenceKey, state);
+                    localStorage.setItem(legacyKey, state);
                 } catch (error) {
                     // El estado visual actual se conserva aunque el almacenamiento esté deshabilitado.
                 }
